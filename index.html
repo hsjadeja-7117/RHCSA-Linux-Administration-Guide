@@ -1294,8 +1294,7 @@
           <div class="tip-num">03</div>
           <div class="tip-title">Always verify your work</div>
           <div class="tip-text">After any configuration change, verify it worked. Use <code>systemctl status</code>,
-            <code>df -h</code>, <code>mount -a</code>, or <code>lsblk</code> to confirm changes took effect.
-          </div>
+            <code>df -h</code>, <code>mount -a</code>, or <code>lsblk</code> to confirm changes took effect.</div>
         </div>
         <div class="tip-card">
           <div class="tip-num">04</div>
@@ -1382,6 +1381,92 @@ ssh user@host                   # Connect without passphrase prompt</code></pre>
           <pre><code>ssh-keygen -f .ssh/mykey
 ssh-copy-id -i .ssh/mykey.pub user@hostname
 ssh -i .ssh/mykey user@hostname</code></pre>
+
+          <h3>echo — Print & Write Text</h3>
+          <pre><code>echo Hello                      # Print text to terminal
+echo "Hello Linux" > file.txt   # Write to file (overwrites)
+echo "New line" >> file.txt     # Append to file (keeps existing)</code></pre>
+
+          <h3>more — Read File Gradually</h3>
+          <pre><code>more filename
+# Space → Next page
+# q     → Quit</code></pre>
+
+          <h3>man — Manual Page Navigation</h3>
+          <pre><code>man ls         # Open manual for ls command
+# Inside man:
+# q       → Quit
+# /word   → Search for word
+# n       → Jump to next search result</code></pre>
+
+          <h3>Vim Editor — Essential for Administration</h3>
+          <p>Vim is used to edit configuration files, scripts, and system settings. It has three modes:</p>
+          <table>
+            <tr>
+              <th>Mode</th>
+              <th>Purpose</th>
+              <th>How to Enter</th>
+            </tr>
+            <tr>
+              <td>Normal</td>
+              <td>Navigation and commands</td>
+              <td>Default / press Esc</td>
+            </tr>
+            <tr>
+              <td>Insert</td>
+              <td>Type and edit text</td>
+              <td>Press <code>i</code></td>
+            </tr>
+            <tr>
+              <td>Command</td>
+              <td>Save, quit, search</td>
+              <td>Press <code>:</code></td>
+            </tr>
+          </table>
+          <pre><code>vim filename    # Open file in vim</code></pre>
+          <h4>Essential Vim Commands</h4>
+          <table>
+            <tr>
+              <th>Action</th>
+              <th>Command</th>
+            </tr>
+            <tr>
+              <td>Enter Insert Mode</td>
+              <td><code>i</code></td>
+            </tr>
+            <tr>
+              <td>Save</td>
+              <td><code>:w</code></td>
+            </tr>
+            <tr>
+              <td>Quit</td>
+              <td><code>:q</code></td>
+            </tr>
+            <tr>
+              <td>Save &amp; Quit</td>
+              <td><code>:wq</code></td>
+            </tr>
+            <tr>
+              <td>Force Quit (no save)</td>
+              <td><code>:q!</code></td>
+            </tr>
+            <tr>
+              <td>Delete Line</td>
+              <td><code>dd</code></td>
+            </tr>
+            <tr>
+              <td>Copy Line</td>
+              <td><code>yy</code></td>
+            </tr>
+            <tr>
+              <td>Paste</td>
+              <td><code>p</code></td>
+            </tr>
+            <tr>
+              <td>Search</td>
+              <td><code>/word</code></td>
+            </tr>
+          </table>
         </div>
       </div>
 
@@ -1396,6 +1481,91 @@ ssh -i .ssh/mykey user@hostname</code></pre>
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>Linux Filesystem Hierarchy</h3>
+          <p>Everything in Linux starts from <code>/</code> (root). Run <code>ls /</code> to see the top level.</p>
+          <table>
+            <tr>
+              <th>Directory</th>
+              <th>Purpose</th>
+            </tr>
+            <tr>
+              <td><code>/boot</code></td>
+              <td>Bootloader files and kernel (vmlinuz)</td>
+            </tr>
+            <tr>
+              <td><code>/dev</code></td>
+              <td>Device files (disk, CPU, keyboard)</td>
+            </tr>
+            <tr>
+              <td><code>/home</code></td>
+              <td>Home directories for regular users</td>
+            </tr>
+            <tr>
+              <td><code>/root</code></td>
+              <td>Home directory of root user</td>
+            </tr>
+            <tr>
+              <td><code>/etc</code></td>
+              <td>Configuration files</td>
+            </tr>
+            <tr>
+              <td><code>/tmp</code></td>
+              <td>Temporary files (world-writable)</td>
+            </tr>
+            <tr>
+              <td><code>/usr/bin</code></td>
+              <td>User command binaries</td>
+            </tr>
+            <tr>
+              <td><code>/usr/sbin</code></td>
+              <td>System administration binaries</td>
+            </tr>
+            <tr>
+              <td><code>/var</code></td>
+              <td>Variable data — logs, spool, cache</td>
+            </tr>
+            <tr>
+              <td><code>/mnt</code></td>
+              <td>Temporary mount point</td>
+            </tr>
+            <tr>
+              <td><code>/media</code></td>
+              <td>Removable devices</td>
+            </tr>
+            <tr>
+              <td><code>/run</code></td>
+              <td>Runtime process data</td>
+            </tr>
+          </table>
+
+          <h3>Special Path Symbols & Navigation</h3>
+          <table>
+            <tr>
+              <th>Symbol</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td><code>.</code></td>
+              <td>Current directory</td>
+            </tr>
+            <tr>
+              <td><code>..</code></td>
+              <td>Parent directory</td>
+            </tr>
+            <tr>
+              <td><code>~</code></td>
+              <td>Home directory</td>
+            </tr>
+            <tr>
+              <td><code>cd</code></td>
+              <td>Move to home directory</td>
+            </tr>
+          </table>
+          <pre><code>cd ..          # Move to parent directory
+cd ~           # Move to home directory
+cd /etc        # Move to absolute path
+pwd            # Print current working directory</code></pre>
+
           <h3>File Operations</h3>
           <pre><code>mkdir dir1                  # Create directory
 mkdir -p dir1/dir2/dir3     # Create full nested path
@@ -1412,6 +1582,10 @@ rm -r dir1                  # Delete directory
 rm -rf dir1                 # Force delete — no confirmation
 rmdir dir1                  # Remove empty directory only</code></pre>
           <h3>Links</h3>
+          <h4>Inode Concept</h4>
+          <p>Every file in Linux has an inode number — a unique identifier pointing to file data on disk. Hard links
+            share the same inode. Soft links point to a path.</p>
+          <pre><code>ls -i filename    # Check inode number of a file</code></pre>
           <table>
             <tr>
               <th>Feature</th>
@@ -1454,6 +1628,7 @@ rmdir dir1                  # Remove empty directory only</code></pre>
 ?           # Match one char:      ls file?.txt
 [abc]       # Match from list:     ls file[123].txt
 {1..20}     # Brace sequence:      touch file{1..20}.txt
+{A,B,C}     # Brace list:          mkdir project{A,B,C}
 $USER       # Variable expansion:  echo $USER
 $(date)     # Command sub:         echo $(date)
 " "         # Double quote: allows $, backticks
@@ -1465,7 +1640,10 @@ grep -v "term" file       # Invert match
 grep -r "term" folder/    # Recursive
 grep -w "word" file       # Whole word only
 grep "^root" /etc/passwd  # Lines starting with root
-grep "bash$" /etc/passwd  # Lines ending with bash</code></pre>
+grep "bash$" /etc/passwd  # Lines ending with bash
+
+# Combine commands with pipes:
+grep "error" logfile | sort | head    # Filter → sort → top 10</code></pre>
           <h3>Viewing & Sorting</h3>
           <pre><code>head -n 5 file    # First 5 lines
 tail -n 5 file    # Last 5 lines
@@ -1511,6 +1689,15 @@ sort -u file      # Remove duplicates</code></pre>
             </tr>
           </table>
           <pre><code>id username    # Check UID, GID and group memberships</code></pre>
+          <h3>Primary vs Secondary Groups</h3>
+          <ul>
+            <li><strong>Primary Group</strong> — Default group assigned when user is created. New files created by the
+              user belong to this group.</li>
+            <li><strong>Secondary Group</strong> — Additional groups a user can join for extra access permissions.</li>
+          </ul>
+          <pre><code>id root        # Check root's UID, GID and groups
+id username    # Check any user's UID, GID and group memberships</code></pre>
+
           <h3>/etc/passwd Format</h3>
           <pre><code>username : x : UID : GID : /home/dir : /bin/shell
 # x = password stored in /etc/shadow</code></pre>
@@ -1530,6 +1717,7 @@ usermod -L username                  # Lock account
 usermod -U username                  # Unlock account
 usermod -u 3005 username             # Change UID
 usermod -e YYYY-MM-DD username       # Set expiry date
+usermod -f days username             # Set inactive days after password expiry
 usermod -c "Full Name" username      # Set comment</code></pre>
           <div class="warn">⚠️ Always use <code>-a</code> with <code>-G</code>. Without <code>-a</code>, all existing
             group memberships are overwritten.</div>
@@ -1548,11 +1736,53 @@ username ALL=(ALL) NOPASSWD:ALL  # Skip password prompt</code></pre>
 su - username     # Switch with full environment
 su -              # Switch to root (needs root password)
 sudo -i           # Switch to root using your own password</code></pre>
+          <h3>/etc/shadow — Password Storage</h3>
+          <p>All encrypted passwords are stored in <code>/etc/shadow</code>. Never edit this file directly.</p>
+          <pre><code>root:$6$hashvalue:19130:0:99999:7:::</code></pre>
+          <table>
+            <tr>
+              <th>Field</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>Encrypted Password</td>
+              <td>Hashed password value</td>
+            </tr>
+            <tr>
+              <td>Last Password Change</td>
+              <td>Days since Jan 1, 1970</td>
+            </tr>
+            <tr>
+              <td>Minimum Age</td>
+              <td>Days before password can be changed</td>
+            </tr>
+            <tr>
+              <td>Maximum Age</td>
+              <td>Password validity duration</td>
+            </tr>
+            <tr>
+              <td>Warning Days</td>
+              <td>Days before expiry to warn user</td>
+            </tr>
+            <tr>
+              <td>Inactive Days</td>
+              <td>Grace period after expiry</td>
+            </tr>
+            <tr>
+              <td>Expiry Date</td>
+              <td>Account expiry date</td>
+            </tr>
+          </table>
+
           <h3>Password Policy</h3>
           <pre><code>chage username       # Interactive policy editor
 chage -l username    # List current policy
+chage -d 0 username  # Force password change at next login
 date -d "240 days"   # Calculate future date
-# Future user defaults: /etc/login.defs</code></pre>
+# Future user defaults: /etc/login.defs
+# Defines: PASS_MAX_DAYS, PASS_MIN_DAYS, PASS_WARN_AGE</code></pre>
+          <div class="note">💡 Always verify changes using <code>id username</code> and <code>chage -l username</code>
+            after modifications.</div>
         </div>
       </div>
 
@@ -1567,6 +1797,28 @@ date -d "240 days"   # Calculate future date
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>Access Control Models</h3>
+          <table>
+            <tr>
+              <th>Model</th>
+              <th>Name</th>
+              <th>How it Works</th>
+            </tr>
+            <tr>
+              <td><strong>DAC</strong></td>
+              <td>Discretionary Access Control</td>
+              <td>File owner decides who can access. Standard rwx permissions (chmod/chown).</td>
+            </tr>
+            <tr>
+              <td><strong>MAC</strong></td>
+              <td>Mandatory Access Control</td>
+              <td>System-wide policies enforced by SELinux. Controls how processes interact with resources regardless of
+                standard permissions.</td>
+            </tr>
+          </table>
+          <div class="note">💡 Both DAC and MAC must allow access. SELinux (MAC) adds an extra layer on top of standard
+            permissions (DAC).</div>
+
           <h3>Reading Permissions</h3>
           <pre><code>ls -l filename
 
@@ -1575,11 +1827,38 @@ date -d "240 days"   # Calculate future date
  ││││││└└└── Others (r,w,x)
  │││└└└───── Group  (r,w,x)
  └└└──────── User   (r,w,x)</code></pre>
+          <h3>Permission Meanings</h3>
+          <table>
+            <tr>
+              <th>Permission</th>
+              <th>On a File</th>
+              <th>On a Directory</th>
+            </tr>
+            <tr>
+              <td>r (read)</td>
+              <td>View file content</td>
+              <td>List directory contents (ls)</td>
+            </tr>
+            <tr>
+              <td>w (write)</td>
+              <td>Modify file content</td>
+              <td>Create/delete files inside</td>
+            </tr>
+            <tr>
+              <td>x (execute)</td>
+              <td>Run as program/script</td>
+              <td>Enter directory (cd into it)</td>
+            </tr>
+          </table>
+
           <h3>Symbolic Method</h3>
           <pre><code>chmod u+x file       # Add execute for user
 chmod g-w file       # Remove write from group
 chmod o=r file       # Set others to read only
-chmod a+x file       # Add execute for all</code></pre>
+chmod a+x file       # Add execute for all
+
+# Set all at once:
+chmod u=rwx,g=rx,o=r file    # User=rwx, Group=r-x, Others=r--</code></pre>
           <h3>Octal Method</h3>
           <table>
             <tr>
@@ -1605,25 +1884,34 @@ chmod a+x file       # Add execute for all</code></pre>
           </table>
           <pre><code>chmod 755 file    # rwxr-xr-x
 chmod 644 file    # rw-r--r--
+chmod 700 file    # rwx------ (only owner has full access)
 chmod 777 file    # rwxrwxrwx</code></pre>
           <h3>Ownership</h3>
           <pre><code>chown user file            # Change user ownership
 chown user:group file      # Change user and group
-chgrp groupname file       # Change group only</code></pre>
+chown :group file          # Change group only (colon syntax)
+chgrp groupname file       # Change group only (alternative)</code></pre>
           <h3>Special Permissions</h3>
           <h4>SUID (runs as file owner)</h4>
           <pre><code>chmod u+s file    # Set SUID
 chmod 4744 file   # Set SUID (octal prefix 4)
 chmod u-s file    # Remove SUID
 chmod 0744 file   # Remove SUID (octal)</code></pre>
-          <h4>SGID (new files inherit group)</h4>
+          <h4>SGID — on Files vs Directories</h4>
+          <ul>
+            <li><strong>On files</strong> — File runs with the group owner's privileges</li>
+            <li><strong>On directories</strong> — New files created inside inherit the directory's group ownership</li>
+          </ul>
           <pre><code>chmod g+s path    # Set SGID
 chmod 2744 file   # Set SGID (octal prefix 2)
 chmod g-s path    # Remove SGID</code></pre>
-          <h4>Sticky Bit (can't delete others' files)</h4>
-          <pre><code>chmod o+t path    # Set sticky bit
+          <h4>Sticky Bit — Real World Example</h4>
+          <pre><code>ls -ld /tmp       # /tmp uses sticky bit — users can't delete others' files
+chmod o+t path    # Set sticky bit
 chmod 1744 file   # Set sticky bit (octal prefix 1)
 chmod o-t path    # Remove sticky bit</code></pre>
+          <div class="warn">⚠️ In production: avoid 777, use SGID for collaborative directories, use sticky bit for
+            shared writable directories like /tmp.</div>
           <h3>Default Permissions — umask</h3>
           <pre><code>umask             # Check current umask
 # Default perm = Max - umask (file max=666, dir max=777)
@@ -1685,7 +1973,7 @@ htop                       # Enhanced real-time viewer</code></pre>
             </tr>
             <tr>
               <td>D</td>
-              <td>Uninterruptible sleep (I/O wait)</td>
+              <td>Uninterruptible sleep (I/O wait — cannot be killed)</td>
             </tr>
             <tr>
               <td>T</td>
@@ -1693,7 +1981,40 @@ htop                       # Enhanced real-time viewer</code></pre>
             </tr>
             <tr>
               <td>Z</td>
-              <td>Zombie (finished, not cleaned up)</td>
+              <td>Zombie — finished execution but parent hasn't collected exit status. Remains in process table until
+                parent reads it.</td>
+            </tr>
+          </table>
+
+          <h3>ps aux — Key Columns</h3>
+          <table>
+            <tr>
+              <th>Column</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>USER</td>
+              <td>Process owner</td>
+            </tr>
+            <tr>
+              <td>PID</td>
+              <td>Process ID</td>
+            </tr>
+            <tr>
+              <td>%CPU</td>
+              <td>CPU usage percentage</td>
+            </tr>
+            <tr>
+              <td>%MEM</td>
+              <td>Memory usage percentage</td>
+            </tr>
+            <tr>
+              <td>STAT</td>
+              <td>Process state (R, S, D, T, Z)</td>
+            </tr>
+            <tr>
+              <td>COMMAND</td>
+              <td>Command that started the process</td>
             </tr>
           </table>
           <h3>Signals & Kill</h3>
@@ -1705,9 +2026,14 @@ kill -l                 # List all signal names
 pkill processname       # Kill by name
 killall processname     # Kill all with exact name</code></pre>
           <h3>Load Monitoring</h3>
-          <pre><code>uptime     # Load averages: 1, 5, 15 min
-lscpu      # CPU count — check CPU(s): field
-# If load_average / CPU_count > 1 → system overloaded</code></pre>
+          <pre><code>uptime     # Shows: current time, uptime, load averages
+# Load average: 5.20, 4.30, 3.10
+#               1min  5min  15min
+# → 1 min = most recent   |  15 min = longer trend
+
+lscpu      # CPU count — check CPU(s): field</code></pre>
+          <div class="note">💡 Formula: <strong>Load Average ÷ Number of CPUs</strong><br>Example: Load=5.2, CPUs=4 →
+            5.2÷4 = 1.3 → system is ~30% overloaded.<br>If result &gt; 1 → CPU demand exceeds capacity.</div>
           <h3>Priority — nice & renice</h3>
           <p>Range: <strong>-20</strong> (highest) to <strong>+19</strong> (lowest). Default = 0.</p>
           <pre><code>nice -n 10 command         # Start with lower priority
@@ -1715,33 +2041,74 @@ renice -n -5 -p 12345      # Change running process priority
 ps -l                       # View NI column</code></pre>
           <div class="warn">⚠️ Only root can set negative nice values.</div>
           <h3>Tuned — Performance Profiles</h3>
-          <pre><code>tuned-adm active                    # Check active profile
-tuned-adm recommend                 # System-suggested profile
-tuned-adm profile virtual-guest     # Apply a profile
-systemctl status tuned.service      # Check tuned service</code></pre>
+          <pre><code>tuned-adm active                         # Check active profile
+tuned-adm recommend                      # System-suggested profile
+tuned-adm profile virtual-guest          # Apply virtual-guest profile
+tuned-adm profile throughput-performance # Apply throughput profile
+tuned-adm profile balanced               # Apply balanced profile
+systemctl status tuned.service           # Check tuned is running
+# Config:    /etc/tuned/tuned-main.conf
+# Profiles:  /usr/lib/tuned/</code></pre>
+          <div class="note">💡 Admin tips: Always try SIGTERM before SIGKILL. Use <code>systemctl status sshd</code> to
+            check service process details. Monitor load average regularly on production systems.</div>
           <h3>at — One-Time Scheduling</h3>
+          <div class="note">💡 Requires <code>atd</code> service: <code>systemctl enable atd --now</code></div>
           <pre><code>at 07:40              # Schedule at specific time
 at now + 5 minutes    # Relative scheduling
+at 14:00              # 24-hour format
+at tomorrow           # Tomorrow same time
+at 10:00 Jan 25       # Specific date
 atq                   # View pending jobs
 atrm 1                # Remove job ID 1</code></pre>
           <h3>crontab — Recurring Scheduling</h3>
-          <pre><code># Syntax: M H D_M Month D_W COMMAND
-# Minute(0-59) Hour(0-23) DayMonth(1-31) Month(1-12) DayWeek(0-7)
+          <div class="note">💡 Requires <code>cronie</code> package and <code>crond</code> service:
+            <code>systemctl enable crond --now</code></div>
+          <pre><code># Cron syntax:
+# ┌─────── Minute     (0-59)
+# │ ┌───── Hour       (0-23)
+# │ │ ┌─── DayOfMonth (1-31)
+# │ │ │ ┌─ Month      (1-12)
+# │ │ │ │ ┌ DayOfWeek (0-7, Sun=0 or 7)
+# * * * * * command
 
 crontab -e           # Edit cron jobs
 crontab -l           # List cron jobs
 crontab -r           # Remove ALL cron jobs
-crontab -eu student  # Edit another user's crontab (as root)
+crontab -u student -e # Edit another user's crontab (as root)
 
 # Every minute:
 * * * * * echo "hello" >> /tmp/cron.txt
 
+# Every 2 minutes (/ = interval):
+*/2 * * * * echo "task running"
+
+# Between 5 PM-7 PM on Wednesday (- = range):
+0 17-19 * * 3 echo "evening task"
+
+# Tuesday and Thursday at 4 PM (, = multiple values):
+0 16 * * 2,4 echo "weekly task"
+
 # System-wide /etc/crontab needs a USERNAME field:
 * * * * * student echo "hello" >> /tmp/hello.txt
+
+# Always redirect output for debugging:
+* * * * * /scripts/backup.sh >> /var/log/backup.log 2>&1
 
 # Access control:
 /etc/cron.allow    # Only listed users permitted
 /etc/cron.deny     # Listed users blocked</code></pre>
+          <div class="note">💡 Always use absolute paths in cron jobs. Check logs: <code>journalctl -u crond</code>
+          </div>
+
+          <h3>Anacron — Catch Missed Jobs</h3>
+          <p>Anacron ensures scheduled jobs run even if the system was powered off at the scheduled time. Useful for
+            laptops and systems not running 24/7.</p>
+          <pre><code>vim /etc/anacrontab    # Anacron configuration
+
+# Place scripts in these directories for automatic execution:
+/etc/cron.daily/      # Run daily
+/etc/cron.weekly/     # Run weekly
+/etc/cron.monthly/    # Run monthly</code></pre>
         </div>
       </div>
 
@@ -1756,25 +2123,46 @@ crontab -eu student  # Edit another user's crontab (as root)
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>What is a Package?</h3>
+          <p>A package is a bundled collection of: binary files, libraries, configuration files, dependencies, and
+            documentation. Example: <code>httpd</code> contains the Apache web server binary, config files, and modules.
+          </p>
           <h3>Package Managers</h3>
           <ul>
-            <li><strong>rpm</strong> — Low-level, no dependency resolution</li>
-            <li><strong>yum</strong> — Package resolver (older)</li>
-            <li><strong>dnf</strong> — Current default in RHEL 9</li>
+            <li><strong>rpm</strong> — Low-level, installs .rpm files directly, no dependency resolution</li>
+            <li><strong>yum</strong> — Package resolver (older, RHEL 7)</li>
+            <li><strong>dnf</strong> — Current default in RHEL 9, faster and more efficient</li>
           </ul>
-          <p>Repositories: <strong>BaseOS</strong> (essential) | <strong>AppStream</strong> (additional/3rd party)</p>
-          <h3>Core Commands</h3>
+          <p>Repositories: <strong>BaseOS</strong> (essential system packages) | <strong>AppStream</strong> (additional
+            apps, dev tools, languages)</p>
+          <p>Repository files (.repo extension) stored in: <code>/etc/yum.repos.d/</code></p>
+          <h3>Core DNF Commands</h3>
           <pre><code>dnf install packagename         # Install
 dnf remove packagename          # Remove
 dnf info packagename            # View package info
-dnf list packagename            # List versions
+dnf list packagename            # List specific package
+dnf list installed              # List all installed packages
+dnf list                        # List all available packages
 dnf search all "keyword"        # Search by keyword
-dnf provides commandname        # Find what provides a command
-dnf history                     # View history
-dnf update                      # Update all (keeps obsolete)
-dnf upgrade                     # Update + remove obsolete</code></pre>
-          <h3>Adding a Repository</h3>
-          <pre><code># CLI method:
+dnf provides commandname        # Find what package provides a command
+dnf history                     # View transaction history
+dnf history undo 5              # Undo transaction ID 5
+dnf update                      # Update all (keeps obsolete packages)
+dnf upgrade                     # Update + remove obsolete packages</code></pre>
+          <h3>Package Groups</h3>
+          <pre><code>dnf group list                  # List all package groups
+dnf group info "Web Server"     # Info about a group
+dnf group install "Web Server"  # Install a group
+# Package Group = collection of related packages
+# Environment Group = collection of multiple groups</code></pre>
+          <h3>RPM Direct Commands</h3>
+          <pre><code>rpm -ivh package.rpm    # Install .rpm file (i=install v=verbose h=progress)
+rpm -q httpd            # Query if package is installed</code></pre>
+          <h3>Repository Management</h3>
+          <pre><code>dnf repolist             # Check all configured repositories
+dnf repolist enabled     # Show only enabled repos
+
+# CLI method:
 dnf config-manager --add-repo="http://repo_url"
 
 # Manual method — create .repo file:
@@ -1783,8 +2171,8 @@ vim /etc/yum.repos.d/myrepo.repo
 [myrepo]
 name=My Repo
 baseurl=http://your_repo_url/
-enabled=1
-gpgcheck=0</code></pre>
+enabled=1       # 1=enabled, 0=disabled
+gpgcheck=0      # 0=skip GPG signature check (not recommended in production)</code></pre>
         </div>
       </div>
 
@@ -1799,10 +2187,32 @@ gpgcheck=0</code></pre>
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>Storage Types</h3>
+          <table>
+            <tr>
+              <th>Type</th>
+              <th>Usage</th>
+              <th>Notes</th>
+            </tr>
+            <tr>
+              <td>Block-Level</td>
+              <td>Linux partitions, filesystems, swap</td>
+              <td>Divides storage into fixed-size blocks. High performance. Used in RHEL.</td>
+            </tr>
+            <tr>
+              <td>Object-Level</td>
+              <td>Cloud environments (S3, etc.)</td>
+              <td>Stores data as objects. Not used for local Linux partition management.</td>
+            </tr>
+          </table>
+          <p>A <strong>partition</strong> is a defined logical section of a disk. Example: a 500GB disk split into 100GB
+            for OS, 200GB for videos, 200GB for documents.</p>
           <h3>Check Storage</h3>
-          <pre><code>lsblk        # List block devices and partitions
-lsblk -fp    # Include filesystem type and UUID
-df -h        # Disk usage of mounted filesystems</code></pre>
+          <pre><code>lsblk           # List block devices and partitions
+lsblk -f        # Show filesystem type and UUID
+lsblk -fp       # Full path + filesystem type + UUID
+df -h           # Disk usage of mounted filesystems
+free -h         # RAM and swap usage</code></pre>
           <h3>Partition Schemes</h3>
           <table>
             <tr>
@@ -1825,6 +2235,8 @@ df -h        # Disk usage of mounted filesystems</code></pre>
             </tr>
           </table>
           <h3>Create Partition with fdisk</h3>
+          <p>Two common tools: <strong>fdisk</strong> (standard, MBR/GPT) | <strong>parted</strong> (advanced, for large
+            disks)</p>
           <pre><code>fdisk /dev/sdb     # Open disk
 # n = new partition
 # p = primary (Enter for default)
@@ -1837,10 +2249,34 @@ partprobe          # Notify kernel</code></pre>
           <h3>Format & Mount</h3>
           <pre><code>mkfs.xfs /dev/sdb1         # Format as XFS
 mkfs.ext4 /dev/sdb1        # Format as EXT4
+mkfs -t xfs /dev/sdb1      # Alternative syntax
 
 mkdir /mnt/data1
 mount /dev/sdb1 /mnt/data1    # Temporary mount
 df -h                          # Verify</code></pre>
+          <h3>Filesystem Types</h3>
+          <table>
+            <tr>
+              <th>Filesystem</th>
+              <th>Usage</th>
+            </tr>
+            <tr>
+              <td>XFS</td>
+              <td>Default in RHEL 9, high performance, cannot be reduced</td>
+            </tr>
+            <tr>
+              <td>ext4</td>
+              <td>General purpose, supports reduce</td>
+            </tr>
+            <tr>
+              <td>FAT32</td>
+              <td>USB drives (max file size 4GB)</td>
+            </tr>
+            <tr>
+              <td>NTFS</td>
+              <td>Windows filesystem</td>
+            </tr>
+          </table>
           <h3>Permanent Mount — /etc/fstab</h3>
           <pre><code>vim /etc/fstab
 /dev/sdb1  /mnt/data1  ext4  defaults  0  0
@@ -1848,7 +2284,18 @@ df -h                          # Verify</code></pre>
 systemctl daemon-reload
 mount -a        # Test (no output = success)
 df -h           # Verify</code></pre>
-          <h3>Swap — CFPA</h3>
+          <div class="note">💡 In production, use UUID instead of device name in /etc/fstab — device names can change
+            after reboot but UUID never changes. Get UUID with: <code>lsblk -f</code></div>
+
+          <h3>Complete Storage Workflow</h3>
+          <pre><code># 1. Detect disk:     lsblk
+# 2. Create partition: fdisk → n → size → w → partprobe
+# 3. Format:          mkfs.xfs /dev/sdXN
+# 4. Mount point:     mkdir /mnt/data
+# 5. Temporary mount: mount /dev/sdXN /mnt/data
+# 6. Make permanent:  vim /etc/fstab → add entry
+# 7. Test:            systemctl daemon-reload && mount -a
+# 8. Verify:          df -h</code></pre>
           <pre><code># C - Create:  fdisk → n → +1G → t → 82(MBR)/8200(GPT) → w
 # F - Format:  mkswap /dev/sdXN
 # P - Persist: /etc/fstab: /dev/sdXN swap swap defaults 0 0
@@ -1869,10 +2316,13 @@ swapon --show    # Verify</code></pre>
         </div>
         <div class="article-body">
           <h3>LVM Hierarchy</h3>
+          <pre><code>Disk → Partition → PV → VG → LV → Filesystem → Mount Point</code></pre>
           <p><strong>Physical Volume (PV)</strong> → <strong>Volume Group (VG)</strong> → <strong>Logical Volume
               (LV)</strong></p>
           <p>Physical storage cannot be resized. Logical storage (LVM) is flexible — it can be extended and (for EXT
             only) reduced.</p>
+          <div class="note">💡 Memory code: <strong>PPVLMF</strong> — Partition → PV → VG → LV → Mount → Filesystem
+          </div>
           <h3>Part A — Create LVM</h3>
           <pre><code># 1. Create LVM partition
 fdisk /dev/sdb  →  n → Enter → +1G → t → 8e(MBR) → w
@@ -1888,8 +2338,9 @@ vgcreate -s 16M myvg /dev/sdb1    # Custom PE size
 vgdisplay
 
 # 4. Logical Volume
-lvcreate -n mylv -L 5G myvg       # By size
-lvcreate -n mylv -l 100 myvg      # By PE count
+lvcreate -n mylv -L 5G myvg       # By size (-L = human readable size)
+lvcreate -n mylv -l 255 myvg      # By PE count (-l = number of extents)
+lvdisplay                          # Verify logical volume
 
 # 5. Filesystem
 mkfs.xfs /dev/myvg/mylv
@@ -1901,23 +2352,29 @@ vim /etc/fstab
 mount -a
 df -h</code></pre>
           <h3>Part B — Extend</h3>
-          <pre><code>lvextend -L +1G /dev/myvg/mylv
-lvextend -L +500M -r /dev/myvg/mylv    # -r also resizes filesystem
+          <pre><code>lvextend -L +1G /dev/myvg/mylv         # Extend by size
+lvextend -l +255 /dev/myvg/mylv        # Extend by PE count
+lvextend -L +500M -r /dev/myvg/mylv    # -r also resizes filesystem together
 
 xfs_growfs /dev/myvg/mylv              # Resize XFS manually
 resize2fs /mnt/data                     # Resize EXT manually
 
-# If VG is full:
+# If VG is full — add new PV first:
 pvcreate /dev/sdc1
 vgextend myvg /dev/sdc1
 lvextend -L +5G -r /dev/myvg/mylv</code></pre>
+          <div class="note">💡 Always check VG free space before extending: <code>vgdisplay</code></div>
           <h3>Part C — Reduce</h3>
-          <div class="warn">⚠️ XFS cannot be reduced. Only EXT2/3/4 supports reduction.</div>
+          <div class="warn">⚠️ XFS cannot be reduced. Only EXT2/3/4 supports reduction. Always backup before reducing.
+          </div>
           <pre><code>umount /mnt/data
 fsck /dev/myvg/mylv
 resize2fs /dev/myvg/mylv 3G
 lvreduce -L 3G /dev/myvg/mylv
-mount -a</code></pre>
+mount -a
+
+# Shortcut method (EXT only):
+lvreduce -L -512M -r /dev/myvg/mylv    # -r handles filesystem resize too</code></pre>
           <h3>Part D — Delete (Reverse Order)</h3>
           <pre><code>umount /mnt/data
 vim /etc/fstab              # Remove entry
@@ -1939,6 +2396,74 @@ pvremove /dev/sdb1</code></pre>
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>What is a Service / Daemon?</h3>
+          <p>A <strong>service</strong> is a program running in the background. When running, it becomes a process. Most
+            Linux background services end with <code>d</code> (daemon).</p>
+          <table>
+            <tr>
+              <th>Service</th>
+              <th>Purpose</th>
+            </tr>
+            <tr>
+              <td>sshd</td>
+              <td>Secure remote login</td>
+            </tr>
+            <tr>
+              <td>crond</td>
+              <td>Scheduled tasks</td>
+            </tr>
+            <tr>
+              <td>chronyd</td>
+              <td>Time synchronization</td>
+            </tr>
+            <tr>
+              <td>httpd</td>
+              <td>Web server</td>
+            </tr>
+            <tr>
+              <td>tuned</td>
+              <td>Performance tuning</td>
+            </tr>
+          </table>
+          <p><strong>systemd</strong> is the system and service manager. It is always the first process started during
+            boot — always <strong>PID 1</strong>.</p>
+
+          <h3>systemd Unit Types</h3>
+          <table>
+            <tr>
+              <th>Unit Type</th>
+              <th>Purpose</th>
+            </tr>
+            <tr>
+              <td>service</td>
+              <td>Manages background services</td>
+            </tr>
+            <tr>
+              <td>socket</td>
+              <td>Manages socket activation</td>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>Groups other units (like runlevels)</td>
+            </tr>
+            <tr>
+              <td>mount</td>
+              <td>Controls mount points</td>
+            </tr>
+            <tr>
+              <td>timer</td>
+              <td>Replaces cron jobs</td>
+            </tr>
+            <tr>
+              <td>path</td>
+              <td>Monitors file paths</td>
+            </tr>
+            <tr>
+              <td>slice</td>
+              <td>Controls resource allocation</td>
+            </tr>
+          </table>
+
           <h3>systemd Service Management</h3>
           <pre><code>systemctl start httpd              # Start service
 systemctl stop httpd               # Stop service
@@ -1946,12 +2471,35 @@ systemctl status httpd             # Check status
 systemctl enable httpd             # Enable at boot
 systemctl disable httpd            # Disable at boot
 systemctl enable httpd --now       # Enable + start immediately
+systemctl disable httpd --now      # Disable + stop immediately
 systemctl restart httpd            # Stop + start
 systemctl reload httpd             # Reload config (no stop)
 systemctl reload-or-restart httpd  # Let system decide
 systemctl mask httpd               # Block from starting at all
 systemctl unmask httpd             # Remove block</code></pre>
-          <h3>Targets</h3>
+
+          <h3>Practical Example — httpd</h3>
+          <pre><code>dnf install httpd                         # Install web server
+vim /etc/httpd/conf/httpd.conf            # Edit config file
+# Default document root: /var/www/html/
+# To change port: find "Listen 80" → change to "Listen 8080"
+systemctl restart httpd                   # Apply changes</code></pre>
+
+          <h3>Targets — System Modes</h3>
+          <table>
+            <tr>
+              <th>Target</th>
+              <th>Purpose</th>
+            </tr>
+            <tr>
+              <td>multi-user.target</td>
+              <td>CLI mode (no GUI)</td>
+            </tr>
+            <tr>
+              <td>graphical.target</td>
+              <td>GUI mode (desktop)</td>
+            </tr>
+          </table>
           <pre><code>systemctl get-default                        # Check default
 systemctl set-default multi-user.target      # Set CLI default (reboot needed)
 systemctl set-default graphical.target       # Set GUI default (reboot needed)
@@ -1960,7 +2508,8 @@ systemctl isolate graphical.target           # Switch to GUI now (temporary)
 systemctl list-dependencies httpd            # Show dependencies</code></pre>
           <h3>Linux Boot Sequence</h3>
           <ol>
-            <li><strong>BIOS/UEFI</strong> — Hardware check, finds bootloader</li>
+            <li><strong>BIOS/UEFI</strong> — Performs POST (Power On Self Test), hardware check, finds bootloader on
+              disk</li>
             <li><strong>GRUB2</strong> — Shows boot menu, loads kernel + initramfs</li>
             <li><strong>Kernel</strong> — Detects hardware, starts systemd (PID 1)</li>
             <li><strong>initramfs</strong> — Temporary root filesystem for early boot</li>
@@ -2009,9 +2558,42 @@ exit</code></pre>
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>What is a Log?</h3>
+          <p>A log is a record of events that occur in a system — from kernel messages and service activity to security
+            events and user actions. Logs are essential for troubleshooting, security auditing, and performance
+            analysis.</p>
+
           <h3>Logging Architecture</h3>
-          <p><strong>systemd-journald</strong> captures raw events → passes to <strong>rsyslog</strong> → rsyslog writes
-            persistent files to <code>/var/log/</code></p>
+          <p><strong>systemd-journald</strong> captures raw events (kernel, boot, services) → passes to
+            <strong>rsyslog</strong> → rsyslog writes persistent files to <code>/var/log/</code></p>
+          <table>
+            <tr>
+              <th>Service</th>
+              <th>Storage</th>
+              <th>Format</th>
+              <th>Survives Reboot?</th>
+            </tr>
+            <tr>
+              <td>systemd-journald</td>
+              <td>/run/log/journal</td>
+              <td>Binary (use journalctl)</td>
+              <td>No (volatile by default)</td>
+            </tr>
+            <tr>
+              <td>rsyslog</td>
+              <td>/var/log/</td>
+              <td>Plain text</td>
+              <td>Yes (persistent)</td>
+            </tr>
+          </table>
+
+          <h3>journalctl — Read Journal Logs</h3>
+          <pre><code>journalctl                  # View all logs
+journalctl -n 20            # View last 20 entries
+journalctl -f               # Follow live logs (like tail -f)
+journalctl -u sshd          # Logs for specific service
+journalctl -b               # Logs since last boot
+journalctl | grep sealert   # Filter for SELinux denials</code></pre>
           <h3>Key Log Files</h3>
           <table>
             <tr>
@@ -2041,11 +2623,44 @@ exit</code></pre>
           </table>
           <pre><code>tail -f /var/log/messages    # Real-time monitoring
 less /var/log/secure         # Browse log file</code></pre>
+
+          <h3>rsyslog Configuration</h3>
+          <p>Logs follow the format: <code>facility.priority</code></p>
+          <ul>
+            <li><strong>Facility</strong> — Source of log (kern, mail, cron, auth)</li>
+            <li><strong>Priority</strong> — Severity level (debug, info, warning, err, crit, emerg)</li>
+          </ul>
+          <pre><code># Examples:
+kern.debug     # Kernel debug messages
+kern.crit      # Kernel critical messages
+
+# Config file:
+/etc/rsyslog.conf
+
+# After changes, restart:
+systemctl restart rsyslog.service</code></pre>
+
+          <h3>logger — Generate Logs Manually</h3>
+          <pre><code>logger -p kern.debug "My custom test message"
+# Useful for testing log configurations</code></pre>
+
+          <h3>Make Journal Persistent</h3>
+          <p>By default journald logs are volatile (lost on reboot). To make permanent:</p>
+          <pre><code>vim /etc/systemd/journald.conf
+# Change Storage= value:
+# Storage=auto       → persistent if directory exists
+# Storage=volatile   → memory only
+# Storage=persistent → always store permanently
+
+Storage=persistent
+
+systemctl restart systemd-journald</code></pre>
           <h3>NTP with chrony</h3>
           <pre><code># 1. Set timezone:
 timedatectl                              # Check current settings
+timedatectl list-timezones               # List all available timezones
 timedatectl set-timezone Asia/Kolkata    # Set timezone
-tzselect                                 # Interactive timezone finder
+tzselect                                 # Interactive finder (suggests but does NOT apply automatically)
 
 # 2. Install:
 dnf install chrony -y
@@ -2062,7 +2677,11 @@ systemctl enable chronyd
 # 5. Verify:
 chronyc sources
 # * = synchronized correctly
-# ? = not synchronized / problem</code></pre>
+# ? = not synchronized / problem
+
+# Disable NTP and set time manually:
+timedatectl set-ntp false
+timedatectl set-time "2025-11-03 10:30:00"</code></pre>
         </div>
       </div>
 
@@ -2078,9 +2697,40 @@ chronyc sources
         </div>
         <div class="article-body">
           <h3>What is SELinux?</h3>
-          <p>SELinux implements <strong>Mandatory Access Control (MAC)</strong> at kernel level using <strong>context
-              labels</strong>. When a process accesses a resource, SELinux checks if their labels match the policy. Both
-            DAC (chmod) and MAC (SELinux) must allow access.</p>
+          <p>SELinux (Security-Enhanced Linux) is a kernel-level security module originally developed by the <strong>NSA
+              (National Security Agency)</strong>. It implements <strong>Mandatory Access Control (MAC)</strong> using
+            context labels. Both DAC (chmod) and MAC (SELinux) must allow access.</p>
+
+          <h3>SELinux Context — 4 Parts</h3>
+          <p>Every file, process and port has a context label in this format:</p>
+          <pre><code>unconfined_u:object_r:user_home_t:s0</code></pre>
+          <table>
+            <tr>
+              <th>Field</th>
+              <th>Example</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>SELinux User</td>
+              <td>unconfined_u</td>
+              <td>SELinux user identity</td>
+            </tr>
+            <tr>
+              <td>Role</td>
+              <td>object_r</td>
+              <td>Role-based access control</td>
+            </tr>
+            <tr>
+              <td>Type</td>
+              <td>user_home_t</td>
+              <td><strong>Most important</strong> — used in policy decisions</td>
+            </tr>
+            <tr>
+              <td>Level</td>
+              <td>s0</td>
+              <td>MLS/MCS sensitivity level</td>
+            </tr>
+          </table>
           <h3>Status & Modes</h3>
           <pre><code>sestatus          # Detailed status
 getenforce        # Quick mode check
@@ -2099,9 +2749,35 @@ ps axZ               # Process contexts</code></pre>
           <h3>Change Context — Temporary</h3>
           <pre><code>chcon -t httpd_sys_content_t demo.html</code></pre>
           <h3>Change Context — Permanent</h3>
-          <pre><code>semanage fcontext -a -t httpd_sys_content_t "/root/demo.html"
-restorecon -Rv /root/
-semanage fcontext -l | grep root    # View database</code></pre>
+          <pre><code># Step 1: Add to SELinux policy database
+semanage fcontext -a -t httpd_sys_content_t "/root/demo.html"
+
+# Use wildcard for entire directory:
+semanage fcontext -a -t httpd_sys_content_t "/webdata(/.*)?"
+
+# Step 2: Apply from database
+restorecon -v /root/demo.html     # Single file
+restorecon -Rv /webdata/          # Recursive directory
+
+# View the database:
+semanage fcontext -l | grep webdata</code></pre>
+
+          <h3>Apache Practical Example</h3>
+          <pre><code># Install web server:
+dnf install httpd -y
+
+# Default document root:
+/var/www/html/
+
+# Start and enable:
+systemctl enable httpd --now
+
+# Default context type for web content:
+httpd_sys_content_t
+
+# If file has wrong context, web server returns 403 Forbidden
+# Fix: semanage fcontext -a -t httpd_sys_content_t "/path/file"
+#       restorecon -Rv /path/</code></pre>
           <h3>Port Contexts</h3>
           <pre><code>semanage port -l                    # List all ports
 semanage port -l | grep http        # Filter by type
@@ -2127,9 +2803,49 @@ setsebool httpd_enable_homedirs on -P         # Set permanently</code></pre>
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
-          <div class="note">💡 Pattern: <code>--get-...</code> to view | <code>--set-...</code> to configure |
-            <code>--add-...</code> to allow | <code>--remove-...</code> to deny
-          </div>
+          <h3>What is a Firewall?</h3>
+          <p>A firewall controls incoming and outgoing network traffic based on defined rules. In modern Linux, firewall
+            management is done using the <strong>firewalld</strong> service, managed with <code>firewall-cmd</code>.</p>
+
+          <h3>Zones</h3>
+          <p>A zone defines the trust level of a network connection. Each zone has different default rules.</p>
+          <table>
+            <tr>
+              <th>Zone</th>
+              <th>Trust Level</th>
+            </tr>
+            <tr>
+              <td>trusted</td>
+              <td>All connections accepted</td>
+            </tr>
+            <tr>
+              <td>home / work</td>
+              <td>Mostly trusted, some services allowed</td>
+            </tr>
+            <tr>
+              <td>internal</td>
+              <td>Internal network, higher trust</td>
+            </tr>
+            <tr>
+              <td>public</td>
+              <td>Default — untrusted public network</td>
+            </tr>
+            <tr>
+              <td>dmz</td>
+              <td>Limited access, for server exposure</td>
+            </tr>
+            <tr>
+              <td>block</td>
+              <td>All connections rejected</td>
+            </tr>
+            <tr>
+              <td>drop</td>
+              <td>All connections silently dropped</td>
+            </tr>
+          </table>
+
+          <div class="note">💡 General pattern: <code>--get-...</code> to view | <code>--set-...</code> to configure |
+            <code>--add-...</code> to allow | <code>--remove-...</code> to deny</div>
           <pre><code>firewall-cmd --get-services                         # List services
 firewall-cmd --get-default-zone                     # View default zone
 firewall-cmd --set-default-zone=public              # Set default zone
@@ -2146,8 +2862,7 @@ firewall-cmd --remove-source=192.168.1.0/24 --zone=internal
 firewall-cmd --reload        # Apply permanent rules
 firewall-cmd --list-all      # View all active rules</code></pre>
           <div class="warn">⚠️ Without <code>--permanent</code>, changes are lost on reboot. After using
-            <code>--permanent</code>, run <code>--reload</code> to apply immediately.
-          </div>
+            <code>--permanent</code>, run <code>--reload</code> to apply immediately.</div>
         </div>
       </div>
 
@@ -2162,15 +2877,67 @@ firewall-cmd --list-all      # View all active rules</code></pre>
           <div class="article-expand">▶</div>
         </div>
         <div class="article-body">
+          <h3>IP Address Basics</h3>
+          <p><strong>IPv4</strong> — 4 octets, 32 bits total, each octet ranges 0–255. Example:
+            <code>192.168.1.24</code></p>
+          <p><strong>Subnet</strong> — Example: <code>192.168.0.0/16</code> — /16 = network bits, remaining = host bits.
+            A network is a pool of IP addresses divided into network portion and host portion.</p>
+
           <h3>Network Commands</h3>
-          <pre><code>ip addr                      # Show IP addresses
-ip link show                 # List network interfaces
-ip route                     # Show routing table
+          <pre><code>ip addr                      # Show IP addresses (modern)
+ip a                         # Short alias for ip addr
+ifconfig                     # Older alternative (may need net-tools)
+ip link show                 # List network interfaces + MAC + status
+ip route                     # Show routing table / default gateway
 ping hostname                # Test connectivity
 ping google.com -c 5         # Limit to 5 replies
-tracepath hostname            # Trace packet route
-ss -ta                       # Active socket connections
+tracepath hostname            # Trace packet route — each hop = one router
+ss -t                        # Show TCP connections
+ss -ta                       # All TCP connections including listening
+ss -l                        # Listening ports only
 hostname                     # Show current hostname</code></pre>
+
+          <h3>DNS Resolution</h3>
+          <p>When you type a domain name, the system checks <code>/etc/hosts</code> first. If not found, it queries the
+            DNS server to resolve to an IP address.</p>
+          <pre><code>cat /etc/hosts    # View local hostname resolution file
+
+# Add custom entry:
+192.168.1.10   myserver     # Now 'myserver' resolves to 192.168.1.10</code></pre>
+
+          <h3>ss Output Explained</h3>
+          <table>
+            <tr>
+              <th>Column</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>Local Address</td>
+              <td>Your system's address and port</td>
+            </tr>
+            <tr>
+              <td>Peer Address</td>
+              <td>Remote system address and port</td>
+            </tr>
+            <tr>
+              <td>State</td>
+              <td>Connection status (ESTAB, LISTEN, etc.)</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>Command</th>
+              <th>Purpose</th>
+            </tr>
+            <tr>
+              <td><code>w</code></td>
+              <td>Shows logged-in users</td>
+            </tr>
+            <tr>
+              <td><code>ss</code></td>
+              <td>Shows active network connections</td>
+            </tr>
+          </table>
           <h3>Configure Network — nmtui</h3>
           <pre><code>nmtui    # Launch Terminal UI for network config
 # Steps:
@@ -2183,25 +2950,87 @@ hostname                     # Show current hostname</code></pre>
 ping &lt;gateway_IP&gt;    # Verify connectivity
 yum list             # Verify repository access</code></pre>
           <h3>NFS — Network File System</h3>
-          <pre><code>dnf install nfs-utils
-showmount --exports server_hostname    # View server exports
+          <p>NFS allows a client to access files shared by a server over a network as if they were local files. Used in
+            enterprise and centralized storage environments.</p>
+          <pre><code>dnf install nfs-utils -y    # Install NFS client utilities
+showmount --exports server_hostname    # Check what server is sharing
+
+mkdir /mountpoint    # Create local mount point
 
 # Temporary mount:
 mount -t nfs -o rw,sync server:/export /mountpoint
+# -t nfs = filesystem type | rw = read-write | sync = synchronous write
 
 # Permanent (fstab):
-server:/export  /mountpoint  nfs  rw  0  0
-mount -a</code></pre>
-          <h3>AutoFS</h3>
-          <pre><code>dnf install autofs
-vim /etc/auto.master.d/mymap.autofs
+server:/export  /mountpoint  nfs  rw,sync  0  0
+mount -a        # Test entry
+umount /mountpoint    # Unmount when needed</code></pre>
 
-# 3 map types:
-# Direct   — absolute mount paths
-# Indirect — relative subdirs under common parent
-# Wildcard — & symbol for dynamic matching
+          <h3>AutoFS — On-Demand Mounting</h3>
+          <p>AutoFS mounts shares only when accessed. Service ON = visible when accessed. Service OFF = not available.
+          </p>
+          <pre><code>dnf install autofs -y</code></pre>
+          <div class="warn">⚠️ Do NOT edit <code>/etc/auto.master</code> directly. Create files inside
+            <code>/etc/auto.master.d/</code> instead.</div>
 
-systemctl enable autofs --now</code></pre>
+          <h4>Type 1 — Direct (base mount point already exists)</h4>
+          <pre><code>vim /etc/auto.master.d/direct.autofs
+# Add:  /-    /etc/auto.direct
+
+vim /etc/auto.direct
+# Add:  /public   -rw,sync   server:/sharing_directory
+
+systemctl restart autofs
+# Accessing /public → triggers automatic mount</code></pre>
+
+          <h4>Type 2 — Indirect (base mount point does NOT exist)</h4>
+          <pre><code>vim /etc/auto.master.d/indirect.autofs
+# Add:  /guest    /etc/auto.indirect
+
+vim /etc/auto.indirect
+# Add:  mount   -rw,sync   server:/sharing_directory
+
+systemctl restart autofs
+# cd /guest/mount → mounts automatically</code></pre>
+
+          <h4>Type 3 — Indirect with Wildcard (multiple subdirs)</h4>
+          <pre><code>vim /etc/auto.master.d/wildcard.autofs
+# Add:  /mnt/mount    /etc/auto.wildcard
+
+vim /etc/auto.wildcard
+# Add:  *   -rw,sync   server:/shares/public/&
+# * = wildcard | & = substitutes the matched directory name
+
+systemctl restart autofs
+# cd /mnt/mount/one → mounts server:/shares/public/one</code></pre>
+
+          <h3>NFS Mounting Types Summary</h3>
+          <table>
+            <tr>
+              <th>Type</th>
+              <th>Method</th>
+              <th>Persistence</th>
+              <th>When Used</th>
+            </tr>
+            <tr>
+              <td>Manual</td>
+              <td>mount command</td>
+              <td>Temporary</td>
+              <td>Quick access</td>
+            </tr>
+            <tr>
+              <td>Persistent</td>
+              <td>/etc/fstab</td>
+              <td>At boot</td>
+              <td>Permanent mount</td>
+            </tr>
+            <tr>
+              <td>AutoFS</td>
+              <td>autofs service</td>
+              <td>On-demand</td>
+              <td>Large environments</td>
+            </tr>
+          </table>
         </div>
       </div>
 
@@ -2217,8 +3046,39 @@ systemctl enable autofs --now</code></pre>
         </div>
         <div class="article-body">
           <h3>Why Containers?</h3>
-          <p>Containers package an application with its libraries and dependencies. They use far fewer resources than
-            VMs and share the host OS kernel. Podman is Red Hat's daemonless container engine.</p>
+          <p>Every application needs: <strong>binary files</strong> + <strong>libraries</strong> +
+            <strong>dependencies</strong>. When multiple apps share libraries, changing one can break others.</p>
+          <table>
+            <tr>
+              <th>Feature</th>
+              <th>Virtual Machine (VM)</th>
+              <th>Container</th>
+            </tr>
+            <tr>
+              <td>OS</td>
+              <td>Full OS per VM</td>
+              <td>Shares host kernel</td>
+            </tr>
+            <tr>
+              <td>Resources</td>
+              <td>Heavy (dedicated CPU/RAM)</td>
+              <td>Lightweight</td>
+            </tr>
+            <tr>
+              <td>Startup</td>
+              <td>Minutes</td>
+              <td>Seconds</td>
+            </tr>
+            <tr>
+              <td>Isolation</td>
+              <td>Strong</td>
+              <td>Good</td>
+            </tr>
+          </table>
+          <p>A <strong>container image</strong> contains: base OS + required libraries + application + predefined
+            configuration. Images are stored in <strong>registries</strong> (public like quay.io, or private).</p>
+          <pre><code># Registry configuration:
+/etc/containers/registries.conf</code></pre>
           <h3>Install & Search</h3>
           <pre><code>dnf install container-tools     # Install podman
 podman -v                        # Verify version
@@ -2262,25 +3122,100 @@ curl localhost:8080</code></pre>
 
 podman build -t myimage -f containerfile
 podman run -d --name myapp localhost/myimage:latest</code></pre>
-          <h3>Container Service (Root)</h3>
+          <h3>Container as systemd Service (Root)</h3>
           <pre><code>cd /etc/systemd/system
 podman generate systemd --name webserver --files
+mv container-webserver.service /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable container-webserver.service --now</code></pre>
+systemctl enable container-webserver.service --now
+systemctl status container-webserver.service</code></pre>
+
+          <h3>Root vs Rootless Containers</h3>
+          <table>
+            <tr>
+              <th>Feature</th>
+              <th>Root Container</th>
+              <th>Rootless Container</th>
+            </tr>
+            <tr>
+              <td>Runs as</td>
+              <td>root user</td>
+              <td>Normal user</td>
+            </tr>
+            <tr>
+              <td>Privileged ports</td>
+              <td>Yes (&lt;1024)</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Security</td>
+              <td>Less secure</td>
+              <td>More secure</td>
+            </tr>
+          </table>
           <h3>Rootless Containers</h3>
           <div class="warn">⚠️ SSH directly as the target user. <code>su - username</code> may not behave correctly for
-            session-based container operations.</div>
+            rootless container operations.</div>
           <pre><code>w    # Verify correct user session
 
 mkdir -p ~/.config/systemd/user
 cd ~/.config/systemd/user
 podman generate systemd --name myapp --files
+mv container-myapp.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable container-myapp.service --now
 systemctl --user status container-myapp.service</code></pre>
-          <div class="info">🔑 To start the container at system boot (not just at user
-            login):<br><br><code>loginctl enable-linger</code><br><br>Without this, the container only starts when the
-            user logs in interactively.</div>
+          <div class="info">🔑 To start container at system boot (not just at user
+            login):<br><br><code>loginctl enable-linger username</code><br><br>Without this, the container only starts
+            when the user logs in interactively.</div>
+
+          <h3>Podman Commands Summary</h3>
+          <table>
+            <tr>
+              <th>Command</th>
+              <th>Purpose</th>
+            </tr>
+            <tr>
+              <td>podman search</td>
+              <td>Search images in registries</td>
+            </tr>
+            <tr>
+              <td>podman pull</td>
+              <td>Download image</td>
+            </tr>
+            <tr>
+              <td>podman images</td>
+              <td>List local images</td>
+            </tr>
+            <tr>
+              <td>podman run</td>
+              <td>Create and start container</td>
+            </tr>
+            <tr>
+              <td>podman ps</td>
+              <td>List running containers</td>
+            </tr>
+            <tr>
+              <td>podman exec</td>
+              <td>Execute command inside container</td>
+            </tr>
+            <tr>
+              <td>podman stop</td>
+              <td>Stop container</td>
+            </tr>
+            <tr>
+              <td>podman rm</td>
+              <td>Remove container</td>
+            </tr>
+            <tr>
+              <td>podman build</td>
+              <td>Build image from Containerfile</td>
+            </tr>
+            <tr>
+              <td>podman generate systemd</td>
+              <td>Create auto-start service file</td>
+            </tr>
+          </table>
         </div>
       </div>
 
@@ -2318,33 +3253,51 @@ systemctl --user status container-myapp.service</code></pre>
               <td>.tar.xz</td>
             </tr>
           </table>
-          <pre><code>tar -cvjf backup.tar.bz2 /usr/local     # Create bzip2
-tar -cvzf backup.tar.gz /usr/local      # Create gzip
-tar -cvJf backup.tar.xz /usr/local      # Create xz
-tar -xvf archive.tar.bz2               # Extract
+          <pre><code>tar -cvjf backup.tar.bz2 /usr/local     # Create bzip2 archive of /usr/local
+tar -cvzf backup.tar.gz /usr/local      # Create gzip archive
+tar -cvJf backup.tar.xz /usr/local      # Create xz archive
+# -c=create  -v=verbose  -f=filename
+
+tar -xvf archive.tar.bz2               # Extract archive (-x = extract)
+tar -tvjf backup.tar.bz2               # View contents WITHOUT extracting (-t = list)
 man tar                                  # See all options</code></pre>
           <h3>find — Locate Files</h3>
-          <pre><code>find / -name newfile                 # By name
+          <pre><code>find / -name newfile                 # By exact name
 find / -user jeel                    # By owner
 find / -group devops                 # By group
-find / -perm 750                     # By permission
-find / -perm 750 -type d             # Directories only
-find / -perm 750 -type f             # Files only
-find / -perm /g+s                    # SGID files
-find / -size +30k -size -45k        # By size range
+find / -perm 750                     # By exact permission
+find / -perm 750 -type d             # Directories only (-type d)
+find / -perm 750 -type f             # Files only (-type f)
+find / -perm /g+s                    # Files with SGID set
+find / -size +30k                    # Files larger than 30KB
+find / -size +30k -size -45k        # Between 30KB and 45KB
+
+# Redirect output to file:
+find / -user jeel > output.txt
+cat output.txt                       # View results
 
 # Execute command on found files:
 find / -user jeel -exec cp -pvr {} /root/jeel-files/ \;
-# {} = file placeholder  \; = end exec  -p=preserve -v=verbose -r=recursive</code></pre>
+# {}  = placeholder for each found file
+# \;  = end of exec command
+# -p  = preserve permissions | -v = verbose | -r = recursive</code></pre>
           <h3>Shell Script Basics</h3>
           <pre><code>vim myscript.sh
 
 #!/bin/bash
+# ↑ Shebang — tells the system which interpreter to use (always required!)
 find /usr -perm /g+s -size +30k -size -45k > /root/usr-files
+# > redirect output to file
 
-chmod +x myscript.sh    # Make executable
-sh myscript.sh          # Run script</code></pre>
-          <div class="note">💡 <code>sudo !!</code> re-runs your last command with sudo. <code>!!</code> = history
+# Save and exit vim: :wq
+
+chmod +x myscript.sh    # Give execute permission
+
+sh myscript.sh          # Run using sh interpreter
+./myscript.sh           # Run directly (needs execute permission)
+
+cat /root/usr-files     # Verify output was saved correctly</code></pre>
+          <div class="note">💡 <code>sudo !!</code> re-runs your last command with sudo. <code>!!</code> = shell history
             expansion for the previous command.</div>
         </div>
       </div>
@@ -2366,8 +3319,8 @@ sh myscript.sh          # Run script</code></pre>
 
       <!-- Photo Column -->
       <div class="aboutme-photo-wrap">
-        <img class="aboutme-photo" src="20250109_082134.jpg" alt="Harshvardhansinh S Jadeja">
-        <p class="aboutme-photo-hint"><br></p>
+        <div class="aboutme-photo">🧑‍💻</div>
+        <p class="aboutme-photo-hint">// Replace the emoji above<br>with your actual photo</p>
         <div class="aboutme-social">
           <a href="https://github.com/hsjadeja-7117" target="_blank" class="social-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -2376,7 +3329,7 @@ sh myscript.sh          # Run script</code></pre>
             </svg>
             GitHub
           </a>
-          <a href="http://www.linkedin.com/in/harshvardhansinh-jadeja-86250b348" target="_blank" class="social-btn">
+          <a href="https://linkedin.com" target="_blank" class="social-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -2389,11 +3342,11 @@ sh myscript.sh          # Run script</code></pre>
       <!-- Info Column -->
       <div class="aboutme-info">
         <div class="aboutme-tag">// DevOps Learner</div>
-        <div class="aboutme-name">Harshvardhansinh S Jadeja<br><span>Here.</span></div>
+        <div class="aboutme-name">Your Name<br><span>Here.</span></div>
         <p class="aboutme-desc">
           <!-- EDIT THIS: Replace with your own bio -->
           I'm a DevOps learner passionate about Linux, automation, and cloud infrastructure.
-          Currently get my RHCSA certification, building hands-on skills in
+          Currently working towards my RHCSA certification, building hands-on skills in
           system administration, containers, storage management, and network configuration.<br><br>
           This website is my personal study journal — every chapter documents real classroom
           learning, practical commands, and concepts I've applied in a live lab environment.
@@ -2402,10 +3355,10 @@ sh myscript.sh          # Run script</code></pre>
           <span class="skill-tag">Linux</span>
           <span class="skill-tag">RHEL 9</span>
           <span class="skill-tag">Bash</span>
+          <span class="skill-tag">Podman</span>
           <span class="skill-tag">LVM</span>
           <span class="skill-tag">SELinux</span>
           <span class="skill-tag">Networking</span>
-          <span class="skill-tag">Podman</span>
           <span class="skill-tag">Git</span>
         </div>
       </div>
@@ -2459,8 +3412,7 @@ sh myscript.sh          # Run script</code></pre>
               style="background:rgba(0,229,192,0.1);padding:2px 6px;color:var(--accent);font-size:12px">df -h</code>,
             <code
               style="background:rgba(0,229,192,0.1);padding:2px 6px;color:var(--accent);font-size:12px">mount -a</code>.
-            Confirmation builds confidence.
-          </div>
+            Confirmation builds confidence.</div>
         </div>
       </div>
     </div>
