@@ -1294,7 +1294,8 @@
           <div class="tip-num">03</div>
           <div class="tip-title">Always verify your work</div>
           <div class="tip-text">After any configuration change, verify it worked. Use <code>systemctl status</code>,
-            <code>df -h</code>, <code>mount -a</code>, or <code>lsblk</code> to confirm changes took effect.</div>
+            <code>df -h</code>, <code>mount -a</code>, or <code>lsblk</code> to confirm changes took effect.
+          </div>
         </div>
         <div class="tip-card">
           <div class="tip-num">04</div>
@@ -2127,7 +2128,8 @@ setsebool httpd_enable_homedirs on -P         # Set permanently</code></pre>
         </div>
         <div class="article-body">
           <div class="note">💡 Pattern: <code>--get-...</code> to view | <code>--set-...</code> to configure |
-            <code>--add-...</code> to allow | <code>--remove-...</code> to deny</div>
+            <code>--add-...</code> to allow | <code>--remove-...</code> to deny
+          </div>
           <pre><code>firewall-cmd --get-services                         # List services
 firewall-cmd --get-default-zone                     # View default zone
 firewall-cmd --set-default-zone=public              # Set default zone
@@ -2144,7 +2146,8 @@ firewall-cmd --remove-source=192.168.1.0/24 --zone=internal
 firewall-cmd --reload        # Apply permanent rules
 firewall-cmd --list-all      # View all active rules</code></pre>
           <div class="warn">⚠️ Without <code>--permanent</code>, changes are lost on reboot. After using
-            <code>--permanent</code>, run <code>--reload</code> to apply immediately.</div>
+            <code>--permanent</code>, run <code>--reload</code> to apply immediately.
+          </div>
         </div>
       </div>
 
@@ -2363,7 +2366,7 @@ sh myscript.sh          # Run script</code></pre>
 
       <!-- Photo Column -->
       <div class="aboutme-photo-wrap">
-        <div class="aboutme-photo">🧑‍💻</div>
+        <img class="aboutme-photo" src="/20250109_082134.jpg" alt="Harshvardhansinh S Jadeja">
         <p class="aboutme-photo-hint">// Replace the emoji above<br>with your actual photo</p>
         <div class="aboutme-social">
           <a href="https://github.com/hsjadeja-7117" target="_blank" class="social-btn">
@@ -2386,7 +2389,7 @@ sh myscript.sh          # Run script</code></pre>
       <!-- Info Column -->
       <div class="aboutme-info">
         <div class="aboutme-tag">// DevOps Learner</div>
-        <div class="aboutme-name">Your Name<br><span>Here.</span></div>
+        <div class="aboutme-name">Harshvardhansinh S Jadeja<br><span>Here.</span></div>
         <p class="aboutme-desc">
           <!-- EDIT THIS: Replace with your own bio -->
           I'm a DevOps learner passionate about Linux, automation, and cloud infrastructure.
@@ -2456,7 +2459,8 @@ sh myscript.sh          # Run script</code></pre>
               style="background:rgba(0,229,192,0.1);padding:2px 6px;color:var(--accent);font-size:12px">df -h</code>,
             <code
               style="background:rgba(0,229,192,0.1);padding:2px 6px;color:var(--accent);font-size:12px">mount -a</code>.
-            Confirmation builds confidence.</div>
+            Confirmation builds confidence.
+          </div>
         </div>
       </div>
     </div>
