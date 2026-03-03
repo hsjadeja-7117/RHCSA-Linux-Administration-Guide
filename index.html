@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RHCSA — Red Hat Certified System Administrator Guide</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RHCSA — Linux Administration Study Guide</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #080c10;
       --surface: #0e1318;
       --surface2: #141a22;
-      --border: rgba(255,255,255,0.07);
+      --border: rgba(255, 255, 255, 0.07);
       --accent: #00e5c0;
       --accent2: #7b5cf0;
-      --accent3: #ff6b35;
       --text: #e8edf2;
       --muted: #5a6472;
       --muted2: #8a95a0;
-      --glow: 0 0 40px rgba(0,229,192,0.15);
+      --glow: 0 0 40px rgba(0, 229, 192, 0.15);
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       background: var(--bg);
@@ -34,431 +44,1147 @@
       cursor: none;
     }
 
-    .cursor { width:10px;height:10px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.15s ease;mix-blend-mode:difference; }
-    .cursor-ring { width:36px;height:36px;border:1px solid rgba(0,229,192,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all 0.25s ease; }
+    .cursor {
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(0, 229, 192, 0.4);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.25s ease;
+    }
 
     nav {
-      position:fixed;top:0;left:0;right:0;z-index:100;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:18px 60px;
-      background:rgba(8,12,16,0.85);
-      backdrop-filter:blur(20px);
-      border-bottom:1px solid var(--border);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+      background: rgba(8, 12, 16, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
-    .nav-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:0.1em;color:var(--accent);text-decoration:none; }
-    .nav-logo span { color:var(--text); }
-    .nav-links { display:flex;gap:36px;list-style:none; }
-    .nav-links a { color:var(--muted2);text-decoration:none;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;position:relative; }
-    .nav-links a::after { content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s; }
-    .nav-links a:hover { color:var(--accent); }
-    .nav-links a:hover::after { width:100%; }
-    .nav-cta { background:transparent;border:1px solid var(--accent);color:var(--accent);padding:10px 24px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:none;transition:all 0.25s; }
-    .nav-cta:hover { background:var(--accent);color:var(--bg);box-shadow:var(--glow); }
 
-    .page { display:none;min-height:100vh; }
-    .page.active { display:block; }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-    /* ====== HOME ====== */
+    .nav-logo span {
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted2);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 10px 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all 0.25s;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: var(--glow);
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .page.active {
+      display: block;
+    }
+
     .hero {
-      min-height:100vh;display:flex;align-items:center;
-      padding:120px 60px 80px;position:relative;overflow:hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 60px 80px;
+      position: relative;
+      overflow: hidden;
     }
+
     .hero-bg {
-      position:absolute;inset:0;
-      background:
-        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(123,92,240,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0,229,192,0.05) 0%, transparent 50%);
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(123, 92, 240, 0.08) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0, 229, 192, 0.05) 0%, transparent 50%);
     }
+
     .hero-grid {
-      position:absolute;inset:0;
-      background-image:linear-gradient(var(--border) 1px, transparent 1px),linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size:60px 60px;
-      mask-image:radial-gradient(ellipse at center, black 20%, transparent 75%);
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
     }
-    .hero-content { position:relative;z-index:2;max-width:780px; }
-    .hero-tag { display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,192,0.08);border:1px solid rgba(0,229,192,0.2);padding:6px 16px;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:32px;animation:fadeUp 0.8s ease both; }
-    .hero-tag::before { content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
-    .hero h1 { font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(48px,7vw,90px);line-height:0.95;letter-spacing:-0.02em;margin-bottom:28px;animation:fadeUp 0.8s 0.1s ease both; }
-    .hero h1 .outline { color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.2); }
-    .hero h1 .accent { color:var(--accent); }
-    .hero-sub { font-family:'Instrument Serif',serif;font-style:italic;font-size:19px;color:var(--muted2);max-width:520px;margin-bottom:48px;animation:fadeUp 0.8s 0.2s ease both; }
-    .hero-actions { display:flex;gap:16px;flex-wrap:wrap;animation:fadeUp 0.8s 0.3s ease both; }
-    .btn-primary { background:var(--accent);color:var(--bg);border:none;padding:14px 36px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:none;transition:all 0.25s;text-decoration:none;display:inline-flex;align-items:center;gap:10px; }
-    .btn-primary:hover { background:#00ffda;box-shadow:var(--glow);transform:translateY(-2px); }
-    .btn-secondary { background:transparent;color:var(--text);border:1px solid var(--border);padding:14px 36px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:none;transition:all 0.25s;text-decoration:none;display:inline-flex;align-items:center;gap:10px; }
-    .btn-secondary:hover { border-color:var(--accent);color:var(--accent); }
 
-    .stats { display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin:0 60px;border:1px solid var(--border);animation:fadeUp 0.8s 0.4s ease both; }
-    .stat { background:var(--surface);padding:32px 30px;text-align:center; }
-    .stat-num { font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:var(--accent);line-height:1; }
-    .stat-label { font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:8px; }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 780px;
+    }
 
-    .section { padding:90px 60px; }
-    .section-label { font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:16px; }
-    .section-title { font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,50px);font-weight:700;line-height:1.1;margin-bottom:56px; }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 229, 192, 0.08);
+      border: 1px solid rgba(0, 229, 192, 0.2);
+      padding: 6px 16px;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 32px;
+      animation: fadeUp 0.8s ease both;
+    }
 
-    .chapter-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border); }
-    .chapter-card { background:var(--surface);padding:36px;transition:background 0.3s;position:relative;cursor:none; }
-    .chapter-card:hover { background:var(--surface2); }
-    .ch-num { font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:rgba(0,229,192,0.08);line-height:1;margin-bottom:12px; }
-    .ch-tag { font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,229,192,0.2);padding:4px 10px;display:inline-block;margin-bottom:14px; }
-    .ch-title { font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.3; }
-    .ch-desc { color:var(--muted2);font-size:12px;line-height:1.7; }
-    .chapter-card:hover .ch-arrow { border-color:var(--accent);color:var(--accent); }
-    .ch-arrow { position:absolute;bottom:28px;right:28px;width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.25s;font-size:14px; }
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
 
-    /* ====== ABOUT ====== */
-    .about-hero { padding:160px 60px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center; }
-    .about-hero h1 { font-family:'Syne',sans-serif;font-size:clamp(38px,5vw,64px);font-weight:800;line-height:1;letter-spacing:-0.02em; }
-    .about-hero h1 em { font-style:normal;color:var(--accent); }
-    .about-text { color:var(--muted2);line-height:1.9; }
-    .about-text p+p { margin-top:16px; }
+    @keyframes pulse {
 
-    .exam-info { margin:0 60px;padding:0;border:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border); }
-    .exam-card { background:var(--surface);padding:40px; }
-    .exam-card-icon { font-size:28px;margin-bottom:16px; }
-    .exam-card-title { font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:12px;color:var(--accent); }
-    .exam-card-text { color:var(--muted2);font-size:13px;line-height:1.7; }
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
 
-    .tips-grid { display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border); }
-    .tip-card { background:var(--surface);padding:36px;transition:background 0.3s; }
-    .tip-card:hover { background:var(--surface2); }
-    .tip-num { font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:rgba(0,229,192,0.12);margin-bottom:12px; }
-    .tip-title { font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:10px; }
-    .tip-text { color:var(--muted2);font-size:13px; }
+      50% {
+        opacity: 0.4;
+        transform: scale(0.8)
+      }
+    }
 
-    /* ====== LEARNING ====== */
-    .learning-hero { padding:150px 60px 50px; }
-    .learning-hero h1 { font-family:'Syne',sans-serif;font-size:clamp(42px,6vw,78px);font-weight:800;line-height:0.95;letter-spacing:-0.02em;margin-bottom:20px; }
-    .learning-hero p { color:var(--muted2);max-width:560px;font-family:'Instrument Serif',serif;font-style:italic;font-size:18px; }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(48px, 7vw, 90px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
 
-    .filter-bar { display:flex;gap:8px;flex-wrap:wrap;padding:28px 60px;border-bottom:1px solid var(--border); }
-    .filter-btn { background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:none;transition:all 0.2s; }
-    .filter-btn:hover,.filter-btn.active { border-color:var(--accent);color:var(--accent);background:rgba(0,229,192,0.05); }
+    .hero h1 .outline {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    }
 
-    .articles-list { margin:0 60px;border:1px solid var(--border); }
-    .article-item { background:var(--surface);padding:0;border-bottom:1px solid var(--border);transition:background 0.2s;cursor:none; }
-    .article-item:last-child { border-bottom:none; }
-    .article-item:hover { background:var(--surface2); }
-    .article-header { display:flex;align-items:center;gap:20px;padding:28px 36px;cursor:none; }
-    .article-ch { font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--accent);min-width:60px;letter-spacing:0.05em; }
-    .article-title-wrap { flex:1; }
-    .article-title { font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px; }
-    .article-meta { display:flex;gap:16px;font-size:11px;color:var(--muted); }
-    .article-badge { font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border:1px solid; }
-    .badge-basic { color:#4ade80;border-color:rgba(74,222,128,0.25); }
-    .badge-inter { color:#fbbf24;border-color:rgba(251,191,36,0.25); }
-    .badge-adv { color:#f87171;border-color:rgba(248,113,113,0.25); }
-    .article-expand { color:var(--muted);transition:transform 0.25s;font-size:12px; }
-    .article-item.open .article-expand { transform:rotate(90deg); }
+    .hero h1 .accent {
+      color: var(--accent);
+    }
 
-    .article-body { display:none;padding:0 36px 36px;border-top:1px solid var(--border);margin-top:0; }
-    .article-item.open .article-body { display:block;animation:fadeUp 0.3s ease both; }
+    .hero-sub {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--muted2);
+      max-width: 520px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
 
-    /* Content styles inside articles */
-    .article-body h3 { font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--accent);margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(0,229,192,0.1); }
-    .article-body h4 { font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin:20px 0 8px; }
-    .article-body p { color:var(--muted2);font-size:13px;line-height:1.8;margin-bottom:12px; }
-    .article-body ul,.article-body ol { color:var(--muted2);font-size:13px;line-height:1.8;margin:0 0 14px 20px; }
-    .article-body li { margin-bottom:6px; }
-    .article-body code,.article-body .cmd { background:rgba(0,229,192,0.07);border:1px solid rgba(0,229,192,0.15);color:var(--accent);padding:2px 8px;font-family:'DM Mono',monospace;font-size:12px;border-radius:2px; }
-    .article-body pre { background:rgba(0,0,0,0.4);border:1px solid var(--border);padding:20px 24px;overflow-x:auto;margin:16px 0;border-left:3px solid var(--accent); }
-    .article-body pre code { background:none;border:none;padding:0;color:#b0c4d4;font-size:12px;line-height:1.8; }
-    .article-body .note { background:rgba(0,229,192,0.06);border-left:3px solid var(--accent);padding:14px 18px;margin:16px 0;font-size:13px;color:var(--muted2); }
-    .article-body .warn { background:rgba(251,191,36,0.05);border-left:3px solid #fbbf24;padding:14px 18px;margin:16px 0;font-size:13px;color:#fbbf24; }
-    .article-body .danger { background:rgba(248,113,113,0.05);border-left:3px solid #f87171;padding:14px 18px;margin:16px 0;font-size:13px;color:#f87171; }
-    .article-body table { width:100%;border-collapse:collapse;margin:16px 0;font-size:12px; }
-    .article-body th { background:rgba(0,229,192,0.1);color:var(--accent);padding:10px 14px;text-align:left;border:1px solid var(--border);letter-spacing:0.05em; }
-    .article-body td { padding:9px 14px;border:1px solid var(--border);color:var(--muted2);vertical-align:top; }
-    .article-body td code { font-size:11px; }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
 
-    footer { margin-top:80px;padding:48px 60px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between; }
-    .footer-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--accent);letter-spacing:0.1em; }
-    .footer-copy { font-size:12px;color:var(--muted); }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 14px 36px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all 0.25s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    .btn-primary:hover {
+      background: #00ffda;
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
+    }
 
-    ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--surface2)} ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 14px 36px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all 0.25s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    @media(max-width:900px){
-      nav{padding:16px 20px}
-      .hero,.section,.learning-hero{padding-left:20px;padding-right:20px}
-      .stats{margin:0 20px;grid-template-columns:repeat(2,1fr)}
-      .about-hero{grid-template-columns:1fr;padding:120px 20px 40px}
-      .exam-info{margin:0 20px;grid-template-columns:1fr}
-      .tips-grid{grid-template-columns:1fr}
-      .filter-bar{padding:20px}
-      .articles-list{margin:0 20px}
-      .article-header{padding:20px}
-      .article-body{padding:0 20px 20px}
-      footer{flex-direction:column;gap:12px;text-align:center;padding:40px 20px}
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin: 0 60px;
+      border: 1px solid var(--border);
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .stat {
+      background: var(--surface);
+      padding: 32px 30px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .section {
+      padding: 90px 60px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(30px, 4vw, 50px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 56px;
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .chapter-card {
+      background: var(--surface);
+      padding: 36px;
+      transition: background 0.3s;
+      position: relative;
+      cursor: none;
+    }
+
+    .chapter-card:hover {
+      background: var(--surface2);
+    }
+
+    .ch-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: rgba(0, 229, 192, 0.08);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .ch-tag {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0, 229, 192, 0.2);
+      padding: 4px 10px;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+
+    .ch-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .ch-desc {
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .ch-arrow {
+      position: absolute;
+      bottom: 28px;
+      right: 28px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.25s;
+      font-size: 14px;
+    }
+
+    .chapter-card:hover .ch-arrow {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .about-hero {
+      padding: 160px 60px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(38px, 5vw, 64px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .about-hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .about-text {
+      color: var(--muted2);
+      line-height: 1.9;
+    }
+
+    .about-text p+p {
+      margin-top: 16px;
+    }
+
+    .info-grid {
+      margin: 0 60px;
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .info-card {
+      background: var(--surface);
+      padding: 40px;
+    }
+
+    .info-card-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .info-card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .info-card-text {
+      color: var(--muted2);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .tip-card {
+      background: var(--surface);
+      padding: 36px;
+      transition: background 0.3s;
+    }
+
+    .tip-card:hover {
+      background: var(--surface2);
+    }
+
+    .tip-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: rgba(0, 229, 192, 0.12);
+      margin-bottom: 12px;
+    }
+
+    .tip-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .tip-text {
+      color: var(--muted2);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .learning-hero {
+      padding: 150px 60px 50px;
+    }
+
+    .learning-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(42px, 6vw, 78px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .learning-hero p {
+      color: var(--muted2);
+      max-width: 560px;
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 18px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 28px 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 229, 192, 0.05);
+    }
+
+    .articles-list {
+      margin: 0 60px;
+      border: 1px solid var(--border);
+    }
+
+    .article-item {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      cursor: none;
+    }
+
+    .article-item:last-child {
+      border-bottom: none;
+    }
+
+    .article-item:hover {
+      background: var(--surface2);
+    }
+
+    .article-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 28px 36px;
+      cursor: none;
+    }
+
+    .article-ch {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      min-width: 60px;
+      letter-spacing: 0.05em;
+    }
+
+    .article-title-wrap {
+      flex: 1;
+    }
+
+    .article-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .article-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid;
+    }
+
+    .badge-basic {
+      color: #4ade80;
+      border-color: rgba(74, 222, 128, 0.25);
+    }
+
+    .badge-inter {
+      color: #fbbf24;
+      border-color: rgba(251, 191, 36, 0.25);
+    }
+
+    .badge-adv {
+      color: #f87171;
+      border-color: rgba(248, 113, 113, 0.25);
+    }
+
+    .article-expand {
+      color: var(--muted);
+      transition: transform 0.25s;
+      font-size: 12px;
+    }
+
+    .article-item.open .article-expand {
+      transform: rotate(90deg);
+    }
+
+    .article-body {
+      display: none;
+      padding: 0 36px 36px;
+      border-top: 1px solid var(--border);
+    }
+
+    .article-item.open .article-body {
+      display: block;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .article-body h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 28px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(0, 229, 192, 0.1);
+    }
+
+    .article-body h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 20px 0 8px;
+    }
+
+    .article-body p {
+      color: var(--muted2);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .article-body ul,
+    .article-body ol {
+      color: var(--muted2);
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 0 0 14px 20px;
+    }
+
+    .article-body li {
+      margin-bottom: 6px;
+    }
+
+    .article-body code {
+      background: rgba(0, 229, 192, 0.07);
+      border: 1px solid rgba(0, 229, 192, 0.15);
+      color: var(--accent);
+      padding: 2px 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+
+    .article-body pre {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      overflow-x: auto;
+      margin: 16px 0;
+      border-left: 3px solid var(--accent);
+    }
+
+    .article-body pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #b0c4d4;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .article-body .note {
+      background: rgba(0, 229, 192, 0.06);
+      border-left: 3px solid var(--accent);
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13px;
+      color: var(--muted2);
+    }
+
+    .article-body .warn {
+      background: rgba(251, 191, 36, 0.05);
+      border-left: 3px solid #fbbf24;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13px;
+      color: #fbbf24;
+    }
+
+    .article-body .info {
+      background: rgba(123, 92, 240, 0.06);
+      border-left: 3px solid var(--accent2);
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13px;
+      color: #a78bfa;
+    }
+
+    .article-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 12px;
+    }
+
+    .article-body th {
+      background: rgba(0, 229, 192, 0.1);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid var(--border);
+      letter-spacing: 0.05em;
+    }
+
+    .article-body td {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      color: var(--muted2);
+      vertical-align: top;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 48px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      padding: 0 60px 24px;
+      line-height: 1.8;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface2)
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent)
+    }
+
+    @media(max-width:900px) {
+      nav {
+        padding: 16px 20px
+      }
+
+      .hero,
+      .section,
+      .learning-hero {
+        padding-left: 20px;
+        padding-right: 20px
+      }
+
+      .stats {
+        margin: 0 20px;
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .about-hero {
+        grid-template-columns: 1fr;
+        padding: 120px 20px 40px
+      }
+
+      .info-grid {
+        margin: 0 20px;
+        grid-template-columns: 1fr
+      }
+
+      .tips-grid {
+        grid-template-columns: 1fr
+      }
+
+      .filter-bar {
+        padding: 20px
+      }
+
+      .articles-list {
+        margin: 0 20px
+      }
+
+      .article-header {
+        padding: 20px
+      }
+
+      .article-body {
+        padding: 0 20px 20px
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 40px 20px
+      }
+
+      .footer-note {
+        padding: 0 20px 20px
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+  <nav>
+    <a href="#" class="nav-logo" onclick="showPage('home');return false;">RH<span>CSA</span></a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showPage('home');return false;">Home</a></li>
+      <li><a href="#" onclick="showPage('about');return false;">About</a></li>
+      <li><a href="#" onclick="showPage('learning');return false;">Chapters</a></li>
+    </ul>
+    <button class="nav-cta" onclick="showPage('learning')">Study Now</button>
+  </nav>
 
-<nav>
-  <a href="#" class="nav-logo" onclick="showPage('home');return false;">RH<span>CSA</span></a>
-  <ul class="nav-links">
-    <li><a href="#" onclick="showPage('home');return false;">Home</a></li>
-    <li><a href="#" onclick="showPage('about');return false;">About</a></li>
-    <li><a href="#" onclick="showPage('learning');return false;">Chapters</a></li>
-  </ul>
-  <button class="nav-cta" onclick="showPage('learning')">Study Now</button>
-</nav>
-
-<!-- ===== HOME ===== -->
-<div id="page-home" class="page active">
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
-    <div class="hero-content">
-      <div class="hero-tag">Red Hat Certified System Administrator</div>
-      <h1>
-        Master Linux.<br>
-        <span class="outline">Crack the</span><br>
-        <span class="accent">RHCSA.</span>
-      </h1>
-      <p class="hero-sub">Your complete classwork guide — every chapter, every command, exam-ready notes.</p>
-      <div class="hero-actions">
-        <a href="#" class="btn-primary" onclick="showPage('learning');return false;">
-          Browse Chapters
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="#" class="btn-secondary" onclick="showPage('about');return false;">Exam Guide</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="stats">
-    <div class="stat"><div class="stat-num" data-target="16">0</div><div class="stat-label">Chapters</div></div>
-    <div class="stat"><div class="stat-num" data-target="200">0</div><div class="stat-label">Commands Covered</div></div>
-    <div class="stat"><div class="stat-num" data-target="25">0</div><div class="stat-label">Classes</div></div>
-    <div class="stat"><div class="stat-num" data-target="3">0</div><div class="stat-label">Hours Exam</div></div>
-  </div>
-
-  <section class="section">
-    <div class="section-label">// Course Coverage</div>
-    <div class="section-title">What you'll<br>master.</div>
-    <div class="chapter-grid">
-      <div class="chapter-card" onclick="showPage('learning')">
-        <div class="ch-num">01</div>
-        <div class="ch-tag">Essentials</div>
-        <div class="ch-title">Vim & SSH</div>
-        <div class="ch-desc">Shell basics, remote connections, key-based auth, ssh-agent setup.</div>
-        <div class="ch-arrow">→</div>
-      </div>
-      <div class="chapter-card" onclick="showPage('learning')">
-        <div class="ch-num">02</div>
-        <div class="ch-tag">Files</div>
-        <div class="ch-title">File Management</div>
-        <div class="ch-desc">Create, copy, move, delete, links, wildcards, grep, regex.</div>
-        <div class="ch-arrow">→</div>
-      </div>
-      <div class="chapter-card" onclick="showPage('learning')">
-        <div class="ch-num">03</div>
-        <div class="ch-tag">Admin</div>
-        <div class="ch-title">Users & Groups</div>
-        <div class="ch-desc">useradd, usermod, groupmod, sudo, su, /etc/shadow, password policy.</div>
-        <div class="ch-arrow">→</div>
-      </div>
-      <div class="chapter-card" onclick="showPage('learning')">
-        <div class="ch-num">04</div>
-        <div class="ch-tag">Security</div>
-        <div class="ch-title">Access Control (DAC)</div>
-        <div class="ch-desc">chmod, chown, SUID, SGID, sticky bit, umask, octal & symbolic.</div>
-        <div class="ch-arrow">→</div>
-      </div>
-      <div class="chapter-card" onclick="showPage('learning')">
-        <div class="ch-num">06</div>
-        <div class="ch-tag">System</div>
-        <div class="ch-title">Processes & Monitoring</div>
-        <div class="ch-desc">ps, top, kill, signals, nice, renice, tuned-adm, crontab, at.</div>
-        <div class="ch-arrow">→</div>
-      </div>
-      <div class="chapter-card" onclick="showPage('learning')">
-        <div class="ch-num">10</div>
-        <div class="ch-tag">Storage</div>
-        <div class="ch-title">LVM</div>
-        <div class="ch-desc">PV → VG → LV, extend, reduce, delete, filesystem resize.</div>
-        <div class="ch-arrow">→</div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-logo">RHCSA GUIDE</div>
-    <div class="footer-copy">Class Notes — Exam Ready © 2025</div>
-  </footer>
-</div>
-
-<!-- ===== ABOUT ===== -->
-<div id="page-about" class="page">
-  <div class="about-hero">
-    <div>
-      <div class="section-label">// What is RHCSA</div>
-      <h1>The exam that<br>proves you <em>can</em><br>run Linux.</h1>
-    </div>
-    <div class="about-text">
-      <p>The Red Hat Certified System Administrator (RHCSA) is a performance-based exam. You are given a live system and a set of tasks — there are no multiple choice questions, only real commands.</p>
-      <p>This guide covers everything from your classwork: Vim, SSH, file management, users, permissions, storage, LVM, containers, networking, SELinux, and more.</p>
-      <p>Every chapter here is directly from lecture notes, structured for fast revision and exam performance.</p>
-    </div>
-  </div>
-
-  <div class="exam-info">
-    <div class="exam-card">
-      <div class="exam-card-icon">⏱️</div>
-      <div class="exam-card-title">3 Hours, 2 Nodes</div>
-      <div class="exam-card-text">The RHCSA exam (EX200) runs for 3 hours on 2 virtual machines. You must complete hands-on tasks on both nodes — Node 1 and Node 2.</div>
-    </div>
-    <div class="exam-card">
-      <div class="exam-card-icon">🎯</div>
-      <div class="exam-card-title">Score 210 / 300</div>
-      <div class="exam-card-text">Passing score is 210 out of 300. Tasks are graded automatically after the exam. Partial credit may be given.</div>
-    </div>
-    <div class="exam-card">
-      <div class="exam-card-icon">🔑</div>
-      <div class="exam-card-title">Key Exam Topics</div>
-      <div class="exam-card-text">Root password reset, LVM, SELinux, NFS autofs, Containers (Podman), scheduling tasks, network config, user management.</div>
-    </div>
-  </div>
-
-  <section class="section">
-    <div class="section-label">// Exam Tips</div>
-    <div class="section-title">How to score<br>maximum marks.</div>
-    <div class="tips-grid">
-      <div class="tip-card">
-        <div class="tip-num">01</div>
-        <div class="tip-title">Always verify after every task</div>
-        <div class="tip-text">After completing a task, verify it works. Use <code>systemctl status</code>, <code>df -h</code>, <code>mount -a</code>, or <code>podman ps</code> to confirm your work before moving on.</div>
-      </div>
-      <div class="tip-card">
-        <div class="tip-num">02</div>
-        <div class="tip-title">Root password reset is critical</div>
-        <div class="tip-text">This task is nearly always on the exam. Master every step — rd.break, mount remount,rw, chroot, passwd, <strong>touch /.autorelabel</strong> — especially the autorelabel step.</div>
-      </div>
-      <div class="tip-card">
-        <div class="tip-num">03</div>
-        <div class="tip-title">loginctl enable-linger for Podman</div>
-        <div class="tip-text">For rootless containers that must start at boot — not just at login — you must run <code>loginctl enable-linger</code>. Forgetting this loses 25% of container marks.</div>
-      </div>
-      <div class="tip-card">
-        <div class="tip-num">04</div>
-        <div class="tip-title">XFS cannot be reduced</div>
-        <div class="tip-text">Only EXT family filesystems (ext2/3/4) can be reduced with resize2fs. If the filesystem is XFS, you can only extend it — never reduce. This is a classic exam trap.</div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-logo">RHCSA GUIDE</div>
-    <div class="footer-copy">Class Notes — Exam Ready © 2025</div>
-  </footer>
-</div>
-
-<!-- ===== LEARNING ===== -->
-<div id="page-learning" class="page">
-  <div class="learning-hero">
-    <div class="section-label">// All Chapters</div>
-    <h1>Every class.<br>Every command.</h1>
-    <p>Click any chapter to expand the full notes. Filter by topic or difficulty.</p>
-  </div>
-
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
-    <button class="filter-btn" onclick="setFilter(this,'essentials')">Essentials</button>
-    <button class="filter-btn" onclick="setFilter(this,'storage')">Storage</button>
-    <button class="filter-btn" onclick="setFilter(this,'security')">Security</button>
-    <button class="filter-btn" onclick="setFilter(this,'services')">Services</button>
-    <button class="filter-btn" onclick="setFilter(this,'containers')">Containers</button>
-    <button class="filter-btn" onclick="setFilter(this,'networking')">Networking</button>
-  </div>
-
-  <div class="articles-list" style="margin-bottom:60px">
-
-    <!-- CH1 -->
-    <div class="article-item" data-topic="essentials">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-1</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Vim & SSH</div>
-          <div class="article-meta"><span>Basic shell commands</span><span>·</span><span class="article-badge badge-basic">Beginner</span></div>
+  <!-- HOME -->
+  <div id="page-home" class="page active">
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-content">
+        <div class="hero-tag">Linux Administration Study Notes</div>
+        <h1>Master Linux.<br><span class="outline">Command by</span><br><span class="accent">Command.</span></h1>
+        <p class="hero-sub">Personal class notes covering core Linux administration concepts — structured, searchable,
+          and command-focused.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn-primary" onclick="showPage('learning');return false;">Browse Chapters <svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></a>
+          <a href="#" class="btn-secondary" onclick="showPage('about');return false;">About This Guide</a>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Shell Basics</h3>
-        <ul>
-          <li><strong>Bash</strong> = Bourne Again Shell</li>
-          <li><code>~</code> = home directory &nbsp;|&nbsp; <code>root</code> = administrator</li>
-          <li>Command syntax: <code>command [option/argument] [target/path]</code></li>
-        </ul>
-        <h4>Getting Help</h4>
-        <pre><code>command --help        # Show all available options
+    </section>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" data-target="16">0</div>
+        <div class="stat-label">Chapters</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="200">0</div>
+        <div class="stat-label">Commands</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="25">0</div>
+        <div class="stat-label">Classes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="11">0</div>
+        <div class="stat-label">Topics</div>
+      </div>
+    </div>
+    <section class="section">
+      <div class="section-label">// Topics Covered</div>
+      <div class="section-title">Everything in<br>one place.</div>
+      <div class="chapter-grid">
+        <div class="chapter-card" onclick="showPage('learning')">
+          <div class="ch-num">01</div>
+          <div class="ch-tag">Essentials</div>
+          <div class="ch-title">Vim & SSH</div>
+          <div class="ch-desc">Shell basics, remote connections, key-based authentication, ssh-agent setup.</div>
+          <div class="ch-arrow">→</div>
+        </div>
+        <div class="chapter-card" onclick="showPage('learning')">
+          <div class="ch-num">02</div>
+          <div class="ch-tag">Files</div>
+          <div class="ch-title">File Management</div>
+          <div class="ch-desc">Create, copy, move, delete, links, wildcards, grep, regex anchors.</div>
+          <div class="ch-arrow">→</div>
+        </div>
+        <div class="chapter-card" onclick="showPage('learning')">
+          <div class="ch-num">03</div>
+          <div class="ch-tag">Admin</div>
+          <div class="ch-title">Users & Groups</div>
+          <div class="ch-desc">useradd, usermod, groupmod, sudo, su, /etc/shadow, password policy.</div>
+          <div class="ch-arrow">→</div>
+        </div>
+        <div class="chapter-card" onclick="showPage('learning')">
+          <div class="ch-num">04</div>
+          <div class="ch-tag">Security</div>
+          <div class="ch-title">File Permissions (DAC)</div>
+          <div class="ch-desc">chmod, chown, SUID, SGID, sticky bit, umask — octal and symbolic.</div>
+          <div class="ch-arrow">→</div>
+        </div>
+        <div class="chapter-card" onclick="showPage('learning')">
+          <div class="ch-num">06</div>
+          <div class="ch-tag">System</div>
+          <div class="ch-title">Processes & Scheduling</div>
+          <div class="ch-desc">ps, top, kill, signals, nice, renice, crontab, at, tuned-adm.</div>
+          <div class="ch-arrow">→</div>
+        </div>
+        <div class="chapter-card" onclick="showPage('learning')">
+          <div class="ch-num">10</div>
+          <div class="ch-tag">Storage</div>
+          <div class="ch-title">LVM</div>
+          <div class="ch-desc">Physical volumes, volume groups, logical volumes — extend, reduce, delete.</div>
+          <div class="ch-arrow">→</div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="footer-logo">RHCSA STUDY GUIDE</div>
+      <div class="footer-copy">Personal Class Notes © 2025</div>
+    </footer>
+    <p class="footer-note">This site contains personal study notes based on publicly available Linux documentation and
+      classroom learning.<br>Red Hat and RHCSA are trademarks of Red Hat, Inc. This site is not affiliated with or
+      endorsed by Red Hat.</p>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="page-about" class="page">
+    <div class="about-hero">
+      <div>
+        <div class="section-label">// About This Guide</div>
+        <h1>Class notes,<br>organised for<br><em>real learning.</em></h1>
+      </div>
+      <div class="about-text">
+        <p>This is a personal study reference built from classroom notes covering core Linux system administration
+          topics aligned with the RHCSA curriculum.</p>
+        <p>Every chapter covers commands, syntax, practical examples, and important concepts — no fluff, no filler.</p>
+        <p>All content is based on publicly available Linux documentation. This site is intended purely as a personal
+          learning reference.</p>
+      </div>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-icon">📘</div>
+        <div class="info-card-title">What is RHCSA?</div>
+        <div class="info-card-text">Red Hat Certified System Administrator is a performance-based certification testing
+          real Linux administration skills. Official details and objectives are available at redhat.com.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">⚙️</div>
+        <div class="info-card-title">What's Covered</div>
+        <div class="info-card-text">Shell, SSH, file management, users, permissions, storage, LVM, services, boot
+          process, SELinux, containers, networking and more — 16 chapters of practical commands.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🔗</div>
+        <div class="info-card-title">Official Resources</div>
+        <div class="info-card-text">For official curriculum, exam objectives and preparation materials always refer to
+          redhat.com/en/services/certification/rhcsa — the authoritative source.</div>
+      </div>
+    </div>
+    <section class="section">
+      <div class="section-label">// Study Approach</div>
+      <div class="section-title">How to use<br>these notes.</div>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-num">01</div>
+          <div class="tip-title">Practice every command</div>
+          <div class="tip-text">Reading is not enough. Spin up a RHEL or CentOS VM and type every command in these
+            notes. Muscle memory is essential in Linux administration.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-num">02</div>
+          <div class="tip-title">Understand, don't memorise</div>
+          <div class="tip-text">Focus on understanding what each command does and why. Use <code>man commandname</code>
+            and <code>command --help</code> to explore options you're unsure about.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-num">03</div>
+          <div class="tip-title">Always verify your work</div>
+          <div class="tip-text">After any configuration change, verify it worked. Use <code>systemctl status</code>,
+            <code>df -h</code>, <code>mount -a</code>, or <code>lsblk</code> to confirm changes took effect.
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-num">04</div>
+          <div class="tip-title">Build a lab environment</div>
+          <div class="tip-text">Use VirtualBox or VMware to create a local RHEL 9 lab. Practice storage tasks, user
+            management, and service configuration in an environment where mistakes are safe.</div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="footer-logo">RHCSA STUDY GUIDE</div>
+      <div class="footer-copy">Personal Class Notes © 2025</div>
+    </footer>
+    <p class="footer-note">Red Hat and RHCSA are trademarks of Red Hat, Inc. This site is not affiliated with or
+      endorsed by Red Hat.<br>Content is based on personal classroom notes and publicly available Linux documentation
+      only.</p>
+  </div>
+
+  <!-- LEARNING -->
+  <div id="page-learning" class="page">
+    <div class="learning-hero">
+      <div class="section-label">// All Chapters</div>
+      <h1>Every class.<br>Every command.</h1>
+      <p>Click any chapter to expand full notes. Filter by topic below.</p>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
+      <button class="filter-btn" onclick="setFilter(this,'essentials')">Essentials</button>
+      <button class="filter-btn" onclick="setFilter(this,'storage')">Storage</button>
+      <button class="filter-btn" onclick="setFilter(this,'security')">Security</button>
+      <button class="filter-btn" onclick="setFilter(this,'services')">Services</button>
+      <button class="filter-btn" onclick="setFilter(this,'containers')">Containers</button>
+      <button class="filter-btn" onclick="setFilter(this,'networking')">Networking</button>
+    </div>
+
+    <div class="articles-list" style="margin-bottom:60px">
+
+      <div class="article-item" data-topic="essentials">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-1</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Vim & SSH</div>
+            <div class="article-meta"><span>Shell basics, remote connections, key auth</span><span>·</span><span
+                class="article-badge badge-basic">Beginner</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Shell Basics</h3>
+          <ul>
+            <li><strong>Bash</strong> = Bourne Again Shell</li>
+            <li><code>~</code> = home directory | <code>root</code> = administrator</li>
+            <li>Command syntax: <code>command [option/argument] [target/path]</code></li>
+          </ul>
+          <h4>Getting Help</h4>
+          <pre><code>command --help        # Show all available options
 man command           # Display the manual page</code></pre>
-
-        <h3>Basic Commands</h3>
-        <pre><code>ls          # List directory contents
-ls -l       # Long listing format
-ls -a       # Include hidden files
-ls -t       # Sort by modification time (newest first)
-touch file  # Create blank file
-mkdir dir   # Create blank directory
-rm file     # Remove file
-rmdir dir   # Remove blank directory (only if empty)
-rm -rf dir  # Force remove file or directory (dangerous!)
-cat file    # Read file content
-head file   # First 10 lines  |  head -n 5 file → first 5 lines
-tail file   # Last 10 lines   |  tail -f file → real-time follow
-more file   # Gradually read whole file
-echo "txt"  # Print text / insert into file</code></pre>
-
-        <h3>SSH — Secure Shell</h3>
-        <p>Used to take a remote connection to any system.</p>
-        <pre><code>ssh username@hostname_or_ip</code></pre>
-
-        <h4>Case 1: Passwordless Login (Key-based)</h4>
-        <pre><code>ssh-keygen                              # Generate key pair
-ssh-copy-id user@remote_hostname        # Copy key to remote
+          <h3>Essential Commands</h3>
+          <pre><code>ls              # List directory contents
+ls -l           # Long listing format
+ls -a           # Include hidden files
+ls -t           # Sort by modification time (newest first)
+touch file      # Create blank file
+mkdir dir       # Create blank directory
+rm file         # Remove file
+rmdir dir       # Remove blank (empty) directory only
+rm -rf dir      # Force remove file or directory — use carefully
+cat file        # Read file content
+head file       # First 10 lines  |  head -n 5 file = first 5
+tail file       # Last 10 lines   |  tail -f file = real-time follow
+more file       # Gradually read whole file
+echo "text"     # Print text or redirect into file</code></pre>
+          <h3>SSH — Secure Shell</h3>
+          <pre><code>ssh username@hostname_or_ip</code></pre>
+          <h4>Key-Based Authentication</h4>
+          <pre><code>ssh-keygen                              # Generate key pair
+ssh-copy-id user@remote_hostname        # Copy public key to remote
 ssh user@remote_hostname                # Login without password</code></pre>
-
-        <h4>Case 2: Passphrase Key</h4>
-        <pre><code>ssh-keygen           # Enter passphrase when prompted
-ssh-copy-id user@host
-ssh user@host        # Now asks for passphrase each time</code></pre>
-
-        <h4>Case 3: SSH-Agent (Skip passphrase)</h4>
-        <pre><code>eval $(ssh-agent)               # Start ssh-agent
-ssh-add .ssh/private_key_name   # Add key to agent
-ssh user@host                   # Login without passphrase</code></pre>
-
-        <h4>Non-Default Key (-f)</h4>
-        <pre><code>ssh-keygen -f .ssh/mykey                      # Create named key
-ssh-copy-id -i .ssh/mykey.pub user@hostname   # Copy it
-ssh -i .ssh/mykey user@hostname               # Use it</code></pre>
-      </div>
-    </div>
-
-    <!-- CH2 -->
-    <div class="article-item" data-topic="essentials">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-2</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Manage Files from the Command Line</div>
-          <div class="article-meta"><span>cp, mv, rm, ln, grep, wildcards</span><span>·</span><span class="article-badge badge-basic">Beginner</span></div>
+          <h4>SSH-Agent (Cache passphrase)</h4>
+          <pre><code>eval $(ssh-agent)               # Start agent background process
+ssh-add .ssh/private_key_name   # Register key with agent
+ssh user@host                   # Connect without passphrase prompt</code></pre>
+          <h4>Non-Default Key</h4>
+          <pre><code>ssh-keygen -f .ssh/mykey
+ssh-copy-id -i .ssh/mykey.pub user@hostname
+ssh -i .ssh/mykey user@hostname</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Creating, Copying, Moving, Deleting</h3>
-        <pre><code>mkdir dir1                  # Create directory
+
+      <div class="article-item" data-topic="essentials">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-2</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Manage Files from the Command Line</div>
+            <div class="article-meta"><span>cp, mv, rm, ln, grep, wildcards</span><span>·</span><span
+                class="article-badge badge-basic">Beginner</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>File Operations</h3>
+          <pre><code>mkdir dir1                  # Create directory
 mkdir -p dir1/dir2/dir3     # Create full nested path
-touch filename              # Create/update file
+touch filename              # Create or update file
 
 cp source dest              # Copy file
 cp -r source_dir dest_dir   # Copy directory (must use -r)
@@ -468,1057 +1194,990 @@ mv old.txt new.txt          # Rename file
 
 rm file1                    # Delete file
 rm -r dir1                  # Delete directory
-rm -rf dir1                 # Force delete (no prompt - dangerous)
+rm -rf dir1                 # Force delete — no confirmation
 rmdir dir1                  # Remove empty directory only</code></pre>
-
-        <h3>Links</h3>
-        <table>
-          <tr><th>Feature</th><th>Soft Link (Symbolic)</th><th>Hard Link</th></tr>
-          <tr><td>Command</td><td><code>ln -s target linkname</code></td><td><code>ln target linkname</code></td></tr>
-          <tr><td>Concept</td><td>Pointer to a path</td><td>Mirror copy (same Inode)</td></tr>
-          <tr><td>If original deleted</td><td>Link breaks (flashing red)</td><td>Data stays safe</td></tr>
-          <tr><td>Cross partition?</td><td>Yes</td><td>No</td></tr>
-          <tr><td>Link directory?</td><td>Yes</td><td>No</td></tr>
-          <tr><td>Verify</td><td><code>ls -l</code> (shows →)</td><td><code>ls -i</code> (inode matches)</td></tr>
-        </table>
-
-        <h3>Shell Expansions</h3>
-        <h4>A. Wildcards (Globbing)</h4>
-        <pre><code>*          # Match everything: rm *.txt
-?          # Match one char: ls file?.txt
-[abc]      # Match one from list: ls file[123].txt</code></pre>
-
-        <h4>B. Brace Expansion</h4>
-        <pre><code>touch file{1..20}.txt         # Creates 20 files
-mkdir /{var,etc}/newfolder    # Creates in two paths</code></pre>
-
-        <h4>C. Variable & Command Expansion</h4>
-        <pre><code>echo $USER      # Print current user
-echo $(date)    # Run date command and print output</code></pre>
-
-        <h4>D. Quoting</h4>
-        <pre><code>\\         # Escape next character
-" "        # Double quote: allows $ and backticks
-' '        # Single quote: NO expansion (everything literal)</code></pre>
-
-        <h3>grep — Search Inside Files</h3>
-        <pre><code>grep "term" file        # Basic search
-grep -i "term" file     # Case insensitive
-grep -v "term" file     # Invert (show lines NOT containing term)
-grep -r "term" folder/  # Recursive search
-grep -w "word" file     # Whole word match only
-grep "^root" /etc/passwd    # Lines STARTING with root
-grep "bash$" /etc/passwd    # Lines ENDING with bash</code></pre>
-
-        <h3>Viewing & Sorting</h3>
-        <pre><code>head -n 5 file      # First 5 lines
-tail -n 5 file      # Last 5 lines
-tail -f file        # Follow (real-time log monitoring)
-sort file           # Sort alphabetically
-sort -n file        # Sort numerically
-sort -u file        # Remove duplicates</code></pre>
-      </div>
-    </div>
-
-    <!-- CH3 -->
-    <div class="article-item" data-topic="essentials">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-3</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Users & Groups</div>
-          <div class="article-meta"><span>useradd, usermod, sudo, shadow</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+          <h3>Links</h3>
+          <table>
+            <tr>
+              <th>Feature</th>
+              <th>Soft Link (Symbolic)</th>
+              <th>Hard Link</th>
+            </tr>
+            <tr>
+              <td>Command</td>
+              <td><code>ln -s target linkname</code></td>
+              <td><code>ln target linkname</code></td>
+            </tr>
+            <tr>
+              <td>Concept</td>
+              <td>Pointer to a path</td>
+              <td>Mirror — same inode</td>
+            </tr>
+            <tr>
+              <td>Original deleted</td>
+              <td>Link breaks</td>
+              <td>Data remains safe</td>
+            </tr>
+            <tr>
+              <td>Cross partition</td>
+              <td>Yes</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Link directory</td>
+              <td>Yes</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Verify</td>
+              <td><code>ls -l</code> shows →</td>
+              <td><code>ls -i</code> same inode</td>
+            </tr>
+          </table>
+          <h3>Shell Expansions</h3>
+          <pre><code>*           # Match everything:    rm *.txt
+?           # Match one char:      ls file?.txt
+[abc]       # Match from list:     ls file[123].txt
+{1..20}     # Brace sequence:      touch file{1..20}.txt
+$USER       # Variable expansion:  echo $USER
+$(date)     # Command sub:         echo $(date)
+" "         # Double quote: allows $, backticks
+' '         # Single quote: everything literal</code></pre>
+          <h3>grep</h3>
+          <pre><code>grep "term" file          # Basic search
+grep -i "term" file       # Case insensitive
+grep -v "term" file       # Invert match
+grep -r "term" folder/    # Recursive
+grep -w "word" file       # Whole word only
+grep "^root" /etc/passwd  # Lines starting with root
+grep "bash$" /etc/passwd  # Lines ending with bash</code></pre>
+          <h3>Viewing & Sorting</h3>
+          <pre><code>head -n 5 file    # First 5 lines
+tail -n 5 file    # Last 5 lines
+tail -f file      # Real-time follow (logs)
+sort file         # Alphabetical sort
+sort -n file      # Numeric sort
+sort -u file      # Remove duplicates</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Types of Users</h3>
-        <table>
-          <tr><th>Type</th><th>UID Range</th><th>Description</th></tr>
-          <tr><td>Superuser (root)</td><td>0</td><td>Full system control</td></tr>
-          <tr><td>System User</td><td>1–999</td><td>Used by services/daemons</td></tr>
-          <tr><td>Regular User</td><td>1000–60000</td><td>Normal login users</td></tr>
-        </table>
-        <p>Check UID/GID: <code>id username</code></p>
 
-        <h3>/etc/passwd Structure</h3>
-        <pre><code>username : x : UID : GID : /home/dir : /bin/shell
+      <div class="article-item" data-topic="essentials">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-3</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Users & Groups</div>
+            <div class="article-meta"><span>useradd, usermod, sudo, /etc/shadow, chage</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>User Types</h3>
+          <table>
+            <tr>
+              <th>Type</th>
+              <th>UID Range</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>Superuser (root)</td>
+              <td>0</td>
+              <td>Full system control</td>
+            </tr>
+            <tr>
+              <td>System User</td>
+              <td>1–999</td>
+              <td>Used by services/daemons</td>
+            </tr>
+            <tr>
+              <td>Regular User</td>
+              <td>1000–60000</td>
+              <td>Normal login users</td>
+            </tr>
+          </table>
+          <pre><code>id username    # Check UID, GID and group memberships</code></pre>
+          <h3>/etc/passwd Format</h3>
+          <pre><code>username : x : UID : GID : /home/dir : /bin/shell
 # x = password stored in /etc/shadow</code></pre>
+          <h3>Create Users</h3>
+          <pre><code>useradd username       # Create new user
+passwd username        # Set password
+useradd --help         # View all options</code></pre>
+          <h3>usermod — Modify User</h3>
+          <pre><code>usermod -l newname oldname           # Rename
+usermod -g groupname username        # Change primary group
+usermod -aG groupname username       # Add secondary group
+usermod -aG group1,group2 username   # Multiple groups
+usermod -d /new/home username        # Change home dir
+usermod -d /new/home -m username     # Change + move files
+usermod -s /bin/bash username        # Change shell
+usermod -L username                  # Lock account
+usermod -U username                  # Unlock account
+usermod -u 3005 username             # Change UID
+usermod -e YYYY-MM-DD username       # Set expiry date
+usermod -c "Full Name" username      # Set comment</code></pre>
+          <div class="warn">⚠️ Always use <code>-a</code> with <code>-G</code>. Without <code>-a</code>, all existing
+            group memberships are overwritten.</div>
+          <h3>groupmod</h3>
+          <pre><code>groupmod -n newgroup oldgroup    # Rename group
+groupmod -g newGID groupname     # Change GID
+# Group info: /etc/group</code></pre>
+          <h3>SUDO</h3>
+          <pre><code>visudo    # Edit sudoers safely
 
-        <h3>Create & Manage Users</h3>
-        <pre><code>useradd username        # Create user
-passwd username         # Set password
-useradd --help          # View all options</code></pre>
-
-        <h3>usermod — Modify Existing User</h3>
-        <pre><code>usermod -l newname oldname          # Rename user
-usermod -g groupname username       # Change primary group
-usermod -aG groupname username      # Add secondary group (-a is crucial!)
-usermod -aG group1,group2 username  # Add multiple groups
-usermod -d /new/home username       # Change home dir (no move)
-usermod -d /new/home -m username    # Change home dir + move files
-usermod -s /bin/bash username       # Change login shell
-usermod -L username                 # Lock account
-usermod -U username                 # Unlock account
-usermod -u 3005 username            # Change UID
-usermod -g 5000 username            # Change GID
-usermod -e YYYY-MM-DD username      # Set account expiry
-usermod -c "Full Name" username     # Change comment/full name</code></pre>
-
-        <div class="warn">⚠️ Always use <code>-a</code> with <code>-G</code>. Without <code>-a</code>, existing groups get overwritten!</div>
-
-        <h3>groupmod — Modify Groups</h3>
-        <pre><code>groupmod -n newgroup oldgroup     # Rename group
-groupmod -g newGID groupname      # Change group GID</code></pre>
-        <p>Group info stored in: <code>/etc/group</code></p>
-
-        <h3>SUDO Configuration</h3>
-        <pre><code># Edit sudoers safely:
-visudo    # or edit /etc/sudoers
-
-# Give sudo to a user:
-username ALL=(ALL) ALL
-
-# Give sudo to a group:
-%groupname ALL=(ALL) ALL
-
-# Skip password:
-username ALL=(ALL) NOPASSWD:ALL</code></pre>
-
-        <h3>Switch Users (su)</h3>
-        <pre><code>su username        # Switch without loading env
-su - username      # Switch WITH full env & filesystem
-su - root          # Switch to root (needs root password)
-su -               # Same as above
-sudo -i            # Switch to root using YOUR password</code></pre>
-
-        <h3>Password Policy — /etc/shadow</h3>
-        <pre><code># Fields: user:encrypted_pass:last_change:min:max:warn:inactive:expiry
-chage username          # Interactive policy editor
-chage -l username       # List current policy
-date -d "240 days"      # Calculate date 240 days from today</code></pre>
-        <p>Future user defaults: <code>/etc/login.defs</code></p>
-      </div>
-    </div>
-
-    <!-- CH4 -->
-    <div class="article-item" data-topic="security">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-4</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Access Control to Files (DAC)</div>
-          <div class="article-meta"><span>chmod, chown, SUID, SGID, sticky bit, umask</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+username ALL=(ALL) ALL           # Grant sudo to user
+%groupname ALL=(ALL) ALL         # Grant sudo to group
+username ALL=(ALL) NOPASSWD:ALL  # Skip password prompt</code></pre>
+          <h3>Switch Users</h3>
+          <pre><code>su username       # Switch (no env load)
+su - username     # Switch with full environment
+su -              # Switch to root (needs root password)
+sudo -i           # Switch to root using your own password</code></pre>
+          <h3>Password Policy</h3>
+          <pre><code>chage username       # Interactive policy editor
+chage -l username    # List current policy
+date -d "240 days"   # Calculate future date
+# Future user defaults: /etc/login.defs</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Permissions Overview</h3>
-        <p>View permissions: <code>ls -l filename</code></p>
-        <pre><code>-rwxrwxrwx
+
+      <div class="article-item" data-topic="security">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-4</div>
+          <div class="article-title-wrap">
+            <div class="article-title">File Access Control — DAC</div>
+            <div class="article-meta"><span>chmod, chown, SUID, SGID, sticky bit, umask</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Reading Permissions</h3>
+          <pre><code>ls -l filename
+
+-rwxrwxrwx
  │││││││││
  ││││││└└└── Others (r,w,x)
  │││└└└───── Group  (r,w,x)
  └└└──────── User   (r,w,x)</code></pre>
-
-        <h3>Symbolic Method</h3>
-        <pre><code># Syntax: chmod [who][+/-/=][permission] file
-# who: u=user, g=group, o=others, a=all
-
-chmod u+x file       # Add execute for user
+          <h3>Symbolic Method</h3>
+          <pre><code>chmod u+x file       # Add execute for user
 chmod g-w file       # Remove write from group
 chmod o=r file       # Set others to read only
-chmod a+x file       # Add execute for everyone
-chmod ugo+rwx file   # Full permissions for all</code></pre>
+chmod a+x file       # Add execute for all</code></pre>
+          <h3>Octal Method</h3>
+          <table>
+            <tr>
+              <th>Permission</th>
+              <th>Value</th>
+            </tr>
+            <tr>
+              <td>read (r)</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>write (w)</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>execute (x)</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>all (rwx)</td>
+              <td>7</td>
+            </tr>
+          </table>
+          <pre><code>chmod 755 file    # rwxr-xr-x
+chmod 644 file    # rw-r--r--
+chmod 777 file    # rwxrwxrwx</code></pre>
+          <h3>Ownership</h3>
+          <pre><code>chown user file            # Change user ownership
+chown user:group file      # Change user and group
+chgrp groupname file       # Change group only</code></pre>
+          <h3>Special Permissions</h3>
+          <h4>SUID (runs as file owner)</h4>
+          <pre><code>chmod u+s file    # Set SUID
+chmod 4744 file   # Set SUID (octal prefix 4)
+chmod u-s file    # Remove SUID
+chmod 0744 file   # Remove SUID (octal)</code></pre>
+          <h4>SGID (new files inherit group)</h4>
+          <pre><code>chmod g+s path    # Set SGID
+chmod 2744 file   # Set SGID (octal prefix 2)
+chmod g-s path    # Remove SGID</code></pre>
+          <h4>Sticky Bit (can't delete others' files)</h4>
+          <pre><code>chmod o+t path    # Set sticky bit
+chmod 1744 file   # Set sticky bit (octal prefix 1)
+chmod o-t path    # Remove sticky bit</code></pre>
+          <h3>Default Permissions — umask</h3>
+          <pre><code>umask             # Check current umask
+# Default perm = Max - umask (file max=666, dir max=777)
 
-        <h3>Octal Method</h3>
-        <table>
-          <tr><th>Permission</th><th>Value</th></tr>
-          <tr><td>read (r)</td><td>4</td></tr>
-          <tr><td>write (w)</td><td>2</td></tr>
-          <tr><td>execute (x)</td><td>1</td></tr>
-          <tr><td>all (rwx)</td><td>7</td></tr>
-        </table>
-        <pre><code>chmod 755 file   # rwxr-xr-x (user=7, group=5, others=5)
-chmod 777 file   # rwxrwxrwx (full for all)
-chmod 644 file   # rw-r--r-- (common for files)</code></pre>
-
-        <h3>Changing Ownership</h3>
-        <pre><code>chown user file                  # Change user ownership
-chown user:group file            # Change user + group
-chgrp groupname file             # Change group only</code></pre>
-
-        <h3>Special Permissions</h3>
-        <h4>SUID (Special User — runs as file owner)</h4>
-        <pre><code>chmod u+s file        # Set SUID (symbolic)
-chmod u-s file        # Remove SUID
-chmod 4744 file       # Set SUID (octal: 4 prefix)
-chmod 0744 file       # Remove SUID</code></pre>
-
-        <h4>SGID (Special Group — new files inherit group)</h4>
-        <pre><code>chmod g+s path        # Set SGID
-chmod g-s path        # Remove SGID
-chmod 2744 file       # Set SGID (octal: 2 prefix)</code></pre>
-
-        <h4>Sticky Bit (Users can't delete other's files)</h4>
-        <pre><code>chmod o+t path        # Set sticky bit
-chmod o-t path        # Remove sticky bit
-chmod 1744 file       # Set sticky bit (octal: 1 prefix)</code></pre>
-
-        <h3>Default Permissions — umask</h3>
-        <pre><code>umask                # Check current umask value
-umask 027            # Set temporary umask
-
-# Max file permission = 666, max dir = 777
-# Default perm = Max - umask
-
-# User-specific: edit ~/.bashrc → add "umask 027" at end
-# Global:        edit /etc/profile → add "umask 027" at end</code></pre>
-        <div class="note">💡 User settings take priority over global settings.</div>
-      </div>
-    </div>
-
-    <!-- CH6 -->
-    <div class="article-item" data-topic="services">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-6</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Processes, Monitoring & Scheduling</div>
-          <div class="article-meta"><span>ps, top, kill, nice, crontab, at, tuned</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+umask 027         # Set temporarily
+# User-specific: add to ~/.bashrc
+# Global: add to /etc/profile</code></pre>
+          <div class="note">💡 User-specific umask always takes priority over the global setting.</div>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Process Types</h3>
-        <ul>
-          <li><strong>Foreground</strong> — Attached to terminal. Ex: <code>vim file.txt</code></li>
-          <li><strong>Background</strong> — Runs behind. Ex: <code>firefox &amp;</code> → shows [jobID] PID</li>
-        </ul>
 
-        <h3>Job Control</h3>
-        <pre><code>command &        # Start in background
-jobs             # List shell jobs
-fg %1            # Bring job 1 to foreground
-bg %1            # Resume stopped job in background
-Ctrl-Z           # Suspend current foreground process
-disown %1        # Remove job from shell's job table</code></pre>
-
-        <h3>Process Listing</h3>
-        <pre><code>ps                          # Processes in this terminal
-ps -l                       # Long format (STAT, PPID, PRI)
-ps aux                      # ALL processes, all users
-ps -o pid,ppid,uid,cmd      # Custom columns
-pgrep firefox               # Find PIDs by name
-pidof sshd                  # Get PID of service
-pstree                      # Process tree (parent-child)
-top                         # Real-time viewer
-htop                        # Better real-time viewer</code></pre>
-
-        <h3>Process States (STAT column)</h3>
-        <table>
-          <tr><th>State</th><th>Meaning</th></tr>
-          <tr><td>R</td><td>Running or Runnable</td></tr>
-          <tr><td>S</td><td>Sleeping (waiting for event)</td></tr>
-          <tr><td>D</td><td>Uninterruptible sleep (I/O wait)</td></tr>
-          <tr><td>T</td><td>Stopped or Traced</td></tr>
-          <tr><td>Z</td><td>Zombie (finished but not reaped)</td></tr>
-        </table>
-
-        <h3>Signals & Kill</h3>
-        <pre><code>kill &lt;PID&gt;             # SIGTERM (polite request)
-kill -9 &lt;PID&gt;          # SIGKILL (force kill, cannot be caught)
+      <div class="article-item" data-topic="services">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-6</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Processes, Monitoring & Task Scheduling</div>
+            <div class="article-meta"><span>ps, top, kill, nice, crontab, at, tuned</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Process Types</h3>
+          <ul>
+            <li><strong>Foreground</strong> — Attached to terminal. Example: <code>vim file.txt</code></li>
+            <li><strong>Background</strong> — Detached. Append <code>&amp;</code>. Example: <code>firefox &amp;</code> —
+              shows [jobID] PID</li>
+          </ul>
+          <h3>Job Control</h3>
+          <pre><code>command &     # Start in background
+jobs          # List shell jobs
+fg %1         # Bring job 1 to foreground
+bg %1         # Resume stopped job in background
+Ctrl-Z        # Suspend current foreground process
+disown %1     # Remove job from shell table</code></pre>
+          <h3>Process Listing</h3>
+          <pre><code>ps                         # Processes in current terminal
+ps -l                      # Long format (STAT, PPID, PRI, NI)
+ps aux                     # All processes, all users
+ps -o pid,ppid,uid,cmd     # Custom columns
+pgrep firefox              # Find PID by name
+pidof sshd                 # PID of a service
+pstree                     # Process tree
+top                        # Real-time viewer
+htop                       # Enhanced real-time viewer</code></pre>
+          <h3>Process States</h3>
+          <table>
+            <tr>
+              <th>State</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>R</td>
+              <td>Running or runnable</td>
+            </tr>
+            <tr>
+              <td>S</td>
+              <td>Sleeping (waiting for event)</td>
+            </tr>
+            <tr>
+              <td>D</td>
+              <td>Uninterruptible sleep (I/O wait)</td>
+            </tr>
+            <tr>
+              <td>T</td>
+              <td>Stopped or traced</td>
+            </tr>
+            <tr>
+              <td>Z</td>
+              <td>Zombie (finished, not cleaned up)</td>
+            </tr>
+          </table>
+          <h3>Signals & Kill</h3>
+          <pre><code>kill &lt;PID&gt;             # SIGTERM — polite stop
+kill -9 &lt;PID&gt;          # SIGKILL — immediate force kill
 kill -SIGSTOP &lt;PID&gt;    # Suspend process
 kill -SIGCONT &lt;PID&gt;    # Resume suspended process
 kill -l                 # List all signal names
-pkill processname       # Kill by name (SIGTERM)
-pkill -9 processname    # Force kill by name
-killall processname     # Kill all with that exact name</code></pre>
-
-        <h3>Load Monitoring</h3>
-        <pre><code>uptime                  # Shows load averages: 1, 5, 15 min
-lscpu                   # CPU count (check CPU(s): field)
-# If load_avg / CPU_count > 1 → system is overloaded</code></pre>
-
-        <h3>Process Priority — nice & renice</h3>
-        <p>Range: <strong>-20</strong> (highest priority) to <strong>+19</strong> (lowest). Default = 0.</p>
-        <pre><code>nice -n 10 command          # Run with lower priority (+10)
-renice -n -5 -p 12345       # Change priority of running process
-ps -l                        # View NI (nice) column</code></pre>
-        <div class="warn">Only root can set negative nice values (higher priority).</div>
-
-        <h3>Tuned — System Optimization</h3>
-        <pre><code>tuned-adm active                          # Check active profile
-tuned-adm recommend                       # Get recommended profile
-tuned-adm profile virtual-guest           # Set a profile
-systemctl status tuned.service            # Check if installed/running
-# Config: /etc/tuned/tuned-main.conf
-# Profiles: /usr/lib/tuned/</code></pre>
-
-        <h3>Scheduling — at (One-Time)</h3>
-        <pre><code>at 07:40                  # Schedule interactive task
-at now + 5 minutes        # Relative time
-at tomorrow               # Tomorrow same time
-atq                       # View pending jobs
-atrm 1                    # Remove job ID 1</code></pre>
-
-        <h3>Scheduling — crontab (Recurring)</h3>
-        <pre><code># Syntax: M H D_M Month D_W COMMAND
-# M=minute(0-59) H=hour(0-23) D_M=day-of-month(1-31)
-# Month(1-12) D_W=day-of-week(0-7, 0&7=Sunday)
+pkill processname       # Kill by name
+killall processname     # Kill all with exact name</code></pre>
+          <h3>Load Monitoring</h3>
+          <pre><code>uptime     # Load averages: 1, 5, 15 min
+lscpu      # CPU count — check CPU(s): field
+# If load_average / CPU_count > 1 → system overloaded</code></pre>
+          <h3>Priority — nice & renice</h3>
+          <p>Range: <strong>-20</strong> (highest) to <strong>+19</strong> (lowest). Default = 0.</p>
+          <pre><code>nice -n 10 command         # Start with lower priority
+renice -n -5 -p 12345      # Change running process priority
+ps -l                       # View NI column</code></pre>
+          <div class="warn">⚠️ Only root can set negative nice values.</div>
+          <h3>Tuned — Performance Profiles</h3>
+          <pre><code>tuned-adm active                    # Check active profile
+tuned-adm recommend                 # System-suggested profile
+tuned-adm profile virtual-guest     # Apply a profile
+systemctl status tuned.service      # Check tuned service</code></pre>
+          <h3>at — One-Time Scheduling</h3>
+          <pre><code>at 07:40              # Schedule at specific time
+at now + 5 minutes    # Relative scheduling
+atq                   # View pending jobs
+atrm 1                # Remove job ID 1</code></pre>
+          <h3>crontab — Recurring Scheduling</h3>
+          <pre><code># Syntax: M H D_M Month D_W COMMAND
+# Minute(0-59) Hour(0-23) DayMonth(1-31) Month(1-12) DayWeek(0-7)
 
 crontab -e           # Edit cron jobs
-crontab -l           # List current jobs
-crontab -r           # Remove ALL jobs (careful!)
+crontab -l           # List cron jobs
+crontab -r           # Remove ALL cron jobs
 crontab -eu student  # Edit another user's crontab (as root)
 
-# Example: run every minute:
+# Every minute:
 * * * * * echo "hello" >> /tmp/cron.txt
 
-# System-wide crontab: /etc/crontab (has extra USER field)
-* * * * * student echo "hello" >> hello.txt
+# System-wide /etc/crontab needs a USERNAME field:
+* * * * * student echo "hello" >> /tmp/hello.txt
 
 # Access control:
-/etc/cron.allow   # Only listed users can use crontab
-/etc/cron.deny    # Listed users CANNOT use crontab</code></pre>
-      </div>
-    </div>
-
-    <!-- CH8 -->
-    <div class="article-item" data-topic="services">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-8</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Install & Update Software Packages</div>
-          <div class="article-meta"><span>dnf, yum, rpm, repositories</span><span>·</span><span class="article-badge badge-basic">Beginner</span></div>
+/etc/cron.allow    # Only listed users permitted
+/etc/cron.deny     # Listed users blocked</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Package Managers</h3>
-        <ul>
-          <li><strong>rpm</strong> — Red Hat Package Manager (basic)</li>
-          <li><strong>yum</strong> — Yellow dog Updater Modified</li>
-          <li><strong>dnf</strong> — Dandified YUM (latest, v9)</li>
-        </ul>
-        <p>Repositories: <strong>BaseOS</strong> (essential packages) | <strong>AppStream</strong> (additional/3rd party)</p>
 
-        <h3>Core Package Commands</h3>
-        <pre><code>dnf install packagename        # Install package
-dnf install httpd              # Example: install web server
-dnf remove httpd               # Remove package
-dnf info httpd                 # Package info
-dnf list httpd                 # List versions
-dnf update                     # Update all packages (keeps obsolete)
-dnf upgrade                    # Update + remove obsolete packages
+      <div class="article-item" data-topic="services">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-8</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Install & Update Software Packages</div>
+            <div class="article-meta"><span>dnf, yum, rpm, repositories</span><span>·</span><span
+                class="article-badge badge-basic">Beginner</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Package Managers</h3>
+          <ul>
+            <li><strong>rpm</strong> — Low-level, no dependency resolution</li>
+            <li><strong>yum</strong> — Package resolver (older)</li>
+            <li><strong>dnf</strong> — Current default in RHEL 9</li>
+          </ul>
+          <p>Repositories: <strong>BaseOS</strong> (essential) | <strong>AppStream</strong> (additional/3rd party)</p>
+          <h3>Core Commands</h3>
+          <pre><code>dnf install packagename         # Install
+dnf remove packagename          # Remove
+dnf info packagename            # View package info
+dnf list packagename            # List versions
+dnf search all "keyword"        # Search by keyword
+dnf provides commandname        # Find what provides a command
+dnf history                     # View history
+dnf update                      # Update all (keeps obsolete)
+dnf upgrade                     # Update + remove obsolete</code></pre>
+          <h3>Adding a Repository</h3>
+          <pre><code># CLI method:
+dnf config-manager --add-repo="http://repo_url"
 
-dnf search all "keyword"       # Search by keyword
-dnf provides command           # Find what package provides a command
-dnf history                    # View install/remove history
-dnf group info "Group Name"    # Group info
-dnf install group "Group Name" # Install group</code></pre>
-
-        <h4>Check if installed</h4>
-        <pre><code>httpd -v           # Version check
-yum info httpd     # Info from package manager</code></pre>
-
-        <h3>Adding a Repository</h3>
-        <h4>CLI Method</h4>
-        <pre><code>dnf config-manager --add-repo="http://repo_url"</code></pre>
-
-        <h4>Manual Method</h4>
-        <pre><code># Create a .repo file in /etc/yum.repos.d/
+# Manual method — create .repo file:
 vim /etc/yum.repos.d/myrepo.repo
 
-# Contents:
 [myrepo]
-name=My Repository
+name=My Repo
 baseurl=http://your_repo_url/
 enabled=1
 gpgcheck=0</code></pre>
-
-        <table>
-          <tr><th>Command</th><th>Handles Obsoletes?</th><th>Safe for Production?</th></tr>
-          <tr><td><code>dnf update</code></td><td>❌ Keeps old</td><td>✅ Yes</td></tr>
-          <tr><td><code>dnf upgrade</code></td><td>✅ Removes obsolete</td><td>⚠️ Caution</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- CH9 -->
-    <div class="article-item" data-topic="storage">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-9</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Manage Basic Storage & Partitions</div>
-          <div class="article-meta"><span>fdisk, mkfs, mount, fstab, swap</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Check Storage</h3>
-        <pre><code>lsblk               # List block devices + partitions
-lsblk -fp           # Include filesystem type + UUID
-df -h               # Disk usage of mounted filesystems</code></pre>
 
-        <h3>Partition Schemes</h3>
-        <table>
-          <tr><th>Scheme</th><th>Max Partitions</th><th>Max Size</th><th>Type</th></tr>
-          <tr><td>MBR (dos)</td><td>15 (4 primary + 11 extended)</td><td>2 TB</td><td>Oldest, BIOS/UEFI</td></tr>
-          <tr><td>GPT</td><td>128</td><td>8 Zettabytes</td><td>New, UEFI only</td></tr>
-        </table>
+      <div class="article-item" data-topic="storage">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-9</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Basic Storage & Partitions</div>
+            <div class="article-meta"><span>fdisk, mkfs, mount, fstab, swap</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Check Storage</h3>
+          <pre><code>lsblk        # List block devices and partitions
+lsblk -fp    # Include filesystem type and UUID
+df -h        # Disk usage of mounted filesystems</code></pre>
+          <h3>Partition Schemes</h3>
+          <table>
+            <tr>
+              <th>Scheme</th>
+              <th>Max Partitions</th>
+              <th>Max Size</th>
+              <th>Type</th>
+            </tr>
+            <tr>
+              <td>MBR (dos)</td>
+              <td>15</td>
+              <td>2 TB</td>
+              <td>Oldest, BIOS/UEFI</td>
+            </tr>
+            <tr>
+              <td>GPT</td>
+              <td>128</td>
+              <td>8 Zettabytes</td>
+              <td>New, UEFI</td>
+            </tr>
+          </table>
+          <h3>Create Partition with fdisk</h3>
+          <pre><code>fdisk /dev/sdb     # Open disk
+# n = new partition
+# p = primary (Enter for default)
+# Enter = accept default first sector
+# +2G = set size
+# p = print/verify
+# w = write and exit
 
-        <h3>Create Partition with fdisk</h3>
-        <pre><code>fdisk /dev/sdb       # Open disk for editing
-# Inside fdisk:
-n     → New partition
-p     → Primary (default, just press Enter)
-Enter → Accept default first sector (ALWAYS)
-+2G   → Set size (e.g., 2 GB)
-p     → Print/verify partition table
-w     → Write changes and exit
+partprobe          # Notify kernel</code></pre>
+          <h3>Format & Mount</h3>
+          <pre><code>mkfs.xfs /dev/sdb1         # Format as XFS
+mkfs.ext4 /dev/sdb1        # Format as EXT4
 
-partprobe            # Inform kernel of new partition</code></pre>
-
-        <h3>Format & Mount</h3>
-        <pre><code>mkfs.xfs /dev/sdb1       # Format as XFS
-mkfs.ext4 /dev/sdb1      # Format as EXT4
-
-mkdir /mnt/data1                    # Create mount point
-mount /dev/sdb1 /mnt/data1          # Temporary mount
-df -h                               # Verify mount</code></pre>
-
-        <h3>Permanent Mount — /etc/fstab</h3>
-        <pre><code>vim /etc/fstab
-# Add line:
+mkdir /mnt/data1
+mount /dev/sdb1 /mnt/data1    # Temporary mount
+df -h                          # Verify</code></pre>
+          <h3>Permanent Mount — /etc/fstab</h3>
+          <pre><code>vim /etc/fstab
 /dev/sdb1  /mnt/data1  ext4  defaults  0  0
-# Fields: device | mountpoint | filesystem | options | dump | fsck
 
-systemctl daemon-reload    # Reload systemd
-mount -a                   # Test fstab (no output = success!)
-df -h                      # Verify</code></pre>
-
-        <h3>Unmount & Delete Partition</h3>
-        <pre><code>umount /mnt/data1        # Unmount
-lsof /mnt/data1          # Check if partition is busy
-fuser -m /mnt/data1      # Another way to check
-
-# Delete: fdisk /dev/sdb → d → p → w → partprobe</code></pre>
-
-        <h3>Swap Partition — Memory Code: CFPA</h3>
-        <pre><code># C - Create: fdisk → n → +1G → t → 82 (MBR) or 8200 (GPT) → w
-# F - Format: mkswap /dev/sdXN
-# P - Persistent: vim /etc/fstab → /dev/sdXN swap swap defaults 0 0
+systemctl daemon-reload
+mount -a        # Test (no output = success)
+df -h           # Verify</code></pre>
+          <h3>Swap — CFPA</h3>
+          <pre><code># C - Create:  fdisk → n → +1G → t → 82(MBR)/8200(GPT) → w
+# F - Format:  mkswap /dev/sdXN
+# P - Persist: /etc/fstab: /dev/sdXN swap swap defaults 0 0
 # A - Activate: swapon -a
-
-swapon --show    # Verify swap is active
-lsblk            # Double-check
-
-# Set swap priority in fstab:
-/dev/vdc1  swap  swap  pri=10  0  0   # Higher = used first</code></pre>
-      </div>
-    </div>
-
-    <!-- CH10 LVM -->
-    <div class="article-item" data-topic="storage">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-10</div>
-        <div class="article-title-wrap">
-          <div class="article-title">LVM — Logical Volume Manager</div>
-          <div class="article-meta"><span>PV → VG → LV, extend, reduce, delete</span><span>·</span><span class="article-badge badge-adv">Advanced</span></div>
+swapon --show    # Verify</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>LVM Hierarchy</h3>
-        <p><strong>Physical Volume (PV)</strong> → <strong>Volume Group (VG)</strong> → <strong>Logical Volume (LV)</strong></p>
 
-        <h3>Part A: Create LVM (Full Steps)</h3>
-        <pre><code># Step 1: Create LVM-type partition
-fdisk /dev/sdb
-# n → Enter → +1G → t → l (list types) → 8e (LVM for MBR) → w
+      <div class="article-item" data-topic="storage">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-10</div>
+          <div class="article-title-wrap">
+            <div class="article-title">LVM — Logical Volume Manager</div>
+            <div class="article-meta"><span>PV → VG → LV, extend, reduce, delete</span><span>·</span><span
+                class="article-badge badge-adv">Advanced</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>LVM Hierarchy</h3>
+          <p><strong>Physical Volume (PV)</strong> → <strong>Volume Group (VG)</strong> → <strong>Logical Volume
+              (LV)</strong></p>
+          <p>Physical storage cannot be resized. Logical storage (LVM) is flexible — it can be extended and (for EXT
+            only) reduced.</p>
+          <h3>Part A — Create LVM</h3>
+          <pre><code># 1. Create LVM partition
+fdisk /dev/sdb  →  n → Enter → +1G → t → 8e(MBR) → w
 partprobe
 
-# Step 2: Create Physical Volume
+# 2. Physical Volume
 pvcreate /dev/sdb1
-pvdisplay              # Verify
+pvdisplay
 
-# Step 3: Create Volume Group
-vgcreate myvg /dev/sdb1                   # Basic
-vgcreate -s 16M myvg /dev/sdb1           # With custom PE size (default 4M)
-vgdisplay                                  # Verify
+# 3. Volume Group
+vgcreate myvg /dev/sdb1
+vgcreate -s 16M myvg /dev/sdb1    # Custom PE size
+vgdisplay
 
-# Step 4: Create Logical Volume
-lvcreate -n mylv -L 5G myvg               # By size
-lvcreate -n mylv -l 100 myvg              # By PE count
+# 4. Logical Volume
+lvcreate -n mylv -L 5G myvg       # By size
+lvcreate -n mylv -l 100 myvg      # By PE count
 
-# Step 5: Give filesystem
+# 5. Filesystem
 mkfs.xfs /dev/myvg/mylv
-# or: mkfs.ext4 /dev/myvg/mylv
 
-# Step 6: Mount point + fstab
+# 6. Mount
 mkdir /mnt/data
 vim /etc/fstab
 # /dev/myvg/mylv  /mnt/data  xfs  defaults  0  0
-mount -a                  # Test (no output = success)
-df -h                     # Verify</code></pre>
+mount -a
+df -h</code></pre>
+          <h3>Part B — Extend</h3>
+          <pre><code>lvextend -L +1G /dev/myvg/mylv
+lvextend -L +500M -r /dev/myvg/mylv    # -r also resizes filesystem
 
-        <h3>Part B: Extend LVM</h3>
-        <pre><code># Extend by size:
-lvextend -L +1G /dev/myvg/mylv
+xfs_growfs /dev/myvg/mylv              # Resize XFS manually
+resize2fs /mnt/data                     # Resize EXT manually
 
-# Extend LV AND filesystem in one command:
-lvextend -L +500M -r /dev/myvg/mylv      # -r = auto resize FS
-
-# Extend filesystem manually:
-xfs_growfs /dev/myvg/mylv                # For XFS
-resize2fs /mnt/data                       # For EXT family
-
-# If VG is full — extend VG first:
+# If VG is full:
 pvcreate /dev/sdc1
 vgextend myvg /dev/sdc1
 lvextend -L +5G -r /dev/myvg/mylv</code></pre>
-
-        <h3>Part C: Reduce LVM</h3>
-        <div class="danger">🚫 XFS CANNOT be reduced! Only EXT family (ext2/3/4) can be reduced. This is a critical exam point!</div>
-        <pre><code># Safe steps for reducing EXT volume:
-umount /mnt/data                          # 1. Unmount
-fsck /dev/myvg/mylv                       # 2. Check filesystem
-resize2fs /dev/myvg/mylv 3G               # 3. Shrink filesystem
-lvreduce -L 3G /dev/myvg/mylv            # 4. Shrink LV
-mount -a                                  # 5. Remount</code></pre>
-
-        <h3>Part D: Delete LVM (Reverse Order)</h3>
-        <pre><code>umount /mnt/data              # 1. Unmount
-vim /etc/fstab                # 2. Remove fstab entry
-systemctl daemon-reload       # 3. Reload
-lvremove /dev/myvg/mylv       # 4. Remove LV
-vgremove myvg                 # 5. Remove VG
-pvremove /dev/sdb1            # 6. Remove PV</code></pre>
-      </div>
-    </div>
-
-    <!-- CH11 -->
-    <div class="article-item" data-topic="services">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-11</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Boot Process & Control Services</div>
-          <div class="article-meta"><span>systemctl, targets, root password reset</span><span>·</span><span class="article-badge badge-adv">Advanced</span></div>
+          <h3>Part C — Reduce</h3>
+          <div class="warn">⚠️ XFS cannot be reduced. Only EXT2/3/4 supports reduction.</div>
+          <pre><code>umount /mnt/data
+fsck /dev/myvg/mylv
+resize2fs /dev/myvg/mylv 3G
+lvreduce -L 3G /dev/myvg/mylv
+mount -a</code></pre>
+          <h3>Part D — Delete (Reverse Order)</h3>
+          <pre><code>umount /mnt/data
+vim /etc/fstab              # Remove entry
+systemctl daemon-reload
+lvremove /dev/myvg/mylv
+vgremove myvg
+pvremove /dev/sdb1</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>systemd Service Management</h3>
-        <pre><code>systemctl start httpd             # Start (temporary)
-systemctl stop httpd              # Stop
-systemctl status httpd            # Check status
-systemctl enable httpd            # Enable at boot
-systemctl disable httpd           # Disable at boot
-systemctl enable httpd --now      # Enable + start immediately
-systemctl restart httpd           # Restart (stop + start)
-systemctl reload httpd            # Reload config (no stop)
-systemctl reload-or-restart httpd # Let system decide
-systemctl mask httpd              # BLOCK from starting at all
-systemctl unmask httpd            # Unblock</code></pre>
 
-        <h3>Targets (Runlevels)</h3>
-        <pre><code>systemctl get-default                        # Check default target
-systemctl set-default multi-user.target      # Set CLI as default (needs reboot)
-systemctl isolate multi-user.target          # Switch NOW (temporary)
-systemctl isolate graphical.target           # Switch to GUI NOW
-systemctl list-dependencies httpd            # View dependencies</code></pre>
-
-        <h3>Boot Process (6 Stages)</h3>
-        <ol>
-          <li><strong>BIOS/UEFI</strong> — Hardware check, loads bootloader</li>
-          <li><strong>GRUB2</strong> — Shows OS menu, loads Kernel + initramfs</li>
-          <li><strong>Kernel</strong> — Detects hardware, starts systemd (PID 1)</li>
-          <li><strong>initramfs</strong> — Temporary root FS, loads essential drivers</li>
-          <li><strong>systemd</strong> — Reads default target, starts services</li>
-          <li><strong>Login Screen</strong> — CLI or GUI based on target</li>
-        </ol>
-
-        <h3>Root Password Reset (EXAM CRITICAL!)</h3>
-        <div class="danger">🔑 This is THE most important RHCSA exam question. Follow these steps exactly.</div>
-        <pre><code># Step 1: Reboot
-reboot
-
-# Step 2: Stop GRUB countdown
-# Press Up/Down arrow keys
-
-# Step 3: Select boot entry and press 'e' to edit
-
-# Step 4: Find line starting with "linux", press End key
-
-# Step 5: Add at end of that line (after space):
+      <div class="article-item" data-topic="services">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-11</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Boot Process & systemd Services</div>
+            <div class="article-meta"><span>systemctl, targets, boot stages, password recovery</span><span>·</span><span
+                class="article-badge badge-adv">Advanced</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>systemd Service Management</h3>
+          <pre><code>systemctl start httpd              # Start service
+systemctl stop httpd               # Stop service
+systemctl status httpd             # Check status
+systemctl enable httpd             # Enable at boot
+systemctl disable httpd            # Disable at boot
+systemctl enable httpd --now       # Enable + start immediately
+systemctl restart httpd            # Stop + start
+systemctl reload httpd             # Reload config (no stop)
+systemctl reload-or-restart httpd  # Let system decide
+systemctl mask httpd               # Block from starting at all
+systemctl unmask httpd             # Remove block</code></pre>
+          <h3>Targets</h3>
+          <pre><code>systemctl get-default                        # Check default
+systemctl set-default multi-user.target      # Set CLI default (reboot needed)
+systemctl set-default graphical.target       # Set GUI default (reboot needed)
+systemctl isolate multi-user.target          # Switch to CLI now (temporary)
+systemctl isolate graphical.target           # Switch to GUI now (temporary)
+systemctl list-dependencies httpd            # Show dependencies</code></pre>
+          <h3>Linux Boot Sequence</h3>
+          <ol>
+            <li><strong>BIOS/UEFI</strong> — Hardware check, finds bootloader</li>
+            <li><strong>GRUB2</strong> — Shows boot menu, loads kernel + initramfs</li>
+            <li><strong>Kernel</strong> — Detects hardware, starts systemd (PID 1)</li>
+            <li><strong>initramfs</strong> — Temporary root filesystem for early boot</li>
+            <li><strong>systemd</strong> — Reads default target, starts services</li>
+            <li><strong>Login</strong> — CLI or GUI based on target</li>
+          </ol>
+          <h3>Root Password Recovery</h3>
+          <div class="note">This is a standard Linux administration procedure documented in Red Hat's public
+            documentation.</div>
+          <pre><code># 1. Reboot: reboot
+# 2. At GRUB menu: press Up/Down arrow to stop countdown
+# 3. Select boot entry, press 'e' to edit
+# 4. Find line starting with 'linux', press End key
+# 5. Add at end of that line:
 rd.break
-# For RHEL 9.3: also delete "console=tty0"
+# 6. Press Ctrl+X to boot into emergency shell
 
-# Step 6: Press Ctrl+X to boot
-# You'll get emergency shell. Filesystem is READ-ONLY.
-
-# Step 7: Remount as read-write
+# 7. Remount filesystem as read-write:
 mount -o remount,rw /sysroot
 
-# Step 8: Enter real root filesystem
+# 8. Enter real system:
 chroot /sysroot
 
-# Step 9: Change password
+# 9. Change password:
 passwd
 
-# Step 10: CRITICAL - Create SELinux relabel file
-touch /.autorelabel    # Without this → system WON'T boot!
+# 10. Create SELinux relabel marker:
+touch /.autorelabel
 
-# Step 11: Exit and reboot
+# 11. Exit and reboot:
 exit
 exit</code></pre>
-      </div>
-    </div>
-
-    <!-- CH12 Logs + NTP -->
-    <div class="article-item" data-topic="services">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-12</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Logs & NTP (Time Synchronization)</div>
-          <div class="article-meta"><span>journald, rsyslog, chrony, timedatectl</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+          <div class="warn">⚠️ The <code>touch /.autorelabel</code> step is required. Without it the system may fail to
+            boot after a password change.</div>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Logging Architecture</h3>
-        <p><strong>systemd-journald</strong> captures raw events first → passes to <strong>rsyslog</strong> → rsyslog writes permanent text files to <code>/var/log/</code></p>
 
-        <h3>Critical Log Files</h3>
-        <table>
-          <tr><th>File</th><th>Contents</th></tr>
-          <tr><td><code>/var/log/messages</code></td><td>Most system messages (catch-all)</td></tr>
-          <tr><td><code>/var/log/secure</code></td><td>Security & authentication, logins, sudo</td></tr>
-          <tr><td><code>/var/log/maillog</code></td><td>Mail server events</td></tr>
-          <tr><td><code>/var/log/cron</code></td><td>Scheduled job execution</td></tr>
-          <tr><td><code>/var/log/boot.log</code></td><td>Boot/startup messages</td></tr>
-        </table>
-        <pre><code>tail -f /var/log/messages    # Live monitor
-less /var/log/secure         # Browse security log</code></pre>
+      <div class="article-item" data-topic="services">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-12</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Logging & NTP Time Synchronization</div>
+            <div class="article-meta"><span>journald, rsyslog, chrony, timedatectl</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Logging Architecture</h3>
+          <p><strong>systemd-journald</strong> captures raw events → passes to <strong>rsyslog</strong> → rsyslog writes
+            persistent files to <code>/var/log/</code></p>
+          <h3>Key Log Files</h3>
+          <table>
+            <tr>
+              <th>File</th>
+              <th>Contents</th>
+            </tr>
+            <tr>
+              <td><code>/var/log/messages</code></td>
+              <td>General system messages</td>
+            </tr>
+            <tr>
+              <td><code>/var/log/secure</code></td>
+              <td>Authentication, SSH, sudo</td>
+            </tr>
+            <tr>
+              <td><code>/var/log/maillog</code></td>
+              <td>Mail server activity</td>
+            </tr>
+            <tr>
+              <td><code>/var/log/cron</code></td>
+              <td>Cron job execution</td>
+            </tr>
+            <tr>
+              <td><code>/var/log/boot.log</code></td>
+              <td>Boot/startup messages</td>
+            </tr>
+          </table>
+          <pre><code>tail -f /var/log/messages    # Real-time monitoring
+less /var/log/secure         # Browse log file</code></pre>
+          <h3>NTP with chrony</h3>
+          <pre><code># 1. Set timezone:
+timedatectl                              # Check current settings
+timedatectl set-timezone Asia/Kolkata    # Set timezone
+tzselect                                 # Interactive timezone finder
 
-        <h3>NTP — chrony Setup (EXAM QUICK REFERENCE)</h3>
-        <pre><code># Step 1: Set timezone
-timedatectl set-timezone America/Jamaica    # Use required timezone
-timedatectl                                  # Check current settings
-
-# Step 2: Install chrony
+# 2. Install:
 dnf install chrony -y
 
-# Step 3: Edit config
+# 3. Configure:
 vim /etc/chrony.conf
-# Add line (comment out existing pool/server lines):
-server 172.25.254.254 iburst    # iburst is MANDATORY!
-# or: server classroom.lab.example.com iburst
+# Add (comment out existing pool/server lines):
+server 172.25.254.254 iburst    # iburst = fast initial sync
 
-# Step 4: Restart & enable service
+# 4. Apply:
 systemctl restart chronyd
 systemctl enable chronyd
 
-# Step 5: Verify (look for * = synchronized!)
-chronyc sources    # * = correct | ? = problem</code></pre>
-
-        <div class="warn">⚠️ The 'd' at the end of <code>chronyd</code> is important — it's the daemon service name.</div>
-      </div>
-    </div>
-
-    <!-- SELinux -->
-    <div class="article-item" data-topic="security">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-13</div>
-        <div class="article-title-wrap">
-          <div class="article-title">SELinux — Security-Enhanced Linux</div>
-          <div class="article-meta"><span>Contexts, ports, booleans, semanage</span><span>·</span><span class="article-badge badge-adv">Advanced</span></div>
+# 5. Verify:
+chronyc sources
+# * = synchronized correctly
+# ? = not synchronized / problem</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>What is SELinux?</h3>
-        <p>SELinux = Mandatory Access Control (MAC). Works at the kernel level using <strong>tags (contexts)</strong>. If process tag and resource tag match → allow. Otherwise → deny.</p>
 
-        <h3>Check Status & Modes</h3>
-        <pre><code>sestatus           # Check SELinux status
-getenforce         # Check current mode
-# Config file: vim /etc/selinux/config
-
+      <div class="article-item" data-topic="security">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-13</div>
+          <div class="article-title-wrap">
+            <div class="article-title">SELinux — Security Enhanced Linux</div>
+            <div class="article-meta"><span>Contexts, ports, booleans, semanage</span><span>·</span><span
+                class="article-badge badge-adv">Advanced</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>What is SELinux?</h3>
+          <p>SELinux implements <strong>Mandatory Access Control (MAC)</strong> at kernel level using <strong>context
+              labels</strong>. When a process accesses a resource, SELinux checks if their labels match the policy. Both
+            DAC (chmod) and MAC (SELinux) must allow access.</p>
+          <h3>Status & Modes</h3>
+          <pre><code>sestatus          # Detailed status
+getenforce        # Quick mode check
 # Modes:
-# 1 - Enforcing   → SELinux ON (policies applied)
-# 2 - Permissive  → SELinux OFF but logs generated
-# 3 - Disabled    → SELinux completely OFF
+# Enforcing  — policies applied
+# Permissive — inactive but violations logged
+# Disabled   — completely off
 
-setenforce 1       # Set enforcing (temporary)
-setenforce 0       # Set permissive (temporary)</code></pre>
-
-        <h3>View Context (Tags)</h3>
-        <pre><code>ls -Z file              # File context
-ls -dZ /tmp/            # Directory context
-ps axZ                  # Process context</code></pre>
-
-        <h3>Change Context — Temporary</h3>
-        <pre><code>chcon -t httpd_sys_content_t demo.html   # Temporary change</code></pre>
-
-        <h3>Change Context — Permanent</h3>
-        <pre><code># 1. Add to SELinux database:
-semanage fcontext -a -t httpd_sys_content_t /root/demo.html
-
-# 2. Apply from database:
+setenforce 1      # Enforcing (temporary)
+setenforce 0      # Permissive (temporary)
+vim /etc/selinux/config    # Permanent change (requires reboot)</code></pre>
+          <h3>View Context Labels</h3>
+          <pre><code>ls -Z filename       # File context
+ls -dZ /tmp/         # Directory context
+ps axZ               # Process contexts</code></pre>
+          <h3>Change Context — Temporary</h3>
+          <pre><code>chcon -t httpd_sys_content_t demo.html</code></pre>
+          <h3>Change Context — Permanent</h3>
+          <pre><code>semanage fcontext -a -t httpd_sys_content_t "/root/demo.html"
 restorecon -Rv /root/
-
-# View database:
-semanage fcontext -l | grep root</code></pre>
-
-        <h3>Port Context (EXAM IMPORTANT!)</h3>
-        <pre><code>semanage port -l                      # List all port contexts
-semanage port -l | grep http          # Filter for http
-
-# Add a port (e.g., allow httpd on port 82):
-semanage port -a -t http_port_t -p tcp 82
-
-# Then restart service:
+semanage fcontext -l | grep root    # View database</code></pre>
+          <h3>Port Contexts</h3>
+          <pre><code>semanage port -l                    # List all ports
+semanage port -l | grep http        # Filter by type
+semanage port -a -t http_port_t -p tcp 82    # Add port
 systemctl restart httpd
-
-# Test: curl localhost:82</code></pre>
-
-        <h3>View SELinux Logs</h3>
-        <pre><code>journalctl | grep sealert    # Find SELinux denials
-# Copy the sealert ID and run it as a command for solutions</code></pre>
-
-        <h3>Booleans</h3>
-        <pre><code>getsebool -a | grep http                 # List http booleans
-setsebool httpd_enable_homedirs on       # Set boolean (temporary)
-setsebool httpd_enable_homedirs on -P   # Set permanently</code></pre>
-      </div>
-    </div>
-
-    <!-- Firewall -->
-    <div class="article-item" data-topic="networking">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-15</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Firewall Management</div>
-          <div class="article-meta"><span>firewall-cmd, zones, services, ports</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+curl localhost:82                    # Test</code></pre>
+          <h3>Troubleshooting & Booleans</h3>
+          <pre><code>journalctl | grep sealert                     # Find denials
+getsebool -a | grep http                      # List booleans
+setsebool httpd_enable_homedirs on            # Set temporarily
+setsebool httpd_enable_homedirs on -P         # Set permanently</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>firewall-cmd Basics</h3>
-        <p>All firewall commands start with <code>firewall-cmd</code>. Use <code>--permanent</code> to make changes survive reboot.</p>
-        <pre><code>firewall-cmd --get-services              # List all available services
-firewall-cmd --get-default-zone          # Check default zone
-firewall-cmd --set-default-zone=public   # Set default zone
 
-# Add/remove service:
+      <div class="article-item" data-topic="networking">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-15</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Firewall Management</div>
+            <div class="article-meta"><span>firewall-cmd, zones, services, ports</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <div class="note">💡 Pattern: <code>--get-...</code> to view | <code>--set-...</code> to configure |
+            <code>--add-...</code> to allow | <code>--remove-...</code> to deny
+          </div>
+          <pre><code>firewall-cmd --get-services                         # List services
+firewall-cmd --get-default-zone                     # View default zone
+firewall-cmd --set-default-zone=public              # Set default zone
+
 firewall-cmd --add-service=http --permanent
 firewall-cmd --remove-service=http --permanent
 
-# Add/remove port:
 firewall-cmd --add-port=8080/tcp --permanent
 firewall-cmd --remove-port=8080/tcp --permanent
 
-# Allow/block source IP:
 firewall-cmd --add-source=192.168.1.0/24 --zone=internal
 firewall-cmd --remove-source=192.168.1.0/24 --zone=internal
 
-# Reload to apply --permanent changes:
-firewall-cmd --reload
-
-# List active rules:
-firewall-cmd --list-all</code></pre>
-        <div class="note">💡 Rule: <code>--get-...</code> to see, <code>--set-...</code> to configure, <code>--add-...</code> to add, <code>--remove-...</code> to delete.</div>
-      </div>
-    </div>
-
-    <!-- Networking -->
-    <div class="article-item" data-topic="networking">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-14</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Networking & NFS</div>
-          <div class="article-meta"><span>ip, nmtui, NFS, autofs</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+firewall-cmd --reload        # Apply permanent rules
+firewall-cmd --list-all      # View all active rules</code></pre>
+          <div class="warn">⚠️ Without <code>--permanent</code>, changes are lost on reboot. After using
+            <code>--permanent</code>, run <code>--reload</code> to apply immediately.
+          </div>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Basic Network Commands</h3>
-        <pre><code>ip addr            # Show IP addresses (also: ip a, ifconfig)
-ip link show       # List network adapters
-ip route           # Show routing table
-ping host          # Test connectivity
-ping www.google.com -c 5     # Limit to 5 replies
-tracepath host     # Trace route (hops/jumps)
-ss -ta             # Socket statistics (active connections)
-hostname           # Check hostname</code></pre>
 
-        <h3>Configure Network — nmtui</h3>
-        <pre><code>nmtui    # Opens Terminal UI for network config
+      <div class="article-item" data-topic="networking">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-14</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Networking & NFS</div>
+            <div class="article-meta"><span>ip, nmtui, NFS mount, autofs</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Network Commands</h3>
+          <pre><code>ip addr                      # Show IP addresses
+ip link show                 # List network interfaces
+ip route                     # Show routing table
+ping hostname                # Test connectivity
+ping google.com -c 5         # Limit to 5 replies
+tracepath hostname            # Trace packet route
+ss -ta                       # Active socket connections
+hostname                     # Show current hostname</code></pre>
+          <h3>Configure Network — nmtui</h3>
+          <pre><code>nmtui    # Launch Terminal UI for network config
+# Steps:
+# 1. Edit a connection → select interface (e.g., eth0)
+# 2. IPv4 Configuration → change Automatic to Manual
+# 3. Enter IP address, gateway, DNS
+# 4. Back → Set System Hostname
+# 5. Activate a connection → deactivate + reactivate
 
-# Steps for RHCSA exam:
-# 1. Login physically (not SSH) to Node1
-# 2. nmtui → Edit a connection → select eth0
-# 3. Change IPv4 Configuration from Automatic to Manual
-# 4. Enter IP, gateway, DNS as given in question
-# 5. Back → Set System Hostname → enter given hostname
-# 6. Activate a connection → deactivate + reactivate eth0
-
-# Verify:
-ping &lt;gateway_IP&gt;    # If reply = config is correct
-yum list             # Cross-check network + repo working</code></pre>
-
-        <h3>NFS — Network File Storage</h3>
-        <pre><code># Install utilities:
-dnf install nfs-utils
-
-# View available server exports:
-showmount --exports server_hostname
+ping &lt;gateway_IP&gt;    # Verify connectivity
+yum list             # Verify repository access</code></pre>
+          <h3>NFS — Network File System</h3>
+          <pre><code>dnf install nfs-utils
+showmount --exports server_hostname    # View server exports
 
 # Temporary mount:
 mount -t nfs -o rw,sync server:/export /mountpoint
 
-# Permanent mount (fstab):
-vim /etc/fstab
+# Permanent (fstab):
 server:/export  /mountpoint  nfs  rw  0  0
-
-mount -a    # Test
-umount /path    # Unmount</code></pre>
-
-        <h3>AutoFS — Automatic NFS Mount</h3>
-        <pre><code>dnf install autofs
-
-# Best practice: don't edit /etc/auto.master directly
-# Create drop-in file:
+mount -a</code></pre>
+          <h3>AutoFS</h3>
+          <pre><code>dnf install autofs
 vim /etc/auto.master.d/mymap.autofs
 
-# 3 Types:
-# 1. Direct — explicit absolute paths
-# 2. Indirect — relative subdir under a common parent
-# 3. Wildcard — /- and &amp; syntax for user homedirs
+# 3 map types:
+# Direct   — absolute mount paths
+# Indirect — relative subdirs under common parent
+# Wildcard — & symbol for dynamic matching
 
-# After configuring:
-systemctl enable autofs --now
-systemctl restart autofs</code></pre>
-      </div>
-    </div>
-
-    <!-- Podman -->
-    <div class="article-item" data-topic="containers">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CH-16</div>
-        <div class="article-title-wrap">
-          <div class="article-title">Podman — Containers</div>
-          <div class="article-meta"><span>Images, containers, volumes, services, rootless</span><span>·</span><span class="article-badge badge-adv">Advanced</span></div>
+systemctl enable autofs --now</code></pre>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>Install & Search</h3>
-        <pre><code>dnf install container-tools     # Install podman
+
+      <div class="article-item" data-topic="containers">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CH-16</div>
+          <div class="article-title-wrap">
+            <div class="article-title">Podman — Container Management</div>
+            <div class="article-meta"><span>Images, run, volumes, port forwarding, services,
+                rootless</span><span>·</span><span class="article-badge badge-adv">Advanced</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>Why Containers?</h3>
+          <p>Containers package an application with its libraries and dependencies. They use far fewer resources than
+            VMs and share the host OS kernel. Podman is Red Hat's daemonless container engine.</p>
+          <h3>Install & Search</h3>
+          <pre><code>dnf install container-tools     # Install podman
 podman -v                        # Verify version
-podman search httpd              # Search registry for images
+podman search httpd              # Search registries
 # Registry config: /etc/containers/registries.conf</code></pre>
+          <h3>Images</h3>
+          <pre><code>podman pull IMAGE_URL      # Download image
+podman images             # List local images
+podman rmi IMAGE_URL      # Remove image</code></pre>
+          <h3>Containers</h3>
+          <pre><code>podman run -d --name webserver IMAGE_URL
+# -d = detached (background)
+# --name = container name
 
-        <h3>Images & Containers</h3>
-        <pre><code>podman pull IMAGE_URL             # Download image
-podman images                    # List local images
-podman rmi IMAGE_URL             # Remove image
+podman ps          # Running containers
+podman ps -a       # All containers (running + stopped)
+podman stop webserver
+podman rm webserver
+podman rm webserver -f    # Force remove</code></pre>
+          <h3>Execute & Copy</h3>
+          <pre><code>podman exec -it webserver bash      # Enter container shell
+cd /var/www/html/
+curl localhost                       # Test web content
+exit                                 # Leave container
 
-# Create + run container:
-podman run -d --name webserver IMAGE_URL
-# -d = detached (background), --name = container name
-
-podman ps                        # List running containers
-podman ps -a                     # All (running + stopped)
-
-podman stop webserver            # Stop container
-podman rm webserver              # Remove container
-podman rm webserver -f           # Force remove (even if running)</code></pre>
-
-        <h3>Execute into Container</h3>
-        <pre><code>podman exec -it webserver bash   # Enter container shell
-# -it = interactive terminal
-cd /var/www/html/                # Navigate to web root
-curl localhost                   # Test web content
-
-# Copy file from host to container:
 podman cp index.html webserver:/var/www/html/</code></pre>
-
-        <h3>Port Forwarding</h3>
-        <pre><code># Must configure at container creation time!
-# Delete old container first if needed
-podman run -d --name webserver -p 8080:80 IMAGE_URL
-# 8080 = host port, 80 = container port
-curl localhost:8080    # Test from outside</code></pre>
-
-        <h3>Volumes — Persistent Data</h3>
-        <pre><code>mkdir /backup
-podman run -d --name webserver \
+          <h3>Port Forwarding</h3>
+          <div class="info">Port forwarding must be set at container creation — it cannot be added later.</div>
+          <pre><code>podman run -d --name webserver -p 8080:80 IMAGE_URL
+curl localhost:8080</code></pre>
+          <h3>Volumes</h3>
+          <pre><code>podman run -d --name webserver \
   -v /backup/:/var/www/html/:Z \
   -p 8080:80 IMAGE_URL
-# :Z = SELinux context auto-match
-# Multiple volumes: repeat -v for each</code></pre>
+# :Z = SELinux context matching</code></pre>
+          <h3>Build Local Image</h3>
+          <pre><code>vim containerfile
+# FROM base-image
+# RUN commands
+# CMD ["default-command"]
 
-        <h3>Build Local Image</h3>
-        <pre><code># Create containerfile with FROM, RUN, CMD instructions
-vim containerfile
-
-podman build -t myimage -f containerfile   # Build
-podman run -d --name myapp localhost/myimage:latest
-
-# Push to registry:
-podman push localhost/myimage:latest username/registry-name</code></pre>
-
-        <h3>Container as a Service (Auto-start)</h3>
-        <pre><code># As ROOT:
-cd /etc/systemd/system
+podman build -t myimage -f containerfile
+podman run -d --name myapp localhost/myimage:latest</code></pre>
+          <h3>Container Service (Root)</h3>
+          <pre><code>cd /etc/systemd/system
 podman generate systemd --name webserver --files
 systemctl daemon-reload
 systemctl enable container-webserver.service --now</code></pre>
+          <h3>Rootless Containers</h3>
+          <div class="warn">⚠️ SSH directly as the target user. <code>su - username</code> may not behave correctly for
+            session-based container operations.</div>
+          <pre><code>w    # Verify correct user session
 
-        <h3>Rootless Container — Non-Root User</h3>
-        <div class="warn">⚠️ Always SSH as the non-root user directly. <code>su - user</code> won't work for session-based operations.</div>
-        <pre><code># Check session: w  (only target user should be active)
-
-# Service location for non-root:
 mkdir -p ~/.config/systemd/user
 cd ~/.config/systemd/user
-
 podman generate systemd --name myapp --files
 systemctl --user daemon-reload
 systemctl --user enable container-myapp.service --now
 systemctl --user status container-myapp.service</code></pre>
-
-        <div class="danger">🔑 CRITICAL: Run this or lose 25% of container marks!<br><code>loginctl enable-linger</code><br>This makes the container start at system boot, not just at user login.</div>
-      </div>
-    </div>
-
-    <!-- Tar & Find -->
-    <div class="article-item" data-topic="essentials">
-      <div class="article-header" onclick="toggleArticle(this)">
-        <div class="article-ch">CMD</div>
-        <div class="article-title-wrap">
-          <div class="article-title">tar, find & Script Commands</div>
-          <div class="article-meta"><span>Archives, search, shell scripting</span><span>·</span><span class="article-badge badge-inter">Intermediate</span></div>
+          <div class="info">🔑 To start the container at system boot (not just at user
+            login):<br><br><code>loginctl enable-linger</code><br><br>Without this, the container only starts when the
+            user logs in interactively.</div>
         </div>
-        <div class="article-expand">▶</div>
       </div>
-      <div class="article-body">
-        <h3>tar — Archive Files</h3>
-        <table>
-          <tr><th>Flag</th><th>Meaning</th><th>Extension</th></tr>
-          <tr><td><code>-j</code></td><td>bzip2 compression</td><td>.tar.bz2</td></tr>
-          <tr><td><code>-z</code></td><td>gzip compression</td><td>.tar.gz</td></tr>
-          <tr><td><code>-J</code></td><td>xz compression</td><td>.tar.xz</td></tr>
-        </table>
-        <pre><code># Create archive:
-tar -cvjf backup.tar.bz2 /usr/local
-# c=create, v=verbose, j=bzip2, f=filename
 
-tar -cvzf backup.tar.gz /usr/local     # gzip
-tar -cvJf backup.tar.xz /usr/local     # xz
+      <div class="article-item" data-topic="essentials">
+        <div class="article-header" onclick="toggleArticle(this)">
+          <div class="article-ch">CMD</div>
+          <div class="article-title-wrap">
+            <div class="article-title">tar, find & Shell Scripts</div>
+            <div class="article-meta"><span>Archiving, file search, scripting</span><span>·</span><span
+                class="article-badge badge-inter">Intermediate</span></div>
+          </div>
+          <div class="article-expand">▶</div>
+        </div>
+        <div class="article-body">
+          <h3>tar — Archive & Compress</h3>
+          <table>
+            <tr>
+              <th>Flag</th>
+              <th>Compression</th>
+              <th>Extension</th>
+            </tr>
+            <tr>
+              <td><code>-j</code></td>
+              <td>bzip2</td>
+              <td>.tar.bz2</td>
+            </tr>
+            <tr>
+              <td><code>-z</code></td>
+              <td>gzip</td>
+              <td>.tar.gz</td>
+            </tr>
+            <tr>
+              <td><code>-J</code></td>
+              <td>xz</td>
+              <td>.tar.xz</td>
+            </tr>
+          </table>
+          <pre><code>tar -cvjf backup.tar.bz2 /usr/local     # Create bzip2
+tar -cvzf backup.tar.gz /usr/local      # Create gzip
+tar -cvJf backup.tar.xz /usr/local      # Create xz
+tar -xvf archive.tar.bz2               # Extract
+man tar                                  # See all options</code></pre>
+          <h3>find — Locate Files</h3>
+          <pre><code>find / -name newfile                 # By name
+find / -user jeel                    # By owner
+find / -group devops                 # By group
+find / -perm 750                     # By permission
+find / -perm 750 -type d             # Directories only
+find / -perm 750 -type f             # Files only
+find / -perm /g+s                    # SGID files
+find / -size +30k -size -45k        # By size range
 
-# Extract archive:
-tar -xvf archive.tar.bz2</code></pre>
-
-        <h3>find — Locate Files</h3>
-        <pre><code>find / -name newfile                    # Find by name
-find / -user jeel                       # Find by owner
-find / -group devops                    # Find by group
-find / -perm 750                        # Find by permission
-find / -perm 750 -type d                # Directories only
-find / -perm /g+s                       # Find SGID files
-find / -size +30k -size -45k           # Find by size range
-
-# Execute command on found files (-exec):
+# Execute command on found files:
 find / -user jeel -exec cp -pvr {} /root/jeel-files/ \;
-# p=preserve perms, v=verbose, r=recursive, {} = file placeholder, \; = end exec</code></pre>
+# {} = file placeholder  \; = end exec  -p=preserve -v=verbose -r=recursive</code></pre>
+          <h3>Shell Script Basics</h3>
+          <pre><code>vim myscript.sh
 
-        <h3>Create & Execute a Shell Script</h3>
-        <pre><code>vim myscript.sh
-
-# Inside file:
 #!/bin/bash
 find /usr -perm /g+s -size +30k -size -45k > /root/usr-files
 
-# Save and quit: :wq
-
-chmod +x myscript.sh      # Make executable
-sh myscript.sh            # Execute</code></pre>
-
-        <div class="note">💡 Bonus Trick: <code>sudo !!</code> runs your last command with sudo (when you get permission denied). This is called history expansion.</div>
+chmod +x myscript.sh    # Make executable
+sh myscript.sh          # Run script</code></pre>
+          <div class="note">💡 <code>sudo !!</code> re-runs your last command with sudo. <code>!!</code> = history
+            expansion for the previous command.</div>
+        </div>
       </div>
+
     </div>
 
-  </div><!-- end articles-list -->
+    <footer>
+      <div class="footer-logo">RHCSA STUDY GUIDE</div>
+      <div class="footer-copy">Personal Class Notes © 2025</div>
+    </footer>
+    <p class="footer-note">Red Hat and RHCSA are trademarks of Red Hat, Inc. This site is not affiliated with or
+      endorsed by Red Hat.<br>All content is based on personal classroom notes and publicly available Linux
+      documentation.</p>
+  </div>
 
-  <footer>
-    <div class="footer-logo">RHCSA GUIDE</div>
-    <div class="footer-copy">Class Notes — Exam Ready © 2025</div>
-  </footer>
-</div>
-
-<script>
-  // Cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx=-100,my=-100,rx=-100,ry=-100;
-  document.addEventListener('mousemove',e=>{
-    mx=e.clientX;my=e.clientY;
-    cursor.style.left=mx-5+'px';cursor.style.top=my-5+'px';
-  });
-  (function animRing(){
-    rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
-    ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';
-    requestAnimationFrame(animRing);
-  })();
-  document.querySelectorAll('a,button,.article-item,.chapter-card').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';ring.style.transform='scale(1.3)';ring.style.borderColor='rgba(0,229,192,0.7)';});
-    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.transform='scale(1)';ring.style.borderColor='rgba(0,229,192,0.4)';});
-  });
-
-  // Page navigation
-  function showPage(name){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    const page=document.getElementById('page-'+name);
-    page.classList.add('active');
-    page.style.opacity='0';
-    setTimeout(()=>{page.style.transition='opacity 0.35s ease';page.style.opacity='1';},10);
-    window.scrollTo({top:0,behavior:'smooth'});
-    return false;
-  }
-
-  // Toggle article
-  function toggleArticle(header){
-    const item=header.parentElement;
-    item.classList.toggle('open');
-  }
-
-  // Filter articles
-  function setFilter(btn,topic){
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.article-item').forEach(card=>{
-      card.style.display=(topic==='all'||card.dataset.topic===topic)?'block':'none';
+  <script>
+    const cursor = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
+    let mx = -100, my = -100, rx = -100, ry = -100;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx - 5 + 'px'; cursor.style.top = my - 5 + 'px'; });
+    (function a() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx - 18 + 'px'; ring.style.top = ry - 18 + 'px'; requestAnimationFrame(a); })();
+    document.querySelectorAll('a,button,.article-item,.chapter-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2.5)'; ring.style.transform = 'scale(1.3)'; ring.style.borderColor = 'rgba(0,229,192,0.7)'; });
+      el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; ring.style.transform = 'scale(1)'; ring.style.borderColor = 'rgba(0,229,192,0.4)'; });
     });
-  }
-
-  // Counter animation
-  function animateCounter(el,target){
-    const suffix=target>=1000?'K+':'+';
-    const displayTarget=target>=1000?Math.round(target/1000):target;
-    let current=0;const steps=60;const inc=displayTarget/steps;
-    const t=setInterval(()=>{
-      current=Math.min(current+inc,displayTarget);
-      el.textContent=Math.floor(current)+suffix;
-      if(current>=displayTarget)clearInterval(t);
-    },2000/steps);
-  }
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){animateCounter(e.target,parseInt(e.target.dataset.target));observer.unobserve(e.target);}
+    function showPage(n) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const pg = document.getElementById('page-' + n);
+      pg.classList.add('active'); pg.style.opacity = '0';
+      setTimeout(() => { pg.style.transition = 'opacity 0.35s ease'; pg.style.opacity = '1'; }, 10);
+      window.scrollTo({ top: 0, behavior: 'smooth' }); return false;
+    }
+    function toggleArticle(h) { h.parentElement.classList.toggle('open'); }
+    function setFilter(btn, topic) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.article-item').forEach(c => { c.style.display = (topic === 'all' || c.dataset.topic === topic) ? 'block' : 'none'; });
+    }
+    function animateCounter(el, target) {
+      const s = target >= 1000 ? 'K+' : '+', d = target >= 1000 ? Math.round(target / 1000) : target;
+      let c = 0; const t = setInterval(() => { c = Math.min(c + d / 60, d); el.textContent = Math.floor(c) + s; if (c >= d) clearInterval(t); }, 2000 / 60);
+    }
+    new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target, parseInt(e.target.dataset.target)); observer.unobserve(e.target); } }); }, { threshold: 0.5 }).observe || document.querySelectorAll('.stat-num').forEach(el => {
+      new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target, parseInt(e.target.dataset.target)); } }); }, { threshold: 0.5 }).observe(el);
     });
-  },{threshold:0.5});
-  document.querySelectorAll('.stat-num').forEach(el=>observer.observe(el));
-</script>
+    document.querySelectorAll('.stat-num').forEach(el => {
+      new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target, parseInt(e.target.dataset.target)); } }); }, { threshold: 0.5 }).observe(el);
+    });
+  </script>
 </body>
+
 </html>
