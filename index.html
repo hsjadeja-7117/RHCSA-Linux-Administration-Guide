@@ -3,12 +3,19 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#080c10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>RHCSA — Linux Administration Study Guide</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap"
     rel="stylesheet" />
+
   <style>
+    /* ═══════════════════════════════════════════════════════
+     RESET & TOKENS
+  ═══════════════════════════════════════════════════════ */
     *,
     *::before,
     *::after {
@@ -21,6 +28,7 @@
       --bg: #080c10;
       --surface: #0e1318;
       --surface2: #141a22;
+      --surface3: #1a2230;
       --border: rgba(255, 255, 255, 0.07);
       --accent: #00e5c0;
       --accent2: #7b5cf0;
@@ -28,10 +36,21 @@
       --muted: #5a6472;
       --muted2: #8a95a0;
       --glow: 0 0 40px rgba(0, 229, 192, 0.15);
+      --glow-lg: 0 0 80px rgba(0, 229, 192, 0.2);
+      --radius: 2px;
+      --nav-h: 68px;
+      --bot-nav-h: 0px;
+      /* set by JS on mobile */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --easing: cubic-bezier(.22, .1, .18, 1);
     }
 
     html {
       scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
@@ -41,9 +60,39 @@
       font-size: 15px;
       line-height: 1.7;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-bottom: var(--bot-nav-h);
     }
 
-    /* ── Custom cursor (desktop only) ── */
+    /* ── Scroll progress bar ── */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(0, 229, 192, 0.6);
+      pointer-events: none;
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     CUSTOM CURSOR (desktop only)
+  ═══════════════════════════════════════════════════════ */
     @media (pointer: fine) {
       body {
         cursor: none;
@@ -56,7 +105,7 @@
         border-radius: 50%;
         position: fixed;
         pointer-events: none;
-        z-index: 9999;
+        z-index: 9998;
         transition: transform 0.15s ease;
         mix-blend-mode: difference;
       }
@@ -68,7 +117,7 @@
         border-radius: 50%;
         position: fixed;
         pointer-events: none;
-        z-index: 9998;
+        z-index: 9997;
         transition: all 0.25s ease;
       }
     }
@@ -77,23 +126,27 @@
 
       .cursor,
       .cursor-ring {
-        display: none;
+        display: none !important;
       }
     }
 
-    /* ── Navigation ── */
+    /* ═══════════════════════════════════════════════════════
+     DESKTOP NAVIGATION
+  ═══════════════════════════════════════════════════════ */
     nav {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      z-index: 200;
+      z-index: 500;
+      height: var(--nav-h);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 60px;
-      background: rgba(8, 12, 16, 0.92);
-      backdrop-filter: blur(20px);
+      padding: 0 60px;
+      background: rgba(8, 12, 16, 0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       border-bottom: 1px solid var(--border);
     }
 
@@ -104,8 +157,7 @@
       letter-spacing: 0.1em;
       color: var(--accent);
       text-decoration: none;
-      position: relative;
-      z-index: 201;
+      z-index: 1;
     }
 
     .nav-logo span {
@@ -166,7 +218,7 @@
       box-shadow: var(--glow);
     }
 
-    /* Hamburger */
+    /* Hamburger — shown at ≤900px */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -174,17 +226,24 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px;
-      z-index: 201;
+      padding: 8px;
+      z-index: 601;
       position: relative;
+      border-radius: 4px;
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .hamburger span {
       display: block;
-      width: 24px;
+      width: 22px;
       height: 2px;
       background: var(--accent);
-      transition: all 0.3s ease;
+      transition: all 0.3s var(--easing);
+      transform-origin: center;
     }
 
     .hamburger.open span:nth-child(1) {
@@ -193,58 +252,149 @@
 
     .hamburger.open span:nth-child(2) {
       opacity: 0;
+      transform: scaleX(0);
     }
 
     .hamburger.open span:nth-child(3) {
       transform: translateY(-7px) rotate(-45deg);
     }
 
-    /* Mobile nav overlay */
-    .mobile-nav {
+    /* ═══════════════════════════════════════════════════════
+     MOBILE FULL-SCREEN NAV OVERLAY
+  ═══════════════════════════════════════════════════════ */
+    .mobile-nav-overlay {
       display: none;
       position: fixed;
       inset: 0;
+      z-index: 600;
       background: rgba(8, 12, 16, 0.98);
-      z-index: 199;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 32px;
-      backdrop-filter: blur(20px);
+      gap: 8px;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 80px);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.3s var(--easing), transform 0.3s var(--easing);
     }
 
-    .mobile-nav.open {
+    .mobile-nav-overlay.open {
       display: flex;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .mobile-nav a {
-      color: var(--text);
+    .mob-nav-item {
+      width: 100%;
+      text-align: center;
+      padding: 18px 24px;
+      color: var(--muted2);
       text-decoration: none;
       font-family: 'Syne', sans-serif;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      transition: color 0.2s;
+      letter-spacing: -0.01em;
+      transition: color 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
     }
 
-    .mobile-nav a:hover {
+    .mob-nav-item:hover,
+    .mob-nav-item:active {
       color: var(--accent);
+      background: rgba(0, 229, 192, 0.04);
     }
 
-    .mobile-nav .mobile-cta {
+    .mob-nav-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border);
+      margin: 4px auto;
+    }
+
+    .mob-nav-cta {
+      margin-top: 20px;
       background: var(--accent);
       color: var(--bg);
       border: none;
-      padding: 14px 40px;
+      padding: 16px 48px;
       font-family: 'DM Mono', monospace;
       font-size: 13px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
-      margin-top: 8px;
+      font-weight: 600;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    /* ── Pages ── */
+    .mob-nav-cta:active {
+      transform: scale(0.97);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     BOTTOM NAV BAR (mobile ≤600px)
+  ═══════════════════════════════════════════════════════ */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      background: rgba(8, 12, 16, 0.96);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-top: 1px solid var(--border);
+      padding-bottom: var(--safe-bottom);
+      grid-template-columns: repeat(4, 1fr);
+      height: calc(56px + var(--safe-bottom));
+    }
+
+    .bn-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 8px 4px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+      transition: color 0.2s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+    }
+
+    .bn-item.active {
+      color: var(--accent);
+    }
+
+    .bn-item svg {
+      transition: transform 0.2s var(--easing);
+    }
+
+    .bn-item.active svg {
+      transform: scale(1.1);
+    }
+
+    .bn-item:active svg {
+      transform: scale(0.9);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     PAGES
+  ═══════════════════════════════════════════════════════ */
     .page {
       display: none;
       min-height: 100vh;
@@ -252,14 +402,29 @@
 
     .page.active {
       display: block;
+      animation: pageFadeIn 0.35s var(--easing) both;
     }
 
-    /* ── Hero ── */
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════════════════════ */
     .hero {
       min-height: 100vh;
       display: flex;
       align-items: center;
-      padding: 120px 60px 80px;
+      padding: calc(var(--nav-h) + 50px) 60px 80px;
       position: relative;
       overflow: hidden;
     }
@@ -267,17 +432,20 @@
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(123, 92, 240, 0.08) 0%, transparent 60%),
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(123, 92, 240, 0.08) 0%, transparent 60%),
         radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0, 229, 192, 0.05) 0%, transparent 50%);
     }
 
     .hero-grid {
       position: absolute;
       inset: 0;
-      background-image: linear-gradient(var(--border) 1px, transparent 1px),
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
         linear-gradient(90deg, var(--border) 1px, transparent 1px);
       background-size: 60px 60px;
       mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
     }
 
     .hero-content {
@@ -376,12 +544,19 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-primary:hover {
       background: #00ffda;
       box-shadow: var(--glow);
       transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
     }
 
     .btn-secondary {
@@ -399,6 +574,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn-secondary:hover {
@@ -406,7 +582,13 @@
       color: var(--accent);
     }
 
-    /* ── Stats ── */
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     STATS
+  ═══════════════════════════════════════════════════════ */
     .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -439,7 +621,9 @@
       margin-top: 8px;
     }
 
-    /* ── Sections ── */
+    /* ═══════════════════════════════════════════════════════
+     SECTIONS
+  ═══════════════════════════════════════════════════════ */
     .section {
       padding: 90px 60px;
     }
@@ -460,7 +644,9 @@
       margin-bottom: 56px;
     }
 
-    /* ── Chapter Grid ── */
+    /* ═══════════════════════════════════════════════════════
+     CHAPTER GRID
+  ═══════════════════════════════════════════════════════ */
     .chapter-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -475,10 +661,15 @@
       transition: background 0.3s;
       position: relative;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .chapter-card:hover {
       background: var(--surface2);
+    }
+
+    .chapter-card:active {
+      background: var(--surface3);
     }
 
     .ch-num {
@@ -513,7 +704,7 @@
       color: var(--muted2);
       font-size: 12px;
       line-height: 1.7;
-      padding-right: 20px;
+      padding-right: 24px;
     }
 
     .ch-arrow {
@@ -536,9 +727,11 @@
       color: var(--accent);
     }
 
-    /* ── About Page ── */
+    /* ═══════════════════════════════════════════════════════
+     ABOUT PAGE
+  ═══════════════════════════════════════════════════════ */
     .about-hero {
-      padding: 160px 60px 80px;
+      padding: calc(var(--nav-h) + 90px) 60px 80px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
@@ -639,9 +832,11 @@
       line-height: 1.7;
     }
 
-    /* ── Learning Page ── */
+    /* ═══════════════════════════════════════════════════════
+     LEARNING PAGE
+  ═══════════════════════════════════════════════════════ */
     .learning-hero {
-      padding: 150px 60px 50px;
+      padding: calc(var(--nav-h) + 80px) 60px 40px;
     }
 
     .learning-hero h1 {
@@ -661,12 +856,20 @@
       font-size: 18px;
     }
 
+    /* Sticky filter bar */
     .filter-bar {
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 100;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      padding: 28px 60px;
+      padding: 20px 60px;
+      background: rgba(8, 12, 16, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
     }
 
     .filter-btn {
@@ -681,42 +884,58 @@
       cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 36px;
     }
 
     .filter-btn:hover,
     .filter-btn.active {
       border-color: var(--accent);
       color: var(--accent);
-      background: rgba(0, 229, 192, 0.05);
+      background: rgba(0, 229, 192, 0.07);
     }
 
-    /* ── Articles ── */
+    .filter-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     ARTICLES  — SMOOTH ACCORDION
+  ═══════════════════════════════════════════════════════ */
     .articles-list {
       margin: 0 60px;
       border: 1px solid var(--border);
+      margin-bottom: 60px;
     }
 
     .article-item {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
-      cursor: pointer;
     }
 
     .article-item:last-child {
       border-bottom: none;
     }
 
-    .article-item:hover {
-      background: var(--surface2);
-    }
-
     .article-header {
       display: flex;
       align-items: center;
       gap: 20px;
-      padding: 28px 36px;
+      padding: 24px 36px;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background 0.2s;
+      min-height: 44px;
+    }
+
+    .article-header:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .article-header:active {
+      background: rgba(0, 229, 192, 0.03);
     }
 
     .article-ch {
@@ -776,29 +995,49 @@
 
     .article-expand {
       color: var(--muted);
-      transition: transform 0.25s;
       font-size: 12px;
       flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.35s var(--easing), border-color 0.2s, color 0.2s;
+      border-radius: 50%;
     }
 
     .article-item.open .article-expand {
       transform: rotate(90deg);
+      border-color: rgba(0, 229, 192, 0.3);
+      color: var(--accent);
     }
 
-    .article-body {
-      display: none;
-      padding: 0 36px 36px;
+    /* Smooth accordion */
+    .article-body-wrap {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s var(--easing);
+      border-top: 0px solid var(--border);
+    }
+
+    .article-item.open .article-body-wrap {
+      grid-template-rows: 1fr;
       border-top: 1px solid var(--border);
     }
 
-    .article-item.open .article-body {
-      display: block;
-      animation: fadeUp 0.3s ease both;
+    .article-body-inner {
+      overflow: hidden;
     }
 
+    .article-body {
+      padding: 0 36px 32px;
+    }
+
+    /* Content inside articles */
     .article-body h3 {
       font-family: 'Syne', sans-serif;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--accent);
       margin: 28px 0 12px;
@@ -843,23 +1082,82 @@
       border-radius: 2px;
     }
 
-    .article-body pre {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border);
-      padding: 20px 24px;
-      overflow-x: auto;
+    /* Code block with copy button */
+    .code-block {
+      position: relative;
       margin: 16px 0;
-      border-left: 3px solid var(--accent);
-      -webkit-overflow-scrolling: touch;
     }
 
-    .article-body pre code {
+    .code-block pre {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border);
+      padding: 18px 48px 18px 20px;
+      overflow-x: auto;
+      border-left: 3px solid var(--accent);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--surface3) transparent;
+    }
+
+    .code-block pre::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .code-block pre::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .code-block pre::-webkit-scrollbar-thumb {
+      background: var(--surface3);
+      border-radius: 2px;
+    }
+
+    .code-block pre code {
       background: none;
       border: none;
       padding: 0;
       color: #b0c4d4;
       font-size: 12px;
       line-height: 1.8;
+      white-space: pre;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 4px 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 2px;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 229, 192, 0.06);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.95);
+    }
+
+    .copy-btn.copied {
+      border-color: #4ade80;
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.06);
     }
 
     .article-body .note {
@@ -889,14 +1187,29 @@
       color: #a78bfa;
     }
 
+    /* Scrollable table wrapper */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 16px 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--surface3) transparent;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: var(--surface3);
+    }
+
     .article-body table {
       width: 100%;
       border-collapse: collapse;
-      margin: 16px 0;
       font-size: 12px;
-      display: block;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+      min-width: 400px;
     }
 
     .article-body th {
@@ -914,10 +1227,11 @@
       border: 1px solid var(--border);
       color: var(--muted2);
       vertical-align: top;
-      min-width: 80px;
     }
 
-    /* ── Footer ── */
+    /* ═══════════════════════════════════════════════════════
+     FOOTER
+  ═══════════════════════════════════════════════════════ */
     footer {
       margin-top: 80px;
       padding: 48px 60px;
@@ -948,9 +1262,11 @@
       line-height: 1.8;
     }
 
-    /* ── About Me ── */
+    /* ═══════════════════════════════════════════════════════
+     ABOUT ME PAGE
+  ═══════════════════════════════════════════════════════ */
     .aboutme-hero {
-      padding: 140px 60px 60px;
+      padding: calc(var(--nav-h) + 80px) 60px 60px;
       display: grid;
       grid-template-columns: 1fr 1.6fr;
       gap: 80px;
@@ -976,20 +1292,19 @@
       align-items: center;
       justify-content: center;
       font-size: 72px;
+      overflow: hidden;
     }
 
-    .aboutme-photo-hint {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-align: center;
-      line-height: 1.6;
+    .aboutme-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
     }
 
     .aboutme-social {
       display: flex;
       gap: 12px;
-      margin-top: 8px;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -1009,11 +1324,17 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
     }
 
     .social-btn:hover {
       border-color: var(--accent);
       color: var(--accent);
+    }
+
+    .social-btn:active {
+      transform: scale(0.96);
     }
 
     .aboutme-tag {
@@ -1067,8 +1388,11 @@
       text-transform: uppercase;
     }
 
-    /* ── Journey ── */
     .journey-section {
+      padding: 0 60px 80px;
+    }
+
+    .resources-section {
       padding: 0 60px 80px;
     }
 
@@ -1112,11 +1436,6 @@
       line-height: 1.8;
     }
 
-    /* ── Resources ── */
-    .resources-section {
-      padding: 0 60px 80px;
-    }
-
     .resources-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -1132,10 +1451,15 @@
       text-decoration: none;
       display: block;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .resource-card:hover {
       background: var(--surface2);
+    }
+
+    .resource-card:active {
+      background: var(--surface3);
     }
 
     .resource-icon {
@@ -1164,7 +1488,50 @@
       letter-spacing: 0.05em;
     }
 
-    /* ── Animations ── */
+    /* ═══════════════════════════════════════════════════════
+     BACK TO TOP
+  ═══════════════════════════════════════════════════════ */
+    #back-top {
+      position: fixed;
+      right: 20px;
+      bottom: 80px;
+      z-index: 400;
+      width: 44px;
+      height: 44px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s, bottom 0.3s;
+      transform: translateY(10px);
+      font-size: 16px;
+      font-family: monospace;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #back-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    #back-top:hover {
+      background: var(--surface3);
+      border-color: var(--accent);
+    }
+
+    #back-top:active {
+      transform: scale(0.92);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     UTILITIES & ANIMATIONS
+  ═══════════════════════════════════════════════════════ */
     @keyframes fadeUp {
       from {
         opacity: 0;
@@ -1177,7 +1544,7 @@
       }
     }
 
-    /* ── Scrollbar ── */
+    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 4px;
     }
@@ -1194,12 +1561,76 @@
       background: var(--accent);
     }
 
-    /* ════════════════════════════════════════
-       RESPONSIVE — TABLET (≤ 900px)
-    ════════════════════════════════════════ */
-    @media (max-width: 900px) {
+    /* ═══════════════════════════════════════════════════════
+     RESPONSIVE — TABLET (≤ 1024px)
+  ═══════════════════════════════════════════════════════ */
+    @media (max-width:1024px) {
       nav {
-        padding: 16px 24px;
+        padding: 0 32px;
+      }
+
+      .hero {
+        padding: calc(var(--nav-h) + 40px) 32px 60px;
+      }
+
+      .stats {
+        margin: 0 32px;
+      }
+
+      .section {
+        padding: 70px 32px;
+      }
+
+      .about-hero {
+        padding: calc(var(--nav-h) + 60px) 32px 60px;
+        gap: 48px;
+      }
+
+      .info-grid {
+        margin: 0 32px;
+      }
+
+      .learning-hero {
+        padding: calc(var(--nav-h) + 60px) 32px 32px;
+      }
+
+      .filter-bar {
+        padding: 16px 32px;
+      }
+
+      .articles-list {
+        margin: 0 32px 60px;
+      }
+
+      .aboutme-hero {
+        padding: calc(var(--nav-h) + 60px) 32px 48px;
+        gap: 48px;
+      }
+
+      .journey-section {
+        padding: 0 32px 60px;
+      }
+
+      .resources-section {
+        padding: 0 32px 60px;
+      }
+
+      footer {
+        padding: 40px 32px;
+      }
+
+      .footer-note {
+        padding: 0 32px 20px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     RESPONSIVE — TABLET PORTRAIT (≤ 900px)
+     Hamburger menu replaces desktop nav
+  ═══════════════════════════════════════════════════════ */
+    @media (max-width:900px) {
+      nav {
+        padding: 0 20px;
       }
 
       .nav-links,
@@ -1212,26 +1643,22 @@
       }
 
       .hero {
-        padding: 110px 24px 60px;
+        padding: calc(var(--nav-h) + 30px) 20px 48px;
       }
 
       .stats {
-        margin: 0 24px;
+        margin: 0 20px;
         grid-template-columns: repeat(2, 1fr);
-      }
-
-      .section {
-        padding: 60px 24px;
       }
 
       .about-hero {
         grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 120px 24px 48px;
+        padding: calc(var(--nav-h) + 40px) 20px 48px;
+        gap: 32px;
       }
 
       .info-grid {
-        margin: 0 24px;
+        margin: 0 20px;
         grid-template-columns: 1fr;
       }
 
@@ -1240,38 +1667,31 @@
       }
 
       .learning-hero {
-        padding: 110px 24px 40px;
+        padding: calc(var(--nav-h) + 40px) 20px 28px;
       }
 
       .filter-bar {
-        padding: 20px 24px;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-
-      .filter-bar::-webkit-scrollbar {
-        display: none;
+        padding: 14px 20px;
+        top: var(--nav-h);
       }
 
       .articles-list {
-        margin: 0 24px;
+        margin: 0 20px 50px;
       }
 
       .article-header {
-        padding: 20px 24px;
+        padding: 18px 20px;
         gap: 12px;
       }
 
       .article-body {
-        padding: 0 24px 24px;
+        padding: 0 20px 24px;
       }
 
       .aboutme-hero {
         grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 110px 24px 48px;
+        padding: calc(var(--nav-h) + 40px) 20px 40px;
+        gap: 32px;
       }
 
       .journey-grid {
@@ -1279,57 +1699,89 @@
       }
 
       .journey-section {
-        padding: 0 24px 60px;
+        padding: 0 20px 50px;
       }
 
       .resources-section {
-        padding: 0 24px 60px;
+        padding: 0 20px 50px;
       }
 
       footer {
         flex-direction: column;
         gap: 12px;
         text-align: center;
-        padding: 40px 24px;
+        padding: 32px 20px;
+        margin-top: 40px;
       }
 
       .footer-note {
-        padding: 0 24px 24px;
+        padding: 0 20px 16px;
+      }
+
+      .section {
+        padding: 56px 20px;
+      }
+
+      .section-title {
+        margin-bottom: 36px;
       }
     }
 
-    /* ════════════════════════════════════════
-       RESPONSIVE — MOBILE (≤ 600px)
-    ════════════════════════════════════════ */
-    @media (max-width: 600px) {
+    /* ═══════════════════════════════════════════════════════
+     RESPONSIVE — MOBILE (≤ 600px)
+     Bottom nav bar, optimized for one-hand use
+  ═══════════════════════════════════════════════════════ */
+    @media (max-width:600px) {
+      :root {
+        --bot-nav-h: calc(56px + var(--safe-bottom));
+      }
+
+      /* Show bottom nav, hide hamburger */
+      .bottom-nav {
+        display: grid;
+      }
+
+      .hamburger {
+        display: none;
+      }
+
+      /* Add safe-area padding to nav */
       nav {
-        padding: 14px 18px;
+        padding-left: calc(16px + var(--safe-left));
+        padding-right: calc(16px + var(--safe-right));
+      }
+
+      /* Back-to-top sits above bottom nav */
+      #back-top {
+        bottom: calc(var(--bot-nav-h) + 16px);
+        right: 16px;
       }
 
       /* Hero */
       .hero {
-        padding: 100px 18px 48px;
+        padding: calc(var(--nav-h) + 24px) calc(16px + var(--safe-left)) 40px calc(16px + var(--safe-right));
         min-height: auto;
-        padding-bottom: 40px;
+        align-items: flex-start;
       }
 
       .hero h1 {
-        font-size: clamp(36px, 10vw, 56px);
+        font-size: clamp(34px, 9.5vw, 54px);
       }
 
       .hero-sub {
-        font-size: 16px;
-        margin-bottom: 32px;
+        font-size: 15px;
+        margin-bottom: 28px;
       }
 
       .hero-tag {
         font-size: 10px;
         padding: 5px 12px;
+        margin-bottom: 24px;
       }
 
       .btn-primary,
       .btn-secondary {
-        padding: 12px 24px;
+        padding: 13px 20px;
         font-size: 11px;
         width: 100%;
         justify-content: center;
@@ -1337,33 +1789,39 @@
 
       .hero-actions {
         flex-direction: column;
+        gap: 10px;
       }
 
       /* Stats */
       .stats {
-        margin: 0 18px;
-        grid-template-columns: repeat(2, 1fr);
+        margin: 0 16px;
+        grid-template-columns: 1fr 1fr;
       }
 
       .stat {
-        padding: 22px 16px;
+        padding: 20px 14px;
       }
 
       .stat-num {
-        font-size: 32px;
+        font-size: 30px;
       }
 
       .stat-label {
-        font-size: 10px;
+        font-size: 9px;
       }
 
-      /* Section */
+      /* Sections */
       .section {
-        padding: 48px 18px;
+        padding: 44px 16px;
       }
 
       .section-title {
-        margin-bottom: 32px;
+        font-size: clamp(24px, 7vw, 38px);
+        margin-bottom: 28px;
+      }
+
+      .section-label {
+        font-size: 10px;
       }
 
       /* Chapter grid */
@@ -1372,121 +1830,164 @@
       }
 
       .chapter-card {
-        padding: 24px;
+        padding: 22px 20px;
+      }
+
+      .ch-num {
+        font-size: 36px;
       }
 
       /* About */
       .about-hero {
-        padding: 100px 18px 40px;
+        padding: calc(var(--nav-h) + 20px) 16px 36px;
+        gap: 28px;
       }
 
       .info-grid {
-        margin: 0 18px;
+        margin: 0 16px;
       }
 
       .info-card {
-        padding: 28px 24px;
+        padding: 24px 20px;
       }
 
-      /* Tips */
       .tip-card {
-        padding: 24px;
+        padding: 22px 20px;
       }
 
       /* Learning */
       .learning-hero {
-        padding: 100px 18px 32px;
+        padding: calc(var(--nav-h) + 20px) calc(16px + var(--safe-left)) 24px calc(16px + var(--safe-right));
       }
 
       .learning-hero h1 {
-        font-size: clamp(32px, 9vw, 52px);
+        font-size: clamp(30px, 8.5vw, 48px);
       }
 
       .learning-hero p {
-        font-size: 15px;
+        font-size: 14px;
       }
 
-      /* Filter bar */
       .filter-bar {
-        padding: 16px 18px;
+        padding: 12px 16px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
         gap: 6px;
+      }
+
+      .filter-bar::-webkit-scrollbar {
+        display: none;
       }
 
       .filter-btn {
         padding: 7px 14px;
         font-size: 10px;
+        min-height: 34px;
       }
 
-      /* Articles */
       .articles-list {
-        margin: 0 18px;
+        margin: 0 16px 24px;
       }
 
       .article-header {
-        padding: 16px 18px;
+        padding: 14px 16px;
         gap: 10px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
       }
 
       .article-ch {
         font-size: 11px;
-        min-width: 48px;
+        min-width: 44px;
       }
 
       .article-title {
-        font-size: 15px;
+        font-size: 14px;
+        line-height: 1.3;
       }
 
       .article-meta {
         font-size: 10px;
-        gap: 6px;
+        gap: 5px;
       }
 
-      .article-meta>span:nth-child(2) {
+      /* hide dot separator on mobile */
+      .article-meta .dot {
         display: none;
       }
 
-      /* hide dot separator */
+      .article-expand {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
 
       .article-body {
-        padding: 0 18px 20px;
+        padding: 4px 16px 20px;
       }
 
       .article-body h3 {
-        font-size: 15px;
+        font-size: 14px;
+        margin: 22px 0 10px;
       }
 
-      .article-body pre {
-        padding: 14px 16px;
+      .article-body h4 {
+        font-size: 13px;
+      }
+
+      .article-body p,
+      .article-body li {
+        font-size: 12.5px;
+      }
+
+      .code-block pre {
+        padding: 12px 44px 12px 14px;
         font-size: 11.5px;
       }
 
-      .article-body pre code {
+      .code-block pre code {
         font-size: 11.5px;
       }
 
-      /* About Me */
+      .copy-btn {
+        top: 6px;
+        right: 6px;
+        padding: 3px 8px;
+        font-size: 9px;
+      }
+
+      /* About me */
       .aboutme-hero {
-        padding: 100px 18px 40px;
-        gap: 32px;
+        padding: calc(var(--nav-h) + 20px) 16px 36px;
+        gap: 28px;
       }
 
       .aboutme-photo {
-        width: 160px;
-        height: 160px;
+        width: 150px;
+        height: 150px;
+        font-size: 56px;
       }
 
       .aboutme-name {
-        font-size: clamp(26px, 7vw, 44px);
+        font-size: clamp(24px, 6.5vw, 40px);
       }
 
       .aboutme-desc {
         font-size: 13px;
       }
 
-      /* Journey */
+      .social-btn {
+        padding: 10px 16px;
+        font-size: 10px;
+      }
+
       .journey-section {
-        padding: 0 18px 48px;
+        padding: 0 16px 44px;
+      }
+
+      .resources-section {
+        padding: 0 16px 44px;
       }
 
       .journey-grid {
@@ -1494,79 +1995,110 @@
       }
 
       .journey-card {
-        padding: 24px;
+        padding: 22px 20px;
       }
 
-      /* Resources */
-      .resources-section {
-        padding: 0 18px 48px;
+      .resource-card {
+        padding: 22px 20px;
       }
 
       .resources-grid {
         grid-template-columns: 1fr;
       }
 
-      .resource-card {
-        padding: 24px;
-      }
-
-      /* Footer */
       footer {
-        padding: 32px 18px;
-        margin-top: 40px;
+        padding: 28px 16px;
+        margin-top: 32px;
       }
 
       .footer-note {
-        padding: 0 18px 20px;
+        padding: 0 16px 16px;
         font-size: 10px;
       }
     }
 
-    /* ════════════════════════════════════════
-       RESPONSIVE — SMALL PHONES (≤ 380px)
-    ════════════════════════════════════════ */
-    @media (max-width: 380px) {
+    /* ═══════════════════════════════════════════════════════
+     SMALL PHONES (≤ 380px)
+  ═══════════════════════════════════════════════════════ */
+    @media (max-width:380px) {
       .hero h1 {
-        font-size: 34px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
+        font-size: 32px;
       }
 
       .stat-num {
-        font-size: 28px;
-      }
-
-      .article-header {
-        gap: 8px;
+        font-size: 26px;
       }
 
       .article-ch {
-        min-width: 40px;
+        min-width: 38px;
         font-size: 10px;
       }
 
       .article-title {
-        font-size: 14px;
+        font-size: 13px;
       }
+
+      .code-block pre code {
+        font-size: 11px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     LANDSCAPE MOBILE
+  ═══════════════════════════════════════════════════════ */
+    @media (max-width:900px) and (orientation: landscape) {
+      .hero {
+        min-height: auto;
+        padding-top: calc(var(--nav-h) + 24px);
+      }
+
+      .about-hero {
+        padding-top: calc(var(--nav-h) + 24px);
+      }
+
+      .learning-hero {
+        padding-top: calc(var(--nav-h) + 20px);
+      }
+
+      .aboutme-hero {
+        padding-top: calc(var(--nav-h) + 20px);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+     FOCUS STYLES (accessibility)
+  ═══════════════════════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
   </style>
 </head>
 
 <body>
+  <!-- Progress bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Custom cursor (desktop) -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
-  <!-- Mobile nav overlay -->
-  <div class="mobile-nav" id="mobileNav">
-    <a href="#" onclick="showPage('home');closeMobileNav();return false;">Home</a>
-    <a href="#" onclick="showPage('about');closeMobileNav();return false;">About</a>
-    <a href="#" onclick="showPage('learning');closeMobileNav();return false;">Chapters</a>
-    <a href="#" onclick="showPage('aboutme');closeMobileNav();return false;">About Me</a>
-    <button class="mobile-cta" onclick="showPage('learning');closeMobileNav()">Study Now</button>
+  <!-- Back to top -->
+  <button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+  <!-- Mobile full-screen overlay nav (tablet) -->
+  <div class="mobile-nav-overlay" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation">
+    <a class="mob-nav-item" href="#" onclick="showPage('home');closeMobileNav();return false;">Home</a>
+    <div class="mob-nav-divider"></div>
+    <a class="mob-nav-item" href="#" onclick="showPage('about');closeMobileNav();return false;">About</a>
+    <div class="mob-nav-divider"></div>
+    <a class="mob-nav-item" href="#" onclick="showPage('learning');closeMobileNav();return false;">Chapters</a>
+    <div class="mob-nav-divider"></div>
+    <a class="mob-nav-item" href="#" onclick="showPage('aboutme');closeMobileNav();return false;">About Me</a>
+    <button class="mob-nav-cta" onclick="showPage('learning');closeMobileNav()">Study Now →</button>
   </div>
 
+  <!-- Desktop / tablet nav -->
   <nav>
     <a href="#" class="nav-logo" onclick="showPage('home');return false;">RH<span>CSA</span></a>
     <ul class="nav-links">
@@ -1576,12 +2108,45 @@
       <li><a href="#" onclick="showPage('aboutme');return false;">About Me</a></li>
     </ul>
     <button class="nav-cta" onclick="showPage('learning')">Study Now</button>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Toggle menu">
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </nav>
 
-  <!-- HOME -->
+  <!-- Bottom nav bar (mobile ≤600px) -->
+  <nav class="bottom-nav" aria-label="Bottom navigation">
+    <button class="bn-item active" id="bn-home" onclick="showPage('home')" aria-label="Home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+      Home
+    </button>
+    <button class="bn-item" id="bn-about" onclick="showPage('about')" aria-label="About">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      About
+    </button>
+    <button class="bn-item" id="bn-learning" onclick="showPage('learning')" aria-label="Chapters">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+        <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+      </svg>
+      Chapters
+    </button>
+    <button class="bn-item" id="bn-aboutme" onclick="showPage('aboutme')" aria-label="About Me">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+      Me
+    </button>
+  </nav>
+
+  <!-- ══════════════════════ HOME ══════════════════════ -->
   <div id="page-home" class="page active">
     <section class="hero">
       <div class="hero-bg"></div>
@@ -1600,6 +2165,7 @@
         </div>
       </div>
     </section>
+
     <div class="stats">
       <div class="stat">
         <div class="stat-num" data-target="16">0</div>
@@ -1618,6 +2184,7 @@
         <div class="stat-label">Topics</div>
       </div>
     </div>
+
     <section class="section">
       <div class="section-label">// Topics Covered</div>
       <div class="section-title">Everything in<br>one place.</div>
@@ -1666,6 +2233,7 @@
         </div>
       </div>
     </section>
+
     <footer>
       <div class="footer-logo">RHCSA STUDY GUIDE</div>
       <div class="footer-copy">Personal Class Notes © 2025</div>
@@ -1675,7 +2243,7 @@
       endorsed by Red Hat.</p>
   </div>
 
-  <!-- ABOUT -->
+  <!-- ══════════════════════ ABOUT ══════════════════════ -->
   <div id="page-about" class="page">
     <div class="about-hero">
       <div>
@@ -1750,13 +2318,14 @@
       only.</p>
   </div>
 
-  <!-- LEARNING -->
+  <!-- ══════════════════════ LEARNING ══════════════════════ -->
   <div id="page-learning" class="page">
     <div class="learning-hero">
       <div class="section-label">// All Chapters</div>
       <h1>Every class.<br>Every command.</h1>
-      <p>Click any chapter to expand full notes. Filter by topic below.</p>
+      <p>Tap any chapter to expand full notes. Filter by topic below.</p>
     </div>
+
     <div class="filter-bar">
       <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
       <button class="filter-btn" onclick="setFilter(this,'essentials')">Essentials</button>
@@ -1767,30 +2336,37 @@
       <button class="filter-btn" onclick="setFilter(this,'networking')">Networking</button>
     </div>
 
-    <div class="articles-list" style="margin-bottom:60px">
+    <div class="articles-list">
 
+      <!-- CH-1 -->
       <div class="article-item" data-topic="essentials">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-1</div>
           <div class="article-title-wrap">
             <div class="article-title">Vim & SSH</div>
-            <div class="article-meta"><span>Shell basics, remote connections, key auth</span><span>·</span><span
-                class="article-badge badge-basic">Beginner</span></div>
+            <div class="article-meta"><span>Shell basics, remote connections, key auth</span><span
+                class="dot">·</span><span class="article-badge badge-basic">Beginner</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Shell Basics</h3>
-          <ul>
-            <li><strong>Bash</strong> = Bourne Again Shell</li>
-            <li><code>~</code> = home directory | <code>root</code> = administrator</li>
-            <li>Command syntax: <code>command [option/argument] [target/path]</code></li>
-          </ul>
-          <h4>Getting Help</h4>
-          <pre><code>command --help        # Show all available options
-man command           # Display the manual page</code></pre>
-          <h3>Essential Commands</h3>
-          <pre><code>ls              # List directory contents
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Shell Basics</h3>
+              <ul>
+                <li><strong>Bash</strong> = Bourne Again Shell</li>
+                <li><code>~</code> = home directory | <code>root</code> = administrator</li>
+                <li>Command syntax: <code>command [option/argument] [target/path]</code></li>
+              </ul>
+              <h4>Getting Help</h4>
+              <div class="code-block">
+                <pre><code>command --help        # Show all available options
+man command           # Display the manual page</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Essential Commands</h3>
+              <div class="code-block">
+                <pre><code>ls              # List directory contents
 ls -l           # Long listing format
 ls -a           # Include hidden files
 ls -t           # Sort by modification time (newest first)
@@ -1803,202 +2379,191 @@ cat file        # Read file content
 head file       # First 10 lines  |  head -n 5 file = first 5
 tail file       # Last 10 lines   |  tail -f file = real-time follow
 more file       # Gradually read whole file
-echo "text"     # Print text or redirect into file</code></pre>
-          <h3>SSH — Secure Shell</h3>
-          <pre><code>ssh username@hostname_or_ip</code></pre>
-          <h4>Key-Based Authentication</h4>
-          <pre><code>ssh-keygen                              # Generate key pair
+echo "text"     # Print text or redirect into file</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>SSH — Secure Shell</h3>
+              <div class="code-block">
+                <pre><code>ssh username@hostname_or_ip</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h4>Key-Based Authentication</h4>
+              <div class="code-block">
+                <pre><code>ssh-keygen                              # Generate key pair
 ssh-copy-id user@remote_hostname        # Copy public key to remote
-ssh user@remote_hostname                # Login without password</code></pre>
-          <h4>SSH-Agent (Cache passphrase)</h4>
-          <pre><code>eval $(ssh-agent)               # Start agent background process
+ssh user@remote_hostname                # Login without password</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h4>SSH-Agent (Cache passphrase)</h4>
+              <div class="code-block">
+                <pre><code>eval $(ssh-agent)               # Start agent background process
 ssh-add .ssh/private_key_name   # Register key with agent
-ssh user@host                   # Connect without passphrase prompt</code></pre>
-          <h4>Non-Default Key</h4>
-          <pre><code>ssh-keygen -f .ssh/mykey
+ssh user@host                   # Connect without passphrase prompt</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h4>Non-Default Key</h4>
+              <div class="code-block">
+                <pre><code>ssh-keygen -f .ssh/mykey
 ssh-copy-id -i .ssh/mykey.pub user@hostname
-ssh -i .ssh/mykey user@hostname</code></pre>
-          <h3>echo — Print & Write Text</h3>
-          <pre><code>echo Hello                      # Print text to terminal
+ssh -i .ssh/mykey user@hostname</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>echo — Print & Write Text</h3>
+              <div class="code-block">
+                <pre><code>echo Hello                      # Print text to terminal
 echo "Hello Linux" > file.txt   # Write to file (overwrites)
-echo "New line" >> file.txt     # Append to file (keeps existing)</code></pre>
-          <h3>more — Read File Gradually</h3>
-          <pre><code>more filename
-# Space → Next page
-# q     → Quit</code></pre>
-          <h3>man — Manual Page Navigation</h3>
-          <pre><code>man ls         # Open manual for ls command
-# Inside man:
-# q       → Quit
-# /word   → Search for word
-# n       → Jump to next search result</code></pre>
-          <h3>Vim Editor — Essential for Administration</h3>
-          <p>Vim is used to edit configuration files, scripts, and system settings. It has three modes:</p>
-          <table>
-            <tr>
-              <th>Mode</th>
-              <th>Purpose</th>
-              <th>How to Enter</th>
-            </tr>
-            <tr>
-              <td>Normal</td>
-              <td>Navigation and commands</td>
-              <td>Default / press Esc</td>
-            </tr>
-            <tr>
-              <td>Insert</td>
-              <td>Type and edit text</td>
-              <td>Press <code>i</code></td>
-            </tr>
-            <tr>
-              <td>Command</td>
-              <td>Save, quit, search</td>
-              <td>Press <code>:</code></td>
-            </tr>
-          </table>
-          <pre><code>vim filename    # Open file in vim</code></pre>
-          <h4>Essential Vim Commands</h4>
-          <table>
-            <tr>
-              <th>Action</th>
-              <th>Command</th>
-            </tr>
-            <tr>
-              <td>Enter Insert Mode</td>
-              <td><code>i</code></td>
-            </tr>
-            <tr>
-              <td>Save</td>
-              <td><code>:w</code></td>
-            </tr>
-            <tr>
-              <td>Quit</td>
-              <td><code>:q</code></td>
-            </tr>
-            <tr>
-              <td>Save &amp; Quit</td>
-              <td><code>:wq</code></td>
-            </tr>
-            <tr>
-              <td>Force Quit (no save)</td>
-              <td><code>:q!</code></td>
-            </tr>
-            <tr>
-              <td>Delete Line</td>
-              <td><code>dd</code></td>
-            </tr>
-            <tr>
-              <td>Copy Line</td>
-              <td><code>yy</code></td>
-            </tr>
-            <tr>
-              <td>Paste</td>
-              <td><code>p</code></td>
-            </tr>
-            <tr>
-              <td>Search</td>
-              <td><code>/word</code></td>
-            </tr>
-          </table>
+echo "New line" >> file.txt     # Append to file (keeps existing)</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Vim Editor — Essential for Administration</h3>
+              <p>Vim is used to edit configuration files, scripts, and system settings. It has three modes:</p>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Mode</th>
+                    <th>Purpose</th>
+                    <th>How to Enter</th>
+                  </tr>
+                  <tr>
+                    <td>Normal</td>
+                    <td>Navigation and commands</td>
+                    <td>Default / press Esc</td>
+                  </tr>
+                  <tr>
+                    <td>Insert</td>
+                    <td>Type and edit text</td>
+                    <td>Press <code>i</code></td>
+                  </tr>
+                  <tr>
+                    <td>Command</td>
+                    <td>Save, quit, search</td>
+                    <td>Press <code>:</code></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="code-block">
+                <pre><code>vim filename    # Open file in vim</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h4>Essential Vim Commands</h4>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Action</th>
+                    <th>Command</th>
+                  </tr>
+                  <tr>
+                    <td>Enter Insert Mode</td>
+                    <td><code>i</code></td>
+                  </tr>
+                  <tr>
+                    <td>Save</td>
+                    <td><code>:w</code></td>
+                  </tr>
+                  <tr>
+                    <td>Quit</td>
+                    <td><code>:q</code></td>
+                  </tr>
+                  <tr>
+                    <td>Save &amp; Quit</td>
+                    <td><code>:wq</code></td>
+                  </tr>
+                  <tr>
+                    <td>Force Quit (no save)</td>
+                    <td><code>:q!</code></td>
+                  </tr>
+                  <tr>
+                    <td>Delete Line</td>
+                    <td><code>dd</code></td>
+                  </tr>
+                  <tr>
+                    <td>Copy Line</td>
+                    <td><code>yy</code></td>
+                  </tr>
+                  <tr>
+                    <td>Paste</td>
+                    <td><code>p</code></td>
+                  </tr>
+                  <tr>
+                    <td>Search</td>
+                    <td><code>/word</code></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-2 -->
       <div class="article-item" data-topic="essentials">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-2</div>
           <div class="article-title-wrap">
             <div class="article-title">Manage Files from the Command Line</div>
-            <div class="article-meta"><span>cp, mv, rm, ln, grep, wildcards</span><span>·</span><span
+            <div class="article-meta"><span>cp, mv, rm, ln, grep, wildcards</span><span class="dot">·</span><span
                 class="article-badge badge-basic">Beginner</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Linux Filesystem Hierarchy</h3>
-          <p>Everything in Linux starts from <code>/</code> (root). Run <code>ls /</code> to see the top level.</p>
-          <table>
-            <tr>
-              <th>Directory</th>
-              <th>Purpose</th>
-            </tr>
-            <tr>
-              <td><code>/boot</code></td>
-              <td>Bootloader files and kernel (vmlinuz)</td>
-            </tr>
-            <tr>
-              <td><code>/dev</code></td>
-              <td>Device files (disk, CPU, keyboard)</td>
-            </tr>
-            <tr>
-              <td><code>/home</code></td>
-              <td>Home directories for regular users</td>
-            </tr>
-            <tr>
-              <td><code>/root</code></td>
-              <td>Home directory of root user</td>
-            </tr>
-            <tr>
-              <td><code>/etc</code></td>
-              <td>Configuration files</td>
-            </tr>
-            <tr>
-              <td><code>/tmp</code></td>
-              <td>Temporary files (world-writable)</td>
-            </tr>
-            <tr>
-              <td><code>/usr/bin</code></td>
-              <td>User command binaries</td>
-            </tr>
-            <tr>
-              <td><code>/usr/sbin</code></td>
-              <td>System administration binaries</td>
-            </tr>
-            <tr>
-              <td><code>/var</code></td>
-              <td>Variable data — logs, spool, cache</td>
-            </tr>
-            <tr>
-              <td><code>/mnt</code></td>
-              <td>Temporary mount point</td>
-            </tr>
-            <tr>
-              <td><code>/media</code></td>
-              <td>Removable devices</td>
-            </tr>
-            <tr>
-              <td><code>/run</code></td>
-              <td>Runtime process data</td>
-            </tr>
-          </table>
-          <h3>Special Path Symbols & Navigation</h3>
-          <table>
-            <tr>
-              <th>Symbol</th>
-              <th>Meaning</th>
-            </tr>
-            <tr>
-              <td><code>.</code></td>
-              <td>Current directory</td>
-            </tr>
-            <tr>
-              <td><code>..</code></td>
-              <td>Parent directory</td>
-            </tr>
-            <tr>
-              <td><code>~</code></td>
-              <td>Home directory</td>
-            </tr>
-            <tr>
-              <td><code>cd</code></td>
-              <td>Move to home directory</td>
-            </tr>
-          </table>
-          <pre><code>cd ..          # Move to parent directory
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Linux Filesystem Hierarchy</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Directory</th>
+                    <th>Purpose</th>
+                  </tr>
+                  <tr>
+                    <td><code>/boot</code></td>
+                    <td>Bootloader files and kernel (vmlinuz)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/dev</code></td>
+                    <td>Device files (disk, CPU, keyboard)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/home</code></td>
+                    <td>Home directories for regular users</td>
+                  </tr>
+                  <tr>
+                    <td><code>/root</code></td>
+                    <td>Home directory of root user</td>
+                  </tr>
+                  <tr>
+                    <td><code>/etc</code></td>
+                    <td>Configuration files</td>
+                  </tr>
+                  <tr>
+                    <td><code>/tmp</code></td>
+                    <td>Temporary files (world-writable)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/usr/bin</code></td>
+                    <td>User command binaries</td>
+                  </tr>
+                  <tr>
+                    <td><code>/usr/sbin</code></td>
+                    <td>System administration binaries</td>
+                  </tr>
+                  <tr>
+                    <td><code>/var</code></td>
+                    <td>Variable data — logs, spool, cache</td>
+                  </tr>
+                </table>
+              </div>
+              <h3>Navigation</h3>
+              <div class="code-block">
+                <pre><code>cd ..          # Move to parent directory
 cd ~           # Move to home directory
 cd /etc        # Move to absolute path
-pwd            # Print current working directory</code></pre>
-          <h3>File Operations</h3>
-          <pre><code>mkdir dir1                  # Create directory
+pwd            # Print current working directory</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>File Operations</h3>
+              <div class="code-block">
+                <pre><code>mkdir dir1                  # Create directory
 mkdir -p dir1/dir2/dir3     # Create full nested path
 touch filename              # Create or update file
 
@@ -2011,61 +2576,42 @@ mv old.txt new.txt          # Rename file
 rm file1                    # Delete file
 rm -r dir1                  # Delete directory
 rm -rf dir1                 # Force delete — no confirmation
-rmdir dir1                  # Remove empty directory only</code></pre>
-          <h3>Links</h3>
-          <h4>Inode Concept</h4>
-          <p>Every file in Linux has an inode number — a unique identifier pointing to file data on disk. Hard links
-            share the same inode. Soft links point to a path.</p>
-          <pre><code>ls -i filename    # Check inode number of a file</code></pre>
-          <table>
-            <tr>
-              <th>Feature</th>
-              <th>Soft Link (Symbolic)</th>
-              <th>Hard Link</th>
-            </tr>
-            <tr>
-              <td>Command</td>
-              <td><code>ln -s target linkname</code></td>
-              <td><code>ln target linkname</code></td>
-            </tr>
-            <tr>
-              <td>Concept</td>
-              <td>Pointer to a path</td>
-              <td>Mirror — same inode</td>
-            </tr>
-            <tr>
-              <td>Original deleted</td>
-              <td>Link breaks</td>
-              <td>Data remains safe</td>
-            </tr>
-            <tr>
-              <td>Cross partition</td>
-              <td>Yes</td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td>Link directory</td>
-              <td>Yes</td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td>Verify</td>
-              <td><code>ls -l</code> shows →</td>
-              <td><code>ls -i</code> same inode</td>
-            </tr>
-          </table>
-          <h3>Shell Expansions</h3>
-          <pre><code>*           # Match everything:    rm *.txt
-?           # Match one char:      ls file?.txt
-[abc]       # Match from list:     ls file[123].txt
-{1..20}     # Brace sequence:      touch file{1..20}.txt
-{A,B,C}     # Brace list:          mkdir project{A,B,C}
-$USER       # Variable expansion:  echo $USER
-$(date)     # Command sub:         echo $(date)
-" "         # Double quote: allows $, backticks
-' '         # Single quote: everything literal</code></pre>
-          <h3>grep</h3>
-          <pre><code>grep "term" file          # Basic search
+rmdir dir1                  # Remove empty directory only</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Links</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Feature</th>
+                    <th>Soft Link (Symbolic)</th>
+                    <th>Hard Link</th>
+                  </tr>
+                  <tr>
+                    <td>Command</td>
+                    <td><code>ln -s target linkname</code></td>
+                    <td><code>ln target linkname</code></td>
+                  </tr>
+                  <tr>
+                    <td>Concept</td>
+                    <td>Pointer to a path</td>
+                    <td>Mirror — same inode</td>
+                  </tr>
+                  <tr>
+                    <td>Original deleted</td>
+                    <td>Link breaks</td>
+                    <td>Data remains safe</td>
+                  </tr>
+                  <tr>
+                    <td>Cross partition</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                  </tr>
+                </table>
+              </div>
+              <h3>grep</h3>
+              <div class="code-block">
+                <pre><code>grep "term" file          # Basic search
 grep -i "term" file       # Case insensitive
 grep -v "term" file       # Invert match
 grep -r "term" folder/    # Recursive
@@ -2073,381 +2619,281 @@ grep -w "word" file       # Whole word only
 grep "^root" /etc/passwd  # Lines starting with root
 grep "bash$" /etc/passwd  # Lines ending with bash
 
-# Combine commands with pipes:
-grep "error" logfile | sort | head    # Filter → sort → top 10</code></pre>
-          <h3>Viewing & Sorting</h3>
-          <pre><code>head -n 5 file    # First 5 lines
-tail -n 5 file    # Last 5 lines
-tail -f file      # Real-time follow (logs)
-sort file         # Alphabetical sort
-sort -n file      # Numeric sort
-sort -u file      # Remove duplicates</code></pre>
+grep "error" logfile | sort | head    # Filter → sort → top 10</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-3 -->
       <div class="article-item" data-topic="essentials">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-3</div>
           <div class="article-title-wrap">
             <div class="article-title">Users & Groups</div>
-            <div class="article-meta"><span>useradd, usermod, sudo, /etc/shadow, chage</span><span>·</span><span
-                class="article-badge badge-inter">Intermediate</span></div>
+            <div class="article-meta"><span>useradd, usermod, sudo, /etc/shadow, chage</span><span
+                class="dot">·</span><span class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>User Types</h3>
-          <table>
-            <tr>
-              <th>Type</th>
-              <th>UID Range</th>
-              <th>Description</th>
-            </tr>
-            <tr>
-              <td>Superuser (root)</td>
-              <td>0</td>
-              <td>Full system control</td>
-            </tr>
-            <tr>
-              <td>System User</td>
-              <td>1–999</td>
-              <td>Used by services/daemons</td>
-            </tr>
-            <tr>
-              <td>Regular User</td>
-              <td>1000–60000</td>
-              <td>Normal login users</td>
-            </tr>
-          </table>
-          <pre><code>id username    # Check UID, GID and group memberships</code></pre>
-          <h3>Primary vs Secondary Groups</h3>
-          <ul>
-            <li><strong>Primary Group</strong> — Default group assigned when user is created. New files created by the
-              user belong to this group.</li>
-            <li><strong>Secondary Group</strong> — Additional groups a user can join for extra access permissions.</li>
-          </ul>
-          <pre><code>id root        # Check root's UID, GID and groups
-id username    # Check any user's UID, GID and group memberships</code></pre>
-          <h3>/etc/passwd Format</h3>
-          <pre><code>username : x : UID : GID : /home/dir : /bin/shell
-# x = password stored in /etc/shadow</code></pre>
-          <h3>Create Users</h3>
-          <pre><code>useradd username       # Create new user
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>User Types</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Type</th>
+                    <th>UID Range</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>Superuser (root)</td>
+                    <td>0</td>
+                    <td>Full system control</td>
+                  </tr>
+                  <tr>
+                    <td>System User</td>
+                    <td>1–999</td>
+                    <td>Used by services/daemons</td>
+                  </tr>
+                  <tr>
+                    <td>Regular User</td>
+                    <td>1000–60000</td>
+                    <td>Normal login users</td>
+                  </tr>
+                </table>
+              </div>
+              <h3>Create & Modify Users</h3>
+              <div class="code-block">
+                <pre><code>useradd username       # Create new user
 passwd username        # Set password
-useradd --help         # View all options</code></pre>
-          <h3>usermod — Modify User</h3>
-          <pre><code>usermod -l newname oldname           # Rename
-usermod -g groupname username        # Change primary group
+
+usermod -l newname oldname           # Rename
 usermod -aG groupname username       # Add secondary group
-usermod -aG group1,group2 username   # Multiple groups
-usermod -d /new/home username        # Change home dir
-usermod -d /new/home -m username     # Change + move files
+usermod -d /new/home -m username     # Change + move home
 usermod -s /bin/bash username        # Change shell
 usermod -L username                  # Lock account
 usermod -U username                  # Unlock account
-usermod -u 3005 username             # Change UID
-usermod -e YYYY-MM-DD username       # Set expiry date
-usermod -f days username             # Inactive days after password expiry
-usermod -c "Full Name" username      # Set comment</code></pre>
-          <div class="warn">⚠️ Always use <code>-a</code> with <code>-G</code>. Without <code>-a</code>, all existing
-            group memberships are overwritten.</div>
-          <h3>groupmod</h3>
-          <pre><code>groupmod -n newgroup oldgroup    # Rename group
-groupmod -g newGID groupname     # Change GID
-# Group info: /etc/group</code></pre>
-          <h3>SUDO</h3>
-          <pre><code>visudo    # Edit sudoers safely
+usermod -e YYYY-MM-DD username       # Set expiry date</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <div class="warn">⚠️ Always use <code>-a</code> with <code>-G</code>. Without <code>-a</code>, all
+                existing group memberships are overwritten.</div>
+              <h3>SUDO</h3>
+              <div class="code-block">
+                <pre><code>visudo    # Edit sudoers safely
 
 username ALL=(ALL) ALL           # Grant sudo to user
 %groupname ALL=(ALL) ALL         # Grant sudo to group
-username ALL=(ALL) NOPASSWD:ALL  # Skip password prompt</code></pre>
-          <h3>Switch Users</h3>
-          <pre><code>su username       # Switch (no env load)
+username ALL=(ALL) NOPASSWD:ALL  # Skip password prompt</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Switch Users</h3>
+              <div class="code-block">
+                <pre><code>su username       # Switch (no env load)
 su - username     # Switch with full environment
-su -              # Switch to root (needs root password)
-sudo -i           # Switch to root using your own password</code></pre>
-          <h3>/etc/shadow — Password Storage</h3>
-          <p>All encrypted passwords are stored in <code>/etc/shadow</code>. Never edit this file directly.</p>
-          <pre><code>root:$6$hashvalue:19130:0:99999:7:::</code></pre>
-          <table>
-            <tr>
-              <th>Field</th>
-              <th>Meaning</th>
-            </tr>
-            <tr>
-              <td>Encrypted Password</td>
-              <td>Hashed password value</td>
-            </tr>
-            <tr>
-              <td>Last Password Change</td>
-              <td>Days since Jan 1, 1970</td>
-            </tr>
-            <tr>
-              <td>Minimum Age</td>
-              <td>Days before password can be changed</td>
-            </tr>
-            <tr>
-              <td>Maximum Age</td>
-              <td>Password validity duration</td>
-            </tr>
-            <tr>
-              <td>Warning Days</td>
-              <td>Days before expiry to warn user</td>
-            </tr>
-            <tr>
-              <td>Inactive Days</td>
-              <td>Grace period after expiry</td>
-            </tr>
-            <tr>
-              <td>Expiry Date</td>
-              <td>Account expiry date</td>
-            </tr>
-          </table>
-          <h3>Password Policy</h3>
-          <pre><code>chage username       # Interactive policy editor
+sudo -i           # Switch to root using your own password</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>/etc/shadow — Password Storage</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Field</th>
+                    <th>Meaning</th>
+                  </tr>
+                  <tr>
+                    <td>Encrypted Password</td>
+                    <td>Hashed password value</td>
+                  </tr>
+                  <tr>
+                    <td>Last Password Change</td>
+                    <td>Days since Jan 1, 1970</td>
+                  </tr>
+                  <tr>
+                    <td>Minimum Age</td>
+                    <td>Days before password can be changed</td>
+                  </tr>
+                  <tr>
+                    <td>Maximum Age</td>
+                    <td>Password validity duration</td>
+                  </tr>
+                  <tr>
+                    <td>Warning Days</td>
+                    <td>Days before expiry to warn user</td>
+                  </tr>
+                </table>
+              </div>
+              <h3>Password Policy</h3>
+              <div class="code-block">
+                <pre><code>chage username       # Interactive policy editor
 chage -l username    # List current policy
-chage -d 0 username  # Force password change at next login
-date -d "240 days"   # Calculate future date
-# Future user defaults: /etc/login.defs
-# Defines: PASS_MAX_DAYS, PASS_MIN_DAYS, PASS_WARN_AGE</code></pre>
-          <div class="note">💡 Always verify changes using <code>id username</code> and <code>chage -l username</code>
-            after modifications.</div>
+chage -d 0 username  # Force password change at next login</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <div class="note">💡 Always verify changes using <code>id username</code> and
+                <code>chage -l username</code> after modifications.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-4 -->
       <div class="article-item" data-topic="security">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-4</div>
           <div class="article-title-wrap">
             <div class="article-title">File Access Control — DAC</div>
-            <div class="article-meta"><span>chmod, chown, SUID, SGID, sticky bit, umask</span><span>·</span><span
-                class="article-badge badge-inter">Intermediate</span></div>
+            <div class="article-meta"><span>chmod, chown, SUID, SGID, sticky bit, umask</span><span
+                class="dot">·</span><span class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Access Control Models</h3>
-          <table>
-            <tr>
-              <th>Model</th>
-              <th>Name</th>
-              <th>How it Works</th>
-            </tr>
-            <tr>
-              <td><strong>DAC</strong></td>
-              <td>Discretionary Access Control</td>
-              <td>File owner decides who can access. Standard rwx permissions (chmod/chown).</td>
-            </tr>
-            <tr>
-              <td><strong>MAC</strong></td>
-              <td>Mandatory Access Control</td>
-              <td>System-wide policies enforced by SELinux. Controls how processes interact with resources regardless of
-                standard permissions.</td>
-            </tr>
-          </table>
-          <div class="note">💡 Both DAC and MAC must allow access. SELinux (MAC) adds an extra layer on top of standard
-            permissions (DAC).</div>
-          <h3>Reading Permissions</h3>
-          <pre><code>ls -l filename
-
--rwxrwxrwx
- │││││││││
- ││││││└└└── Others (r,w,x)
- │││└└└───── Group  (r,w,x)
- └└└──────── User   (r,w,x)</code></pre>
-          <h3>Permission Meanings</h3>
-          <table>
-            <tr>
-              <th>Permission</th>
-              <th>On a File</th>
-              <th>On a Directory</th>
-            </tr>
-            <tr>
-              <td>r (read)</td>
-              <td>View file content</td>
-              <td>List directory contents (ls)</td>
-            </tr>
-            <tr>
-              <td>w (write)</td>
-              <td>Modify file content</td>
-              <td>Create/delete files inside</td>
-            </tr>
-            <tr>
-              <td>x (execute)</td>
-              <td>Run as program/script</td>
-              <td>Enter directory (cd into it)</td>
-            </tr>
-          </table>
-          <h3>Symbolic Method</h3>
-          <pre><code>chmod u+x file       # Add execute for user
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Permission Meanings</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Permission</th>
+                    <th>On a File</th>
+                    <th>On a Directory</th>
+                  </tr>
+                  <tr>
+                    <td>r (read)</td>
+                    <td>View file content</td>
+                    <td>List directory contents (ls)</td>
+                  </tr>
+                  <tr>
+                    <td>w (write)</td>
+                    <td>Modify file content</td>
+                    <td>Create/delete files inside</td>
+                  </tr>
+                  <tr>
+                    <td>x (execute)</td>
+                    <td>Run as program/script</td>
+                    <td>Enter directory (cd into it)</td>
+                  </tr>
+                </table>
+              </div>
+              <h3>Symbolic Method</h3>
+              <div class="code-block">
+                <pre><code>chmod u+x file       # Add execute for user
 chmod g-w file       # Remove write from group
 chmod o=r file       # Set others to read only
 chmod a+x file       # Add execute for all
-
-# Set all at once:
-chmod u=rwx,g=rx,o=r file    # User=rwx, Group=r-x, Others=r--</code></pre>
-          <h3>Octal Method</h3>
-          <table>
-            <tr>
-              <th>Permission</th>
-              <th>Value</th>
-            </tr>
-            <tr>
-              <td>read (r)</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <td>write (w)</td>
-              <td>2</td>
-            </tr>
-            <tr>
-              <td>execute (x)</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>all (rwx)</td>
-              <td>7</td>
-            </tr>
-          </table>
-          <pre><code>chmod 755 file    # rwxr-xr-x
+chmod u=rwx,g=rx,o=r file    # Set all at once</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Octal Method</h3>
+              <div class="code-block">
+                <pre><code>chmod 755 file    # rwxr-xr-x
 chmod 644 file    # rw-r--r--
 chmod 700 file    # rwx------ (only owner has full access)
-chmod 777 file    # rwxrwxrwx</code></pre>
-          <h3>Ownership</h3>
-          <pre><code>chown user file            # Change user ownership
+chmod 777 file    # rwxrwxrwx</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Ownership</h3>
+              <div class="code-block">
+                <pre><code>chown user file            # Change user ownership
 chown user:group file      # Change user and group
-chown :group file          # Change group only (colon syntax)
-chgrp groupname file       # Change group only (alternative)</code></pre>
-          <h3>Special Permissions</h3>
-          <h4>SUID (runs as file owner)</h4>
-          <pre><code>chmod u+s file    # Set SUID
+chown :group file          # Change group only
+chgrp groupname file       # Change group only (alternative)</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Special Permissions</h3>
+              <div class="code-block">
+                <pre><code># SUID (runs as file owner)
+chmod u+s file    # Set SUID
 chmod 4744 file   # Set SUID (octal prefix 4)
-chmod u-s file    # Remove SUID
-chmod 0744 file   # Remove SUID (octal)</code></pre>
-          <h4>SGID — on Files vs Directories</h4>
-          <ul>
-            <li><strong>On files</strong> — File runs with the group owner's privileges</li>
-            <li><strong>On directories</strong> — New files created inside inherit the directory's group ownership</li>
-          </ul>
-          <pre><code>chmod g+s path    # Set SGID
+
+# SGID
+chmod g+s path    # Set SGID
 chmod 2744 file   # Set SGID (octal prefix 2)
-chmod g-s path    # Remove SGID</code></pre>
-          <h4>Sticky Bit</h4>
-          <pre><code>ls -ld /tmp       # /tmp uses sticky bit
+
+# Sticky Bit (/tmp uses this)
 chmod o+t path    # Set sticky bit
-chmod 1744 file   # Set sticky bit (octal prefix 1)
-chmod o-t path    # Remove sticky bit</code></pre>
-          <div class="warn">⚠️ In production: avoid 777, use SGID for collaborative directories, use sticky bit for
-            shared writable directories like /tmp.</div>
-          <h3>Default Permissions — umask</h3>
-          <pre><code>umask             # Check current umask
-# Default perm = Max - umask (file max=666, dir max=777)
-umask 027         # Set temporarily
+chmod 1744 file   # Set sticky bit (octal prefix 1)</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <div class="warn">⚠️ In production: avoid 777, use SGID for collaborative directories, use sticky bit for
+                shared writable directories like /tmp.</div>
+              <h3>Default Permissions — umask</h3>
+              <div class="code-block">
+                <pre><code>umask             # Check current umask
+umask 027         # Set temporarily (file max=666, dir max=777)
 # User-specific: add to ~/.bashrc
-# Global: add to /etc/profile</code></pre>
-          <div class="note">💡 User-specific umask always takes priority over the global setting.</div>
+# Global: add to /etc/profile</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-6 -->
       <div class="article-item" data-topic="services">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-6</div>
           <div class="article-title-wrap">
             <div class="article-title">Processes, Monitoring & Task Scheduling</div>
-            <div class="article-meta"><span>ps, top, kill, nice, crontab, at, tuned</span><span>·</span><span
-                class="article-badge badge-inter">Intermediate</span></div>
+            <div class="article-meta"><span>ps, top, kill, nice, crontab, at, tuned</span><span
+                class="dot">·</span><span class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Process Types</h3>
-          <ul>
-            <li><strong>Foreground</strong> — Attached to terminal. Example: <code>vim file.txt</code></li>
-            <li><strong>Background</strong> — Detached. Append <code>&amp;</code>. Example: <code>firefox &amp;</code>
-            </li>
-          </ul>
-          <h3>Job Control</h3>
-          <pre><code>command &     # Start in background
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Job Control</h3>
+              <div class="code-block">
+                <pre><code>command &     # Start in background
 jobs          # List shell jobs
 fg %1         # Bring job 1 to foreground
 bg %1         # Resume stopped job in background
 Ctrl-Z        # Suspend current foreground process
-disown %1     # Remove job from shell table</code></pre>
-          <h3>Process Listing</h3>
-          <pre><code>ps                         # Processes in current terminal
-ps -l                      # Long format (STAT, PPID, PRI, NI)
+disown %1     # Remove job from shell table</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Process Listing</h3>
+              <div class="code-block">
+                <pre><code>ps                         # Processes in current terminal
 ps aux                     # All processes, all users
-ps -o pid,ppid,uid,cmd     # Custom columns
 pgrep firefox              # Find PID by name
-pidof sshd                 # PID of a service
 pstree                     # Process tree
-top                        # Real-time viewer
-htop                       # Enhanced real-time viewer</code></pre>
-          <h3>Process States</h3>
-          <table>
-            <tr>
-              <th>State</th>
-              <th>Meaning</th>
-            </tr>
-            <tr>
-              <td>R</td>
-              <td>Running or runnable</td>
-            </tr>
-            <tr>
-              <td>S</td>
-              <td>Sleeping (waiting for event)</td>
-            </tr>
-            <tr>
-              <td>D</td>
-              <td>Uninterruptible sleep (I/O wait — cannot be killed)</td>
-            </tr>
-            <tr>
-              <td>T</td>
-              <td>Stopped or traced</td>
-            </tr>
-            <tr>
-              <td>Z</td>
-              <td>Zombie — finished but parent hasn't collected exit status</td>
-            </tr>
-          </table>
-          <h3>Signals & Kill</h3>
-          <pre><code>kill &lt;PID&gt;             # SIGTERM — polite stop
+top                        # Real-time viewer</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Signals & Kill</h3>
+              <div class="code-block">
+                <pre><code>kill &lt;PID&gt;             # SIGTERM — polite stop
 kill -9 &lt;PID&gt;          # SIGKILL — immediate force kill
 kill -SIGSTOP &lt;PID&gt;    # Suspend process
 kill -SIGCONT &lt;PID&gt;    # Resume suspended process
-kill -l                 # List all signal names
 pkill processname       # Kill by name
-killall processname     # Kill all with exact name</code></pre>
-          <h3>Load Monitoring</h3>
-          <pre><code>uptime     # Shows: current time, uptime, load averages
-lscpu      # CPU count — check CPU(s): field</code></pre>
-          <div class="note">💡 Formula: <strong>Load Average ÷ Number of CPUs</strong><br>Example: Load=5.2, CPUs=4 →
-            5.2÷4 = 1.3 → ~30% overloaded.</div>
-          <h3>Priority — nice & renice</h3>
-          <p>Range: <strong>-20</strong> (highest) to <strong>+19</strong> (lowest). Default = 0.</p>
-          <pre><code>nice -n 10 command         # Start with lower priority
-renice -n -5 -p 12345      # Change running process priority
-ps -l                       # View NI column</code></pre>
-          <div class="warn">⚠️ Only root can set negative nice values.</div>
-          <h3>Tuned — Performance Profiles</h3>
-          <pre><code>tuned-adm active                         # Check active profile
-tuned-adm recommend                      # System-suggested profile
-tuned-adm profile virtual-guest          # Apply virtual-guest profile
-tuned-adm profile throughput-performance # Apply throughput profile
-tuned-adm profile balanced               # Apply balanced profile
-systemctl status tuned.service           # Check tuned is running</code></pre>
-          <h3>at — One-Time Scheduling</h3>
-          <div class="note">💡 Requires <code>atd</code> service: <code>systemctl enable atd --now</code></div>
-          <pre><code>at 07:40              # Schedule at specific time
-at now + 5 minutes    # Relative scheduling
-at tomorrow           # Tomorrow same time
-at 10:00 Jan 25       # Specific date
-atq                   # View pending jobs
-atrm 1                # Remove job ID 1</code></pre>
-          <h3>crontab — Recurring Scheduling</h3>
-          <div class="note">💡 Requires <code>cronie</code> package: <code>systemctl enable crond --now</code></div>
-          <pre><code># Cron syntax:
-# ┌─────── Minute     (0-59)
+killall processname     # Kill all with exact name</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Load Monitoring</h3>
+              <div class="code-block">
+                <pre><code>uptime     # Shows: current time, uptime, load averages
+lscpu      # CPU count — check CPU(s): field</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <div class="note">💡 Formula: <strong>Load Average ÷ Number of CPUs</strong>. If result &gt; 1 → CPU
+                demand exceeds capacity.</div>
+              <h3>Priority — nice & renice</h3>
+              <div class="code-block">
+                <pre><code>nice -n 10 command         # Start with lower priority (-20=highest, +19=lowest)
+renice -n -5 -p 12345      # Change running process priority</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>crontab — Recurring Scheduling</h3>
+              <div class="code-block">
+                <pre><code># ┌─────── Minute     (0-59)
 # │ ┌───── Hour       (0-23)
 # │ │ ┌─── DayOfMonth (1-31)
 # │ │ │ ┌─ Month      (1-12)
@@ -2458,53 +2904,42 @@ crontab -e           # Edit cron jobs
 crontab -l           # List cron jobs
 crontab -r           # Remove ALL cron jobs
 
-# Every minute:
-* * * * * echo "hello" >> /tmp/cron.txt
+*/2 * * * * echo "every 2 minutes"
+0 17-19 * * 3 echo "5-7pm Wednesdays"
+0 16 * * 2,4 echo "4pm Tue and Thu"
 
-# Every 2 minutes (/ = interval):
-*/2 * * * * echo "task running"
-
-# Between 5 PM-7 PM on Wednesday (- = range):
-0 17-19 * * 3 echo "evening task"
-
-# Tuesday and Thursday at 4 PM (, = multiple values):
-0 16 * * 2,4 echo "weekly task"
-
-# Always redirect output for debugging:
-* * * * * /scripts/backup.sh >> /var/log/backup.log 2>&1</code></pre>
-          <h3>Anacron — Catch Missed Jobs</h3>
-          <pre><code>vim /etc/anacrontab    # Anacron configuration
-
-/etc/cron.daily/      # Run daily
-/etc/cron.weekly/     # Run weekly
-/etc/cron.monthly/    # Run monthly</code></pre>
+* * * * * /scripts/backup.sh >> /var/log/backup.log 2>&1</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>at — One-Time Scheduling</h3>
+              <div class="code-block">
+                <pre><code>at 07:40              # Schedule at specific time
+at now + 5 minutes    # Relative scheduling
+atq                   # View pending jobs
+atrm 1                # Remove job ID 1</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-8 -->
       <div class="article-item" data-topic="services">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-8</div>
           <div class="article-title-wrap">
             <div class="article-title">Install & Update Software Packages</div>
-            <div class="article-meta"><span>dnf, yum, rpm, repositories</span><span>·</span><span
+            <div class="article-meta"><span>dnf, yum, rpm, repositories</span><span class="dot">·</span><span
                 class="article-badge badge-basic">Beginner</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>What is a Package?</h3>
-          <p>A package is a bundled collection of: binary files, libraries, configuration files, dependencies, and
-            documentation. Example: <code>httpd</code> contains the Apache web server binary, config files, and modules.
-          </p>
-          <h3>Package Managers</h3>
-          <ul>
-            <li><strong>rpm</strong> — Low-level, installs .rpm files directly, no dependency resolution</li>
-            <li><strong>yum</strong> — Package resolver (older, RHEL 7)</li>
-            <li><strong>dnf</strong> — Current default in RHEL 9, faster and more efficient</li>
-          </ul>
-          <p>Repository files (.repo extension) stored in: <code>/etc/yum.repos.d/</code></p>
-          <h3>Core DNF Commands</h3>
-          <pre><code>dnf install packagename         # Install
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Core DNF Commands</h3>
+              <div class="code-block">
+                <pre><code>dnf install packagename         # Install
 dnf remove packagename          # Remove
 dnf info packagename            # View package info
 dnf list installed              # List all installed packages
@@ -2513,141 +2948,126 @@ dnf provides commandname        # Find what package provides a command
 dnf history                     # View transaction history
 dnf history undo 5              # Undo transaction ID 5
 dnf update                      # Update all
-dnf upgrade                     # Update + remove obsolete</code></pre>
-          <h3>Package Groups</h3>
-          <pre><code>dnf group list                  # List all package groups
+dnf upgrade                     # Update + remove obsolete</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Package Groups</h3>
+              <div class="code-block">
+                <pre><code>dnf group list                  # List all package groups
 dnf group info "Web Server"     # Info about a group
-dnf group install "Web Server"  # Install a group</code></pre>
-          <h3>Repository Management</h3>
-          <pre><code>dnf repolist             # Check all configured repositories
-dnf repolist enabled     # Show only enabled repos
+dnf group install "Web Server"  # Install a group</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Repository Management</h3>
+              <div class="code-block">
+                <pre><code>dnf repolist             # Check all configured repositories
 
 vim /etc/yum.repos.d/myrepo.repo
-
-[myrepo]
-name=My Repo
-baseurl=http://your_repo_url/
-enabled=1
-gpgcheck=0</code></pre>
+# [myrepo]
+# name=My Repo
+# baseurl=http://your_repo_url/
+# enabled=1
+# gpgcheck=0</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-9 -->
       <div class="article-item" data-topic="storage">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-9</div>
           <div class="article-title-wrap">
             <div class="article-title">Basic Storage & Partitions</div>
-            <div class="article-meta"><span>fdisk, mkfs, mount, fstab, swap</span><span>·</span><span
+            <div class="article-meta"><span>fdisk, mkfs, mount, fstab, swap</span><span class="dot">·</span><span
                 class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Check Storage</h3>
-          <pre><code>lsblk           # List block devices and partitions
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Check Storage</h3>
+              <div class="code-block">
+                <pre><code>lsblk           # List block devices and partitions
 lsblk -f        # Show filesystem type and UUID
 lsblk -fp       # Full path + filesystem type + UUID
 df -h           # Disk usage of mounted filesystems
-free -h         # RAM and swap usage</code></pre>
-          <h3>Partition Schemes</h3>
-          <table>
-            <tr>
-              <th>Scheme</th>
-              <th>Max Partitions</th>
-              <th>Max Size</th>
-              <th>Type</th>
-            </tr>
-            <tr>
-              <td>MBR (dos)</td>
-              <td>15</td>
-              <td>2 TB</td>
-              <td>Oldest, BIOS/UEFI</td>
-            </tr>
-            <tr>
-              <td>GPT</td>
-              <td>128</td>
-              <td>8 Zettabytes</td>
-              <td>New, UEFI</td>
-            </tr>
-          </table>
-          <h3>Create Partition with fdisk</h3>
-          <pre><code>fdisk /dev/sdb     # Open disk
+free -h         # RAM and swap usage</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Create Partition with fdisk</h3>
+              <div class="code-block">
+                <pre><code>fdisk /dev/sdb     # Open disk
 # n = new partition
 # p = primary (Enter for default)
 # Enter = accept default first sector
 # +2G = set size
 # p = print/verify
 # w = write and exit
-
-partprobe          # Notify kernel</code></pre>
-          <h3>Format & Mount</h3>
-          <pre><code>mkfs.xfs /dev/sdb1         # Format as XFS
+partprobe          # Notify kernel</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Format & Mount</h3>
+              <div class="code-block">
+                <pre><code>mkfs.xfs /dev/sdb1         # Format as XFS
 mkfs.ext4 /dev/sdb1        # Format as EXT4
 
 mkdir /mnt/data1
 mount /dev/sdb1 /mnt/data1    # Temporary mount
-df -h                          # Verify</code></pre>
-          <h3>Filesystem Types</h3>
-          <table>
-            <tr>
-              <th>Filesystem</th>
-              <th>Usage</th>
-            </tr>
-            <tr>
-              <td>XFS</td>
-              <td>Default in RHEL 9, high performance, cannot be reduced</td>
-            </tr>
-            <tr>
-              <td>ext4</td>
-              <td>General purpose, supports reduce</td>
-            </tr>
-            <tr>
-              <td>FAT32</td>
-              <td>USB drives (max file size 4GB)</td>
-            </tr>
-            <tr>
-              <td>NTFS</td>
-              <td>Windows filesystem</td>
-            </tr>
-          </table>
-          <h3>Permanent Mount — /etc/fstab</h3>
-          <pre><code>vim /etc/fstab
+df -h                          # Verify</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Permanent Mount — /etc/fstab</h3>
+              <div class="code-block">
+                <pre><code>vim /etc/fstab
 /dev/sdb1  /mnt/data1  ext4  defaults  0  0
 
 systemctl daemon-reload
 mount -a        # Test (no output = success)
-df -h           # Verify</code></pre>
-          <div class="note">💡 In production, use UUID instead of device name in /etc/fstab. Get UUID with:
-            <code>lsblk -f</code></div>
-          <h3>Complete Storage Workflow</h3>
-          <pre><code># 1. Detect disk:      lsblk
+df -h           # Verify</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <div class="note">💡 Use UUID instead of device name in /etc/fstab in production. Get UUID:
+                <code>lsblk -f</code>
+              </div>
+              <h3>Complete Storage Workflow</h3>
+              <div class="code-block">
+                <pre><code># 1. Detect disk:      lsblk
 # 2. Create partition: fdisk → n → size → w → partprobe
 # 3. Format:           mkfs.xfs /dev/sdXN
 # 4. Mount point:      mkdir /mnt/data
 # 5. Temp mount:       mount /dev/sdXN /mnt/data
 # 6. Make permanent:   vim /etc/fstab → add entry
 # 7. Test:             systemctl daemon-reload && mount -a
-# 8. Verify:           df -h</code></pre>
+# 8. Verify:           df -h</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-10 -->
       <div class="article-item" data-topic="storage">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-10</div>
           <div class="article-title-wrap">
             <div class="article-title">LVM — Logical Volume Manager</div>
-            <div class="article-meta"><span>PV → VG → LV, extend, reduce, delete</span><span>·</span><span
+            <div class="article-meta"><span>PV → VG → LV, extend, reduce, delete</span><span class="dot">·</span><span
                 class="article-badge badge-adv">Advanced</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>LVM Hierarchy</h3>
-          <pre><code>Disk → Partition → PV → VG → LV → Filesystem → Mount Point</code></pre>
-          <div class="note">💡 Memory code: <strong>PPVLMF</strong> — Partition → PV → VG → LV → Mount → Filesystem
-          </div>
-          <h3>Part A — Create LVM</h3>
-          <pre><code># 1. Create LVM partition
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>LVM Hierarchy</h3>
+              <div class="code-block">
+                <pre><code>Disk → Partition → PV → VG → LV → Filesystem → Mount Point</code></pre><button
+                  class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <div class="note">💡 Memory code: <strong>PPVLMF</strong> — Partition → PV → VG → LV → Mount → Filesystem
+              </div>
+              <h3>Part A — Create LVM</h3>
+              <div class="code-block">
+                <pre><code># 1. Create LVM partition
 fdisk /dev/sdb  →  n → Enter → +1G → t → 8e(MBR) → w
 partprobe
 
@@ -2671,146 +3091,156 @@ mkfs.xfs /dev/myvg/mylv
 mkdir /mnt/data
 vim /etc/fstab
 # /dev/myvg/mylv  /mnt/data  xfs  defaults  0  0
-mount -a
-df -h</code></pre>
-          <h3>Part B — Extend</h3>
-          <pre><code>lvextend -L +1G /dev/myvg/mylv         # Extend by size
+mount -a && df -h</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Part B — Extend</h3>
+              <div class="code-block">
+                <pre><code>lvextend -L +1G /dev/myvg/mylv         # Extend by size
 lvextend -L +500M -r /dev/myvg/mylv    # -r also resizes filesystem
 
 xfs_growfs /dev/myvg/mylv              # Resize XFS manually
-resize2fs /mnt/data                     # Resize EXT manually</code></pre>
-          <div class="note">💡 Always check VG free space before extending: <code>vgdisplay</code></div>
-          <h3>Part C — Reduce</h3>
-          <div class="warn">⚠️ XFS cannot be reduced. Only EXT2/3/4 supports reduction. Always backup before reducing.
-          </div>
-          <pre><code>umount /mnt/data
+resize2fs /mnt/data                     # Resize EXT manually</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Part C — Reduce (EXT only)</h3>
+              <div class="warn">⚠️ XFS cannot be reduced. Only EXT2/3/4 supports reduction. Always backup before
+                reducing.</div>
+              <div class="code-block">
+                <pre><code>umount /mnt/data
 fsck /dev/myvg/mylv
 resize2fs /dev/myvg/mylv 3G
 lvreduce -L 3G /dev/myvg/mylv
-mount -a</code></pre>
-          <h3>Part D — Delete (Reverse Order)</h3>
-          <pre><code>umount /mnt/data
+mount -a</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Part D — Delete (Reverse Order)</h3>
+              <div class="code-block">
+                <pre><code>umount /mnt/data
 vim /etc/fstab              # Remove entry
 systemctl daemon-reload
 lvremove /dev/myvg/mylv
 vgremove myvg
-pvremove /dev/sdb1</code></pre>
+pvremove /dev/sdb1</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-11 -->
       <div class="article-item" data-topic="services">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-11</div>
           <div class="article-title-wrap">
             <div class="article-title">Boot Process & systemd Services</div>
-            <div class="article-meta"><span>systemctl, targets, boot stages, password recovery</span><span>·</span><span
-                class="article-badge badge-adv">Advanced</span></div>
+            <div class="article-meta"><span>systemctl, targets, boot stages, password recovery</span><span
+                class="dot">·</span><span class="article-badge badge-adv">Advanced</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>What is a Service / Daemon?</h3>
-          <p>A <strong>service</strong> is a program running in the background. <strong>systemd</strong> is always the
-            first process started during boot — always <strong>PID 1</strong>.</p>
-          <h3>systemd Service Management</h3>
-          <pre><code>systemctl start httpd              # Start service
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>systemd Service Management</h3>
+              <div class="code-block">
+                <pre><code>systemctl start httpd              # Start service
 systemctl stop httpd               # Stop service
 systemctl status httpd             # Check status
-systemctl enable httpd             # Enable at boot
-systemctl disable httpd            # Disable at boot
 systemctl enable httpd --now       # Enable + start immediately
 systemctl disable httpd --now      # Disable + stop immediately
 systemctl restart httpd            # Stop + start
 systemctl reload httpd             # Reload config (no stop)
 systemctl mask httpd               # Block from starting at all
-systemctl unmask httpd             # Remove block</code></pre>
-          <h3>Targets — System Modes</h3>
-          <pre><code>systemctl get-default                        # Check default
+systemctl unmask httpd             # Remove block</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Targets — System Modes</h3>
+              <div class="code-block">
+                <pre><code>systemctl get-default                        # Check default
 systemctl set-default multi-user.target      # Set CLI default
 systemctl set-default graphical.target       # Set GUI default
-systemctl isolate multi-user.target          # Switch to CLI now</code></pre>
-          <h3>Linux Boot Sequence</h3>
-          <ol>
-            <li><strong>BIOS/UEFI</strong> — POST, hardware check, finds bootloader</li>
-            <li><strong>GRUB2</strong> — Shows boot menu, loads kernel + initramfs</li>
-            <li><strong>Kernel</strong> — Detects hardware, starts systemd (PID 1)</li>
-            <li><strong>initramfs</strong> — Temporary root filesystem for early boot</li>
-            <li><strong>systemd</strong> — Reads default target, starts services</li>
-            <li><strong>Login</strong> — CLI or GUI based on target</li>
-          </ol>
-          <h3>Root Password Recovery</h3>
-          <pre><code># 1. Reboot: reboot
-# 2. At GRUB menu: press Up/Down to stop countdown
-# 3. Press 'e' to edit boot entry
-# 4. Find line starting with 'linux', press End key
-# 5. Add at end of that line: rd.break
-# 6. Press Ctrl+X to boot into emergency shell
+systemctl isolate multi-user.target          # Switch to CLI now</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Linux Boot Sequence</h3>
+              <ol>
+                <li><strong>BIOS/UEFI</strong> — POST, hardware check, finds bootloader</li>
+                <li><strong>GRUB2</strong> — Shows boot menu, loads kernel + initramfs</li>
+                <li><strong>Kernel</strong> — Detects hardware, starts systemd (PID 1)</li>
+                <li><strong>systemd</strong> — Reads default target, starts services</li>
+                <li><strong>Login</strong> — CLI or GUI based on target</li>
+              </ol>
+              <h3>Root Password Recovery</h3>
+              <div class="code-block">
+                <pre><code># 1. Reboot → at GRUB menu press Up/Down to stop countdown
+# 2. Press 'e' to edit boot entry
+# 3. Find line starting with 'linux', add at end: rd.break
+# 4. Press Ctrl+X to boot into emergency shell
 
 mount -o remount,rw /sysroot
 chroot /sysroot
 passwd
 touch /.autorelabel
-exit
-exit</code></pre>
-          <div class="warn">⚠️ The <code>touch /.autorelabel</code> step is required. Without it the system may fail to
-            boot after a password change.</div>
+exit && exit</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <div class="warn">⚠️ The <code>touch /.autorelabel</code> step is required. Without it the system may fail
+                to boot after a password change.</div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-12 -->
       <div class="article-item" data-topic="services">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-12</div>
           <div class="article-title-wrap">
             <div class="article-title">Logging & NTP Time Synchronization</div>
-            <div class="article-meta"><span>journald, rsyslog, chrony, timedatectl</span><span>·</span><span
+            <div class="article-meta"><span>journald, rsyslog, chrony, timedatectl</span><span class="dot">·</span><span
                 class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Logging Architecture</h3>
-          <p><strong>systemd-journald</strong> captures raw events → passes to <strong>rsyslog</strong> → rsyslog writes
-            persistent files to <code>/var/log/</code></p>
-          <h3>journalctl — Read Journal Logs</h3>
-          <pre><code>journalctl                  # View all logs
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>journalctl — Read Journal Logs</h3>
+              <div class="code-block">
+                <pre><code>journalctl                  # View all logs
 journalctl -n 20            # View last 20 entries
 journalctl -f               # Follow live logs (like tail -f)
 journalctl -u sshd          # Logs for specific service
 journalctl -b               # Logs since last boot
-journalctl | grep sealert   # Filter for SELinux denials</code></pre>
-          <h3>Key Log Files</h3>
-          <table>
-            <tr>
-              <th>File</th>
-              <th>Contents</th>
-            </tr>
-            <tr>
-              <td><code>/var/log/messages</code></td>
-              <td>General system messages</td>
-            </tr>
-            <tr>
-              <td><code>/var/log/secure</code></td>
-              <td>Authentication, SSH, sudo</td>
-            </tr>
-            <tr>
-              <td><code>/var/log/maillog</code></td>
-              <td>Mail server activity</td>
-            </tr>
-            <tr>
-              <td><code>/var/log/cron</code></td>
-              <td>Cron job execution</td>
-            </tr>
-            <tr>
-              <td><code>/var/log/boot.log</code></td>
-              <td>Boot/startup messages</td>
-            </tr>
-          </table>
-          <h3>Make Journal Persistent</h3>
-          <pre><code>vim /etc/systemd/journald.conf
-Storage=persistent
-systemctl restart systemd-journald</code></pre>
-          <h3>NTP with chrony</h3>
-          <pre><code>timedatectl                              # Check current settings
+journalctl | grep sealert   # Filter for SELinux denials</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Key Log Files</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>File</th>
+                    <th>Contents</th>
+                  </tr>
+                  <tr>
+                    <td><code>/var/log/messages</code></td>
+                    <td>General system messages</td>
+                  </tr>
+                  <tr>
+                    <td><code>/var/log/secure</code></td>
+                    <td>Authentication, SSH, sudo</td>
+                  </tr>
+                  <tr>
+                    <td><code>/var/log/cron</code></td>
+                    <td>Cron job execution</td>
+                  </tr>
+                  <tr>
+                    <td><code>/var/log/boot.log</code></td>
+                    <td>Boot/startup messages</td>
+                  </tr>
+                </table>
+              </div>
+              <h3>NTP with chrony</h3>
+              <div class="code-block">
+                <pre><code>timedatectl                              # Check current settings
 timedatectl list-timezones               # List all timezones
 timedatectl set-timezone Asia/Kolkata    # Set timezone
 
@@ -2818,109 +3248,123 @@ dnf install chrony -y
 vim /etc/chrony.conf
 # Add: server 172.25.254.254 iburst
 
-systemctl restart chronyd
-systemctl enable chronyd
-chronyc sources    # * = synchronized correctly</code></pre>
+systemctl restart chronyd && systemctl enable chronyd
+chronyc sources    # * = synchronized correctly</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-13 -->
       <div class="article-item" data-topic="security">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-13</div>
           <div class="article-title-wrap">
             <div class="article-title">SELinux — Security Enhanced Linux</div>
-            <div class="article-meta"><span>Contexts, ports, booleans, semanage</span><span>·</span><span
+            <div class="article-meta"><span>Contexts, ports, booleans, semanage</span><span class="dot">·</span><span
                 class="article-badge badge-adv">Advanced</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>What is SELinux?</h3>
-          <p>SELinux implements <strong>Mandatory Access Control (MAC)</strong>. Both DAC (chmod) and MAC (SELinux) must
-            allow access.</p>
-          <h3>Status & Modes</h3>
-          <pre><code>sestatus          # Detailed status
-getenforce        # Quick mode check
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Status & Modes</h3>
+              <div class="code-block">
+                <pre><code>sestatus          # Detailed status
+getenforce        # Quick mode check (Enforcing/Permissive/Disabled)
 setenforce 1      # Enforcing (temporary)
 setenforce 0      # Permissive (temporary)
-vim /etc/selinux/config    # Permanent change (requires reboot)</code></pre>
-          <h3>View Context Labels</h3>
-          <pre><code>ls -Z filename       # File context
+vim /etc/selinux/config    # Permanent change (requires reboot)</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>View Context Labels</h3>
+              <div class="code-block">
+                <pre><code>ls -Z filename       # File context
 ls -dZ /tmp/         # Directory context
-ps axZ               # Process contexts</code></pre>
-          <h3>Change Context — Permanent</h3>
-          <pre><code># Step 1: Add to SELinux policy database
+ps axZ               # Process contexts</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Change Context — Permanent</h3>
+              <div class="code-block">
+                <pre><code># Step 1: Add to SELinux policy database
 semanage fcontext -a -t httpd_sys_content_t "/root/demo.html"
 
-# Use wildcard for entire directory:
+# Wildcard for entire directory:
 semanage fcontext -a -t httpd_sys_content_t "/webdata(/.*)?"
 
 # Step 2: Apply from database
 restorecon -v /root/demo.html     # Single file
-restorecon -Rv /webdata/          # Recursive directory</code></pre>
-          <h3>Port Contexts</h3>
-          <pre><code>semanage port -l                    # List all ports
-semanage port -l | grep http        # Filter by type
+restorecon -Rv /webdata/          # Recursive directory</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Port Contexts</h3>
+              <div class="code-block">
+                <pre><code>semanage port -l | grep http        # Filter by type
 semanage port -a -t http_port_t -p tcp 82    # Add port
-systemctl restart httpd
-curl localhost:82                    # Test</code></pre>
-          <h3>Troubleshooting & Booleans</h3>
-          <pre><code>journalctl | grep sealert                     # Find denials
+systemctl restart httpd</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Troubleshooting & Booleans</h3>
+              <div class="code-block">
+                <pre><code>journalctl | grep sealert                     # Find denials
 getsebool -a | grep http                      # List booleans
-setsebool httpd_enable_homedirs on            # Set temporarily
-setsebool httpd_enable_homedirs on -P         # Set permanently</code></pre>
+setsebool httpd_enable_homedirs on -P         # Set permanently</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-15 -->
       <div class="article-item" data-topic="networking">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-15</div>
           <div class="article-title-wrap">
             <div class="article-title">Firewall Management</div>
-            <div class="article-meta"><span>firewall-cmd, zones, services, ports</span><span>·</span><span
+            <div class="article-meta"><span>firewall-cmd, zones, services, ports</span><span class="dot">·</span><span
                 class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>What is a Firewall?</h3>
-          <p>A firewall controls incoming and outgoing network traffic. In modern Linux, managed with
-            <code>firewall-cmd</code> via the <strong>firewalld</strong> service.</p>
-          <h3>Zones</h3>
-          <table>
-            <tr>
-              <th>Zone</th>
-              <th>Trust Level</th>
-            </tr>
-            <tr>
-              <td>trusted</td>
-              <td>All connections accepted</td>
-            </tr>
-            <tr>
-              <td>home / work</td>
-              <td>Mostly trusted, some services allowed</td>
-            </tr>
-            <tr>
-              <td>public</td>
-              <td>Default — untrusted public network</td>
-            </tr>
-            <tr>
-              <td>dmz</td>
-              <td>Limited access, for server exposure</td>
-            </tr>
-            <tr>
-              <td>block</td>
-              <td>All connections rejected</td>
-            </tr>
-            <tr>
-              <td>drop</td>
-              <td>All connections silently dropped</td>
-            </tr>
-          </table>
-          <div class="note">💡 Pattern: <code>--get-...</code> to view | <code>--add-...</code> to allow |
-            <code>--remove-...</code> to deny</div>
-          <pre><code>firewall-cmd --get-services                         # List services
-firewall-cmd --get-default-zone                     # View default zone
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Zones</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Zone</th>
+                    <th>Trust Level</th>
+                  </tr>
+                  <tr>
+                    <td>trusted</td>
+                    <td>All connections accepted</td>
+                  </tr>
+                  <tr>
+                    <td>public</td>
+                    <td>Default — untrusted public network</td>
+                  </tr>
+                  <tr>
+                    <td>dmz</td>
+                    <td>Limited access, for server exposure</td>
+                  </tr>
+                  <tr>
+                    <td>block</td>
+                    <td>All connections rejected</td>
+                  </tr>
+                  <tr>
+                    <td>drop</td>
+                    <td>All connections silently dropped</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="note">💡 Pattern: <code>--get-...</code> view | <code>--add-...</code> allow |
+                <code>--remove-...</code> deny
+              </div>
+              <div class="code-block">
+                <pre><code>firewall-cmd --get-default-zone                     # View default zone
 firewall-cmd --set-default-zone=public              # Set default zone
 
 firewall-cmd --add-service=http --permanent
@@ -2931,212 +3375,242 @@ firewall-cmd --remove-port=8080/tcp --permanent
 
 firewall-cmd --add-source=192.168.1.0/24 --zone=internal
 firewall-cmd --reload        # Apply permanent rules
-firewall-cmd --list-all      # View all active rules</code></pre>
-          <div class="warn">⚠️ Without <code>--permanent</code>, changes are lost on reboot. After using
-            <code>--permanent</code>, run <code>--reload</code> to apply immediately.</div>
+firewall-cmd --list-all      # View all active rules</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <div class="warn">⚠️ Without <code>--permanent</code>, changes are lost on reboot. After using
+                <code>--permanent</code>, run <code>--reload</code> to apply immediately.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-14 -->
       <div class="article-item" data-topic="networking">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-14</div>
           <div class="article-title-wrap">
             <div class="article-title">Networking & NFS</div>
-            <div class="article-meta"><span>ip, nmtui, NFS mount, autofs</span><span>·</span><span
+            <div class="article-meta"><span>ip, nmtui, NFS mount, autofs</span><span class="dot">·</span><span
                 class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Network Commands</h3>
-          <pre><code>ip addr                      # Show IP addresses (modern)
-ip a                         # Short alias for ip addr
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Network Commands</h3>
+              <div class="code-block">
+                <pre><code>ip addr                      # Show IP addresses (modern)
 ip link show                 # List network interfaces
 ip route                     # Show routing table
-ping hostname                # Test connectivity
-ping google.com -c 5         # Limit to 5 replies
+ping google.com -c 5         # Test connectivity (5 pings)
 tracepath hostname            # Trace packet route
-ss -t                        # Show TCP connections
 ss -ta                       # All TCP connections
 ss -l                        # Listening ports only
-hostname                     # Show current hostname</code></pre>
-          <h3>DNS Resolution</h3>
-          <pre><code>cat /etc/hosts    # View local hostname resolution file
-# Add custom entry:
-# 192.168.1.10   myserver</code></pre>
-          <h3>Configure Network — nmtui</h3>
-          <pre><code>nmtui    # Launch Terminal UI for network config
+hostname                     # Show current hostname</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Configure Network — nmtui</h3>
+              <div class="code-block">
+                <pre><code>nmtui    # Launch Terminal UI for network config
 # 1. Edit a connection → select interface (e.g., eth0)
 # 2. IPv4 Configuration → change Automatic to Manual
 # 3. Enter IP address, gateway, DNS
 # 4. Back → Set System Hostname
-# 5. Activate a connection → deactivate + reactivate</code></pre>
-          <h3>NFS — Network File System</h3>
-          <pre><code>dnf install nfs-utils -y
+# 5. Activate a connection → deactivate + reactivate</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>NFS — Network File System</h3>
+              <div class="code-block">
+                <pre><code>dnf install nfs-utils -y
 showmount --exports server_hostname    # Check what server shares
 
 mkdir /mountpoint
-
-# Temporary mount:
 mount -t nfs -o rw,sync server:/export /mountpoint
 
 # Permanent (fstab):
 server:/export  /mountpoint  nfs  rw,sync  0  0
-mount -a</code></pre>
-          <h3>AutoFS — On-Demand Mounting</h3>
-          <pre><code>dnf install autofs -y</code></pre>
-          <div class="warn">⚠️ Do NOT edit <code>/etc/auto.master</code> directly. Create files inside
-            <code>/etc/auto.master.d/</code> instead.</div>
-          <h4>Type 1 — Direct</h4>
-          <pre><code>vim /etc/auto.master.d/direct.autofs
-# Add:  /-    /etc/auto.direct
-
+mount -a</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>AutoFS — On-Demand Mounting</h3>
+              <div class="warn">⚠️ Do NOT edit <code>/etc/auto.master</code> directly. Create files inside
+                <code>/etc/auto.master.d/</code> instead.
+              </div>
+              <div class="code-block">
+                <pre><code># Direct Mount:
+vim /etc/auto.master.d/direct.autofs
+# /-    /etc/auto.direct
 vim /etc/auto.direct
-# Add:  /public   -rw,sync   server:/sharing_directory
+# /public   -rw,sync   server:/sharing_directory
 
-systemctl restart autofs</code></pre>
-          <h4>Type 2 — Indirect</h4>
-          <pre><code>vim /etc/auto.master.d/indirect.autofs
-# Add:  /guest    /etc/auto.indirect
-
+# Indirect Mount:
+vim /etc/auto.master.d/indirect.autofs
+# /guest    /etc/auto.indirect
 vim /etc/auto.indirect
-# Add:  mount   -rw,sync   server:/sharing_directory
+# mount   -rw,sync   server:/sharing_directory
 
-systemctl restart autofs</code></pre>
-          <h4>Type 3 — Wildcard</h4>
-          <pre><code>vim /etc/auto.master.d/wildcard.autofs
-# Add:  /mnt/mount    /etc/auto.wildcard
-
+# Wildcard:
 vim /etc/auto.wildcard
-# Add:  *   -rw,sync   server:/shares/public/&
+# *   -rw,sync   server:/shares/public/&
 
-systemctl restart autofs</code></pre>
+systemctl restart autofs</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- CH-16 -->
       <div class="article-item" data-topic="containers">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CH-16</div>
           <div class="article-title-wrap">
             <div class="article-title">Podman — Container Management</div>
-            <div class="article-meta"><span>Images, run, volumes, port forwarding, services,
-                rootless</span><span>·</span><span class="article-badge badge-adv">Advanced</span></div>
+            <div class="article-meta"><span>Images, run, volumes, port forwarding, services, rootless</span><span
+                class="dot">·</span><span class="article-badge badge-adv">Advanced</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>Install & Search</h3>
-          <pre><code>dnf install container-tools     # Install podman
-podman -v                        # Verify version
-podman search httpd              # Search registries</code></pre>
-          <h3>Images</h3>
-          <pre><code>podman pull IMAGE_URL      # Download image
-podman images             # List local images
-podman rmi IMAGE_URL      # Remove image</code></pre>
-          <h3>Containers</h3>
-          <pre><code>podman run -d --name webserver IMAGE_URL
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>Install & Images</h3>
+              <div class="code-block">
+                <pre><code>dnf install container-tools     # Install podman
+podman search httpd              # Search registries
+podman pull IMAGE_URL            # Download image
+podman images                    # List local images
+podman rmi IMAGE_URL             # Remove image</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Containers</h3>
+              <div class="code-block">
+                <pre><code>podman run -d --name webserver IMAGE_URL
 podman ps          # Running containers
-podman ps -a       # All containers
+podman ps -a       # All containers (running + stopped)
 podman stop webserver
-podman rm webserver
-podman rm webserver -f    # Force remove</code></pre>
-          <h3>Execute & Copy</h3>
-          <pre><code>podman exec -it webserver bash      # Enter container shell
-podman cp index.html webserver:/var/www/html/</code></pre>
-          <h3>Port Forwarding</h3>
-          <div class="info">Port forwarding must be set at container creation — it cannot be added later.</div>
-          <pre><code>podman run -d --name webserver -p 8080:80 IMAGE_URL
-curl localhost:8080</code></pre>
-          <h3>Volumes</h3>
-          <pre><code>podman run -d --name webserver \
+podman rm webserver -f    # Force remove
+
+podman exec -it webserver bash      # Enter container shell
+podman cp index.html webserver:/var/www/html/</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Port Forwarding & Volumes</h3>
+              <div class="info">Port forwarding must be set at container creation — it cannot be added later.</div>
+              <div class="code-block">
+                <pre><code>podman run -d --name webserver \
+  -p 8080:80 \
   -v /backup/:/var/www/html/:Z \
-  -p 8080:80 IMAGE_URL
-# :Z = SELinux context matching</code></pre>
-          <h3>Container as systemd Service (Root)</h3>
-          <pre><code>cd /etc/systemd/system
+  IMAGE_URL
+# :Z = SELinux context matching</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>Container as systemd Service (Root)</h3>
+              <div class="code-block">
+                <pre><code>cd /etc/systemd/system
 podman generate systemd --name webserver --files
 systemctl daemon-reload
-systemctl enable container-webserver.service --now</code></pre>
-          <h3>Rootless Containers</h3>
-          <div class="warn">⚠️ SSH directly as the target user. <code>su - username</code> may not behave correctly for
-            rootless container operations.</div>
-          <pre><code>mkdir -p ~/.config/systemd/user
+systemctl enable container-webserver.service --now</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Rootless Containers</h3>
+              <div class="warn">⚠️ SSH directly as the target user. <code>su - username</code> may not behave correctly
+                for rootless container operations.</div>
+              <div class="code-block">
+                <pre><code>mkdir -p ~/.config/systemd/user
 cd ~/.config/systemd/user
 podman generate systemd --name myapp --files
 systemctl --user daemon-reload
-systemctl --user enable container-myapp.service --now</code></pre>
-          <div class="info">🔑 To start container at system boot:<br><br><code>loginctl enable-linger username</code>
+systemctl --user enable container-myapp.service --now
+
+loginctl enable-linger username    # Start at boot, not just at login</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- CMD -->
       <div class="article-item" data-topic="essentials">
         <div class="article-header" onclick="toggleArticle(this)">
           <div class="article-ch">CMD</div>
           <div class="article-title-wrap">
             <div class="article-title">tar, find & Shell Scripts</div>
-            <div class="article-meta"><span>Archiving, file search, scripting</span><span>·</span><span
+            <div class="article-meta"><span>Archiving, file search, scripting</span><span class="dot">·</span><span
                 class="article-badge badge-inter">Intermediate</span></div>
           </div>
           <div class="article-expand">▶</div>
         </div>
-        <div class="article-body">
-          <h3>tar — Archive & Compress</h3>
-          <table>
-            <tr>
-              <th>Flag</th>
-              <th>Compression</th>
-              <th>Extension</th>
-            </tr>
-            <tr>
-              <td><code>-j</code></td>
-              <td>bzip2</td>
-              <td>.tar.bz2</td>
-            </tr>
-            <tr>
-              <td><code>-z</code></td>
-              <td>gzip</td>
-              <td>.tar.gz</td>
-            </tr>
-            <tr>
-              <td><code>-J</code></td>
-              <td>xz</td>
-              <td>.tar.xz</td>
-            </tr>
-          </table>
-          <pre><code>tar -cvjf backup.tar.bz2 /usr/local     # Create bzip2 archive
-tar -cvzf backup.tar.gz /usr/local      # Create gzip archive
-tar -cvJf backup.tar.xz /usr/local      # Create xz archive
-tar -xvf archive.tar.bz2               # Extract archive
-tar -tvjf backup.tar.bz2               # View contents without extracting</code></pre>
-          <h3>find — Locate Files</h3>
-          <pre><code>find / -name newfile                 # By exact name
+        <div class="article-body-wrap">
+          <div class="article-body-inner">
+            <div class="article-body">
+              <h3>tar — Archive & Compress</h3>
+              <div class="table-wrap">
+                <table>
+                  <tr>
+                    <th>Flag</th>
+                    <th>Compression</th>
+                    <th>Extension</th>
+                  </tr>
+                  <tr>
+                    <td><code>-j</code></td>
+                    <td>bzip2</td>
+                    <td>.tar.bz2</td>
+                  </tr>
+                  <tr>
+                    <td><code>-z</code></td>
+                    <td>gzip</td>
+                    <td>.tar.gz</td>
+                  </tr>
+                  <tr>
+                    <td><code>-J</code></td>
+                    <td>xz</td>
+                    <td>.tar.xz</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="code-block">
+                <pre><code>tar -cvzf backup.tar.gz /usr/local      # Create gzip archive
+tar -cvjf backup.tar.bz2 /usr/local     # Create bzip2 archive
+tar -xvf archive.tar.gz                 # Extract archive
+tar -tvzf backup.tar.gz                 # View contents only</code></pre><button class="copy-btn"
+                  onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <h3>find — Locate Files</h3>
+              <div class="code-block">
+                <pre><code>find / -name newfile                 # By exact name
 find / -user jeel                    # By owner
 find / -group devops                 # By group
-find / -perm 750                     # By exact permission
-find / -perm 750 -type d             # Directories only
-find / -perm 750 -type f             # Files only
+find / -perm 750 -type d             # Directories with exact perm
 find / -perm /g+s                    # Files with SGID set
-find / -size +30k                    # Files larger than 30KB
 find / -size +30k -size -45k        # Between 30KB and 45KB
 
 # Execute command on found files:
 find / -user jeel -exec cp -pvr {} /root/jeel-files/ \;
-# {}  = placeholder  |  \;  = end of exec command</code></pre>
-          <h3>Shell Script Basics</h3>
-          <pre><code>vim myscript.sh
+# {}  = placeholder  |  \;  = end of exec command</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘
+                  Copy</button>
+              </div>
+              <h3>Shell Script Basics</h3>
+              <div class="code-block">
+                <pre><code>vim myscript.sh
 
 #!/bin/bash
-# Shebang — tells the system which interpreter to use
+# Shebang — tells system which interpreter to use
 find /usr -perm /g+s -size +30k -size -45k > /root/usr-files
 
 chmod +x myscript.sh    # Give execute permission
-./myscript.sh           # Run directly</code></pre>
-          <div class="note">💡 <code>sudo !!</code> re-runs your last command with sudo.</div>
+./myscript.sh           # Run directly</code></pre><button class="copy-btn" onclick="copyCode(this)">⎘ Copy</button>
+              </div>
+              <div class="note">💡 <code>sudo !!</code> re-runs your last command with sudo. <code>!!</code> = shell
+                history expansion for the previous command.</div>
+            </div>
+          </div>
         </div>
       </div>
 
-    </div>
+    </div><!-- /articles-list -->
 
     <footer>
       <div class="footer-logo">RHCSA STUDY GUIDE</div>
@@ -3147,23 +3621,24 @@ chmod +x myscript.sh    # Give execute permission
       documentation.</p>
   </div>
 
-  <!-- ABOUT ME -->
+  <!-- ══════════════════════ ABOUT ME ══════════════════════ -->
   <div id="page-aboutme" class="page">
     <div class="aboutme-hero">
       <div class="aboutme-photo-wrap">
         <div class="aboutme-photo">
-          <img src="20250109_082134.jpg" alt="Harshvardhan Jadeja" class="aboutme-photo">
+          <img src="20250109_082134.jpg" alt="Harshvardhan Jadeja"
+            onerror="this.style.display='none';this.parentElement.textContent='👤'" />
         </div>
-        <p class="aboutme-photo-hint"></p>
         <div class="aboutme-social">
-          <a href="https://github.com/hsjadeja-7117" target="_blank" class="social-btn">
+          <a href="https://github.com/hsjadeja-7117" target="_blank" rel="noopener" class="social-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
             </svg>
             GitHub
           </a>
-          <a href="http://www.linkedin.com/in/harshvardhansinh-jadeja-86250b348" target="_blank" class="social-btn">
+          <a href="http://www.linkedin.com/in/harshvardhansinh-jadeja-86250b348" target="_blank" rel="noopener"
+            class="social-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -3172,26 +3647,18 @@ chmod +x myscript.sh    # Give execute permission
           </a>
         </div>
       </div>
-
       <div class="aboutme-info">
         <div class="aboutme-tag">// DevOps Learner</div>
         <div class="aboutme-name">Harshvardhansinh S Jadeja<br><span>Here.</span></div>
-        <p class="aboutme-desc">
-          I'm a DevOps learner passionate about Linux, automation, and cloud infrastructure.
-          After getting my RHCSA certification, building hands-on skills in
-          system administration, containers, storage management, and network configuration.<br><br>
-          This website is my personal study journal — every chapter documents real classroom
-          learning, practical commands, and concepts I've applied in a live lab environment.
+        <p class="aboutme-desc">I'm a DevOps learner passionate about Linux, automation, and cloud infrastructure. After
+          getting my RHCSA certification, building hands-on skills in system administration, containers, storage
+          management, and network configuration.<br><br>This website is my personal study journal — every chapter
+          documents real classroom learning, practical commands, and concepts I've applied in a live lab environment.
         </p>
         <div class="aboutme-skills">
-          <span class="skill-tag">Linux</span>
-          <span class="skill-tag">RHEL 9</span>
-          <span class="skill-tag">Bash</span>
-          <span class="skill-tag">Podman</span>
-          <span class="skill-tag">LVM</span>
-          <span class="skill-tag">SELinux</span>
-          <span class="skill-tag">Networking</span>
-          <span class="skill-tag">Git</span>
+          <span class="skill-tag">Linux</span><span class="skill-tag">RHEL 9</span><span class="skill-tag">Bash</span>
+          <span class="skill-tag">Podman</span><span class="skill-tag">LVM</span><span class="skill-tag">SELinux</span>
+          <span class="skill-tag">Networking</span><span class="skill-tag">Git</span>
         </div>
       </div>
     </div>
@@ -3210,7 +3677,7 @@ chmod +x myscript.sh    # Give execute permission
           <div class="journey-step">Step 02</div>
           <div class="journey-title">Build a Lab</div>
           <div class="journey-text">Set up a local RHEL 9 virtual machine using VirtualBox or VMware. Practice every
-            command you learn in a real environment.</div>
+            command in a real environment where mistakes don't matter.</div>
         </div>
         <div class="journey-card">
           <div class="journey-step">Step 03</div>
@@ -3223,7 +3690,7 @@ chmod +x myscript.sh    # Give execute permission
           <div class="journey-title">Read the Manual</div>
           <div class="journey-text">Use <code
               style="background:rgba(0,229,192,0.1);padding:2px 6px;color:var(--accent);font-size:12px">man command</code>
-            constantly. The Linux manual pages are the most accurate documentation available.</div>
+            constantly. Linux manual pages are the most accurate documentation available.</div>
         </div>
         <div class="journey-card">
           <div class="journey-step">Step 05</div>
@@ -3248,35 +3715,36 @@ chmod +x myscript.sh    # Give execute permission
       <div class="section-title" style="margin-bottom:40px">Where to learn<br>more.</div>
       <div class="resources-grid">
         <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9" target="_blank"
-          class="resource-card">
+          rel="noopener" class="resource-card">
           <div class="resource-icon">📘</div>
           <div class="resource-name">Red Hat Official Docs</div>
           <div class="resource-desc">The authoritative source for everything RHEL 9. System administration guides,
             storage, networking, security.</div>
           <div class="resource-link">access.redhat.com →</div>
         </a>
-        <a href="https://www.redhat.com/en/services/certification/rhcsa" target="_blank" class="resource-card">
+        <a href="https://www.redhat.com/en/services/certification/rhcsa" target="_blank" rel="noopener"
+          class="resource-card">
           <div class="resource-icon">🎯</div>
           <div class="resource-name">RHCSA Certification Page</div>
           <div class="resource-desc">Official Red Hat page for the RHCSA certification. Exam objectives, preparation
             resources, and registration.</div>
           <div class="resource-link">redhat.com/rhcsa →</div>
         </a>
-        <a href="https://developers.redhat.com/learn" target="_blank" class="resource-card">
+        <a href="https://developers.redhat.com/learn" target="_blank" rel="noopener" class="resource-card">
           <div class="resource-icon">⚙️</div>
           <div class="resource-name">Red Hat Developer Learning</div>
           <div class="resource-desc">Free learning paths from Red Hat covering Linux, containers, OpenShift, Ansible,
             and more.</div>
           <div class="resource-link">developers.redhat.com →</div>
         </a>
-        <a href="https://www.man7.org/linux/man-pages/" target="_blank" class="resource-card">
+        <a href="https://www.man7.org/linux/man-pages/" target="_blank" rel="noopener" class="resource-card">
           <div class="resource-icon">📖</div>
           <div class="resource-name">Linux Man Pages Online</div>
           <div class="resource-desc">The complete Linux manual pages online. The most accurate reference for any
             command.</div>
           <div class="resource-link">man7.org →</div>
         </a>
-        <a href="https://github.com/hsjadeja-7117/RHCSA-Linux-Administration-Guide" target="_blank"
+        <a href="https://github.com/hsjadeja-7117/RHCSA-Linux-Administration-Guide" target="_blank" rel="noopener"
           class="resource-card">
           <div class="resource-icon">🐙</div>
           <div class="resource-name">This Project on GitHub</div>
@@ -3302,102 +3770,172 @@ chmod +x myscript.sh    # Give execute permission
   </div>
 
   <script>
-    /* ── Custom Cursor (desktop only) ── */
+    /* ════════════════════════════════════════
+       CUSTOM CURSOR (desktop)
+    ════════════════════════════════════════ */
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursorRing');
-    if (window.matchMedia('(pointer: fine)').matches && cursor && ring) {
+    if (window.matchMedia('(pointer: fine)').matches && cursor) {
       let mx = -100, my = -100, rx = -100, ry = -100;
       document.addEventListener('mousemove', e => {
         mx = e.clientX; my = e.clientY;
-        cursor.style.left = mx - 5 + 'px';
-        cursor.style.top = my - 5 + 'px';
+        cursor.style.left = (mx - 5) + 'px'; cursor.style.top = (my - 5) + 'px';
       });
-      (function a() {
+      (function tick() {
         rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-        ring.style.left = rx - 18 + 'px'; ring.style.top = ry - 18 + 'px';
-        requestAnimationFrame(a);
+        ring.style.left = (rx - 18) + 'px'; ring.style.top = (ry - 18) + 'px';
+        requestAnimationFrame(tick);
       })();
-      document.querySelectorAll('a,button,.article-item,.chapter-card').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          cursor.style.transform = 'scale(2.5)';
-          ring.style.transform = 'scale(1.3)';
-          ring.style.borderColor = 'rgba(0,229,192,0.7)';
-        });
-        el.addEventListener('mouseleave', () => {
-          cursor.style.transform = 'scale(1)';
-          ring.style.transform = 'scale(1)';
-          ring.style.borderColor = 'rgba(0,229,192,0.4)';
-        });
+      document.querySelectorAll('a,button,.article-item,.chapter-card,.resource-card').forEach(el => {
+        el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2.5)'; ring.style.transform = 'scale(1.3)'; ring.style.borderColor = 'rgba(0,229,192,0.7)'; });
+        el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; ring.style.transform = 'scale(1)'; ring.style.borderColor = 'rgba(0,229,192,0.4)'; });
       });
     }
 
-    /* ── Mobile Nav ── */
+    /* ════════════════════════════════════════
+       SCROLL PROGRESS + BACK TO TOP
+    ════════════════════════════════════════ */
+    const progressBar = document.getElementById('progress-bar');
+    const backTop = document.getElementById('back-top');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (maxScroll > 0 ? (scrolled / maxScroll) * 100 : 0) + '%';
+      if (scrolled > 300) backTop.classList.add('visible');
+      else backTop.classList.remove('visible');
+    }, { passive: true });
+
+    /* ════════════════════════════════════════
+       MOBILE NAV (tablet hamburger)
+    ════════════════════════════════════════ */
     function toggleMobileNav() {
       const nav = document.getElementById('mobileNav');
       const btn = document.getElementById('hamburger');
-      nav.classList.toggle('open');
-      btn.classList.toggle('open');
-      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+      const open = nav.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
     }
-
     function closeMobileNav() {
       const nav = document.getElementById('mobileNav');
       const btn = document.getElementById('hamburger');
       nav.classList.remove('open');
       btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     }
+    // Close overlay on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMobileNav();
+    });
 
-    /* ── Page Navigation ── */
+    /* ════════════════════════════════════════
+       PAGE NAVIGATION
+    ════════════════════════════════════════ */
+    const pageMap = { home: 'bn-home', about: 'bn-about', learning: 'bn-learning', aboutme: 'bn-aboutme' };
     function showPage(n) {
+      closeMobileNav();
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const pg = document.getElementById('page-' + n);
       if (!pg) return false;
       pg.classList.add('active');
-      pg.style.opacity = '0';
-      setTimeout(() => {
-        pg.style.transition = 'opacity 0.35s ease';
-        pg.style.opacity = '1';
-      }, 10);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Update bottom nav active state
+      Object.values(pageMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+      });
+      const bnId = pageMap[n];
+      if (bnId) {
+        const bn = document.getElementById(bnId);
+        if (bn) bn.classList.add('active');
+      }
       return false;
     }
 
-    /* ── Article Toggle ── */
-    function toggleArticle(h) {
-      h.parentElement.classList.toggle('open');
+    /* ════════════════════════════════════════
+       SMOOTH ACCORDION
+    ════════════════════════════════════════ */
+    function toggleArticle(header) {
+      const item = header.parentElement;
+      const wasOpen = item.classList.contains('open');
+      // Close all open items
+      document.querySelectorAll('.article-item.open').forEach(el => el.classList.remove('open'));
+      // Toggle clicked item
+      if (!wasOpen) item.classList.add('open');
     }
 
-    /* ── Filter ── */
+    /* ════════════════════════════════════════
+       FILTER
+    ════════════════════════════════════════ */
     function setFilter(btn, topic) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      // Close all accordions on filter change
+      document.querySelectorAll('.article-item.open').forEach(el => el.classList.remove('open'));
       document.querySelectorAll('.article-item').forEach(c => {
         c.style.display = (topic === 'all' || c.dataset.topic === topic) ? 'block' : 'none';
       });
     }
 
-    /* ── Counter Animation ── */
-    function animateCounter(el, target) {
-      const suffix = target >= 1000 ? 'K+' : '+';
-      const displayTarget = target >= 1000 ? Math.round(target / 1000) : target;
-      let c = 0;
-      const interval = setInterval(() => {
-        c = Math.min(c + displayTarget / 60, displayTarget);
-        el.textContent = Math.floor(c) + suffix;
-        if (c >= displayTarget) clearInterval(interval);
-      }, 2000 / 60);
+    /* ════════════════════════════════════════
+       COPY CODE BUTTON
+    ════════════════════════════════════════ */
+    function copyCode(btn) {
+      const pre = btn.previousElementSibling;
+      const text = pre ? pre.innerText : '';
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => {
+        // Fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.innerHTML = '✓ Copied'; btn.classList.add('copied');
+        setTimeout(() => { btn.innerHTML = '⎘ Copy'; btn.classList.remove('copied'); }, 2000);
+      });
     }
 
-    document.querySelectorAll('.stat-num').forEach(el => {
-      new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            animateCounter(e.target, parseInt(e.target.dataset.target));
-          }
-        });
-      }, { threshold: 0.5 }).observe(el);
-    });
+    /* ════════════════════════════════════════
+       COUNTER ANIMATION (IntersectionObserver)
+    ════════════════════════════════════════ */
+    function animateCounter(el, target) {
+      const isLarge = target >= 100;
+      const suffix = '+';
+      let c = 0;
+      const steps = 60;
+      const tick = () => {
+        c = Math.min(c + target / steps, target);
+        el.textContent = Math.floor(c) + suffix;
+        if (c < target) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          animateCounter(e.target, parseInt(e.target.dataset.target));
+          counterObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat-num').forEach(el => counterObserver.observe(el));
+
+    /* ════════════════════════════════════════
+       PREVENT PULL-TO-REFRESH on mobile
+    ════════════════════════════════════════ */
+    let startY = 0;
+    document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, { passive: true });
+    document.addEventListener('touchmove', e => {
+      if (window.scrollY === 0 && e.touches[0].pageY > startY + 10) {
+        // Allow normal scroll, just prevent overscroll bounce pulling
+      }
+    }, { passive: true });
   </script>
 </body>
 
